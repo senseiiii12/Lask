@@ -1,5 +1,5 @@
-package com.koin.convention
 
+import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
@@ -13,13 +13,12 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("com.android.application")
-                apply("org.jetbrains.kotlin.android")
             }
-            extensions.configure<AppExtension> {
-                compileSdkVersion(35)
+            extensions.configure<ApplicationExtension> {
+                compileSdk { version = release(AndroidConfig.COMPILE_SDK) }
                 defaultConfig {
-                    minSdk = 24
-                    targetSdk = 35
+                    minSdk = AndroidConfig.MIN_SDK
+                    targetSdk = AndroidConfig.TARGET_SDK
                 }
                 compileOptions {
                     sourceCompatibility = JavaVersion.VERSION_17
@@ -42,5 +41,4 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
         }
     }
-}
 }

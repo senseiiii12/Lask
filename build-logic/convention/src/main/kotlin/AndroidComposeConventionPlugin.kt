@@ -1,5 +1,6 @@
-package com.koin.convention
 
+
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -11,10 +12,12 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
-            extensions.configure<BaseExtension> {
-                buildFeatures.compose = true
-            }
+
+            val extension = extensions.getByType(CommonExtension::class.java)
+            extension.buildFeatures.compose = true
+
             val libs = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
+
             dependencies {
                 add("implementation", platform(libs.findLibrary("androidx.compose.bom").get()))
                 add("androidTestImplementation", platform(libs.findLibrary("androidx.compose.bom").get()))

@@ -1,4 +1,3 @@
-package com.koin.convention
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

@@ -1,48 +1,15 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ksp)
+    id("myapp.android.library")  // заменяет android.library + общие зависимости
+    id("myapp.room")             // заменяет ksp + room зависимости
+    id("myapp.koin")             // заменяет koin зависимости
 }
 
 android {
     namespace = "com.koin.database"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
-
-    defaultConfig {
-        minSdk = 26
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
     api(libs.bundles.room)
-    ksp(libs.room.compiler)
     api(libs.bundles.koin)
     api(libs.kotlinx.coroutines.core)
 }

@@ -1,6 +1,8 @@
-package com.koin.convention
 
-import com.android.build.gradle.LibraryExtension
+
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.gradle.internal.dsl.LibraryExtensionImpl
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -11,20 +13,19 @@ import org.gradle.kotlin.dsl.dependencies
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            with(pluginManager) {
-                apply("com.android.library")
-                apply("org.jetbrains.kotlin.android")
-            }
-            extensions.configure<LibraryExtension> {
-                compileSdk = 35
+            pluginManager.apply("com.android.library")
+
+            extensions.configure<LibraryExtensionImpl> {
+                compileSdk { version = release(AndroidConfig.COMPILE_SDK) }
                 defaultConfig {
-                    minSdk = 24
+                    minSdk = AndroidConfig.MIN_SDK
                 }
                 compileOptions {
                     sourceCompatibility = JavaVersion.VERSION_17
                     targetCompatibility = JavaVersion.VERSION_17
                 }
             }
+
             val libs = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
             dependencies {
                 add("implementation", libs.findLibrary("androidx.core.ktx").get())
