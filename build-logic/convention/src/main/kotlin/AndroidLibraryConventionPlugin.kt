@@ -1,7 +1,3 @@
-
-
-import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.internal.dsl.LibraryExtensionImpl
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
