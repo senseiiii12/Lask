@@ -1,19 +1,32 @@
 package dev.alexmester.models.error
 
 
-sealed class NetworkError : Exception() {
+sealed class NetworkError(
+    message: String? = null,
+    cause: Throwable? = null,
+) : Exception(message, cause) {
 
-    data object NoInternet : NetworkError()
+    class NoInternet : NetworkError()
 
-    data class HttpError(val code: Int, override val message: String? = null) : NetworkError()
+    class Unauthorized : NetworkError()
 
-    data class RateLimit(val retryAfterSeconds: Long? = null) : NetworkError()
+    class Timeout : NetworkError()
 
-    data object Unauthorized : NetworkError()
+    data class HttpError(
+        val code: Int,
+        override val message: String? = null,
+    ) : NetworkError(message)
 
-    data object Timeout : NetworkError()
+    data class RateLimit(
+        val retryAfterSeconds: Long? = null,
+    ) : NetworkError()
 
-    data class ParseError(override val cause: Throwable? = null) : NetworkError()
+    data class ParseError(
+        override val cause: Throwable? = null,
+    ) : NetworkError(cause = cause)
 
-    data class Unknown(override val cause: Throwable? = null, override val message: String? = null) : NetworkError()
+    data class Unknown(
+        override val message: String? = null,
+        override val cause: Throwable? = null,
+    ) : NetworkError(message, cause)
 }
