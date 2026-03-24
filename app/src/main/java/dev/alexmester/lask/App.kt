@@ -1,12 +1,23 @@
 package dev.alexmester.lask
 
 import android.app.Application
+import android.util.Log
+import coil3.EventListener
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.SingletonImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.request.ErrorResult
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
 import dev.alexmester.api.navigation.NewsFeedApi
 import dev.alexmester.database.di.databaseModule
 import dev.alexmester.datastore.di.dataStoreModule
 import dev.alexmester.impl.di.newsFeedModule
 import dev.alexmester.impl.navigation.NewsFeedImpl
 import dev.alexmester.network.di.networkModule
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -23,7 +34,48 @@ val featuresModule = module {
     // single<SearchApi> { SearchImpl() }
 }
 
-class App : Application() {
+class App : Application(), SingletonImageLoader.Factory {
+
+    override fun newImageLoader(context: PlatformContext): ImageLoader {
+
+        val loggingInterceptor = HttpLoggingInterceptor { message ->
+            Log.d("CoilOkHttp", message)
+        }.apply {
+            level = HttpLoggingInterceptor.Level.HEADERS
+        }
+
+        return ImageLoader.Builder(context)
+            .components {
+                add(
+                    OkHttpNetworkFetcherFactory(
+                        callFactory = {
+                            OkHttpClient.Builder()
+                                .addInterceptor { chain ->
+                                    val request = chain.request().newBuilder()
+                                        .header(
+                                            "User-Agent",
+                                            "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile Safari/537.36"
+                                        )
+                                        .build()
+                                    chain.proceed(request)
+                                }
+                                .addNetworkInterceptor(loggingInterceptor)
+                                .build()
+                        }
+                    )
+                )
+            }
+            .eventListener(object : EventListener() {
+                override fun onSuccess(request: ImageRequest, result: SuccessResult) {
+                    Log.d("CoilImage", "✅ SUCCESS: ${request.data}")
+                }
+                override fun onError(request: ImageRequest, result: ErrorResult) {
+                    Log.e("CoilImage", "❌ ERROR: ${request.data}")
+                    Log.e("CoilImage", "❌ CAUSE: ${result.throwable}")
+                }
+            })
+            .build()
+    }
 
     override fun onCreate() {
         super.onCreate()

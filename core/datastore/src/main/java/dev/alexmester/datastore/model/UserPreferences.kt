@@ -12,7 +12,7 @@ package dev.alexmester.datastore.model
  * null означает "следовать системной теме".
  */
 data class UserPreferences(
-    val defaultCountry: String = "us",
-    val defaultLanguage: String = "en",
+    val defaultCountry: String = "ru",
+    val defaultLanguage: String = "ru",
     val isDarkTheme: Boolean? = null,
 )

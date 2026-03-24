@@ -4,43 +4,57 @@ import dev.alexmester.models.news.NewsCluster
 
 object NewsFeedReducer {
 
-    fun reduce(state: NewsFeedState, intent: NewsFeedIntent): NewsFeedState =
+    fun reduce(state: NewsFeedScreenState, intent: NewsFeedIntent): NewsFeedScreenState =
         when (intent) {
-            is NewsFeedIntent.LoadFeed -> state.copy(
-                isLoading = state.clusters.isEmpty(),
-                error = null,
-            )
-            is NewsFeedIntent.Refresh -> state.copy(
-                isRefreshing = true,
-                error = null,
-            )
+            is NewsFeedIntent.Refresh -> when (state) {
+                is NewsFeedScreenState.Content -> state.copy(
+                    contentState = ContentState.Refreshing,
+                )
+                else -> state
+            }
             else -> state
         }
 
     fun onClustersLoaded(
-        state: NewsFeedState,
         clusters: List<NewsCluster>,
         lastCachedAt: Long?,
-    ): NewsFeedState = state.copy(
+    ): NewsFeedScreenState = NewsFeedScreenState.Content(
         clusters = clusters,
-        isLoading = false,
         lastCachedAt = lastCachedAt,
+        contentState = ContentState.Idle,
     )
 
-    fun onRefreshSuccess(state: NewsFeedState): NewsFeedState = state.copy(
-        isRefreshing = false,
-        isOffline = false,
+    fun onRefreshSuccess(
+        clusters: List<NewsCluster>,
+        lastCachedAt: Long?,
+    ): NewsFeedScreenState = NewsFeedScreenState.Content(
+        clusters = clusters,
+        lastCachedAt = lastCachedAt,
+        contentState = ContentState.Idle,
     )
 
-    fun onRefreshError(state: NewsFeedState, message: String): NewsFeedState = state.copy(
-        isRefreshing = false,
-        isLoading = false,
-        error = if (state.clusters.isEmpty()) message else null,
-    )
+    fun onError(
+        state: NewsFeedScreenState,
+        message: String,
+    ): NewsFeedScreenState = when (state) {
+        // Данные есть — оставляем Content, убираем Refreshing
+        is NewsFeedScreenState.Content -> state.copy(
+            contentState = ContentState.Idle,
+        )
+        // Данных нет — показываем Error
+        else -> NewsFeedScreenState.Error(message)
+    }
 
-    fun onOffline(state: NewsFeedState): NewsFeedState = state.copy(
-        isOffline = true,
-        isRefreshing = false,
-        isLoading = false,
-    )
+    fun onOffline(
+        state: NewsFeedScreenState,
+        clusters: List<NewsCluster>,
+        lastCachedAt: Long?,
+    ): NewsFeedScreenState = when {
+        clusters.isNotEmpty() -> NewsFeedScreenState.Content(
+            clusters = clusters,
+            lastCachedAt = lastCachedAt,
+            contentState = ContentState.Offline(lastCachedAt),
+        )
+        else -> NewsFeedScreenState.Error("Нет подключения к сети")
+    }
 }

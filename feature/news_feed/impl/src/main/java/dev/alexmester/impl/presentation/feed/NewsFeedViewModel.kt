@@ -15,39 +15,48 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private const val PAGE_SIZE = 20
+
 
 class NewsFeedViewModel(
     private val interactor: NewsFeedInteractor,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(NewsFeedState())
-    val state: StateFlow<NewsFeedState> = _state.asStateFlow()
+    private val _state = MutableStateFlow<NewsFeedScreenState>(NewsFeedScreenState.Loading)
+    val state: StateFlow<NewsFeedScreenState> = _state.asStateFlow()
 
     private val _sideEffects = Channel<NewsFeedSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
         observeClusters()
-        handleIntent(NewsFeedIntent.LoadFeed)
+        loadFeed()
     }
 
     fun handleIntent(intent: NewsFeedIntent) {
         _state.update { NewsFeedReducer.reduce(it, intent) }
 
         when (intent) {
-            is NewsFeedIntent.LoadFeed -> loadFeed()
             is NewsFeedIntent.Refresh -> refresh()
             is NewsFeedIntent.ArticleClick -> navigateToArticle(intent)
         }
     }
 
+    /**
+     * Подписка на Room Flow — каждый раз когда данные меняются в базе
+     * обновляем Content state. Loading → Content происходит здесь.
+     */
     private fun observeClusters() {
         interactor.getClustersFlow()
             .onEach { clusters ->
-                val cachedAt = interactor.getLastCachedAt()
-                _state.update {
-                    NewsFeedReducer.onClustersLoaded(it, clusters, cachedAt)
+                val lastCachedAt = interactor.getLastCachedAt()
+                // Не перезаписываем Offline state — баннер должен остаться
+                val currentState = _state.value
+                if (currentState !is NewsFeedScreenState.Content ||
+                    (currentState as? NewsFeedScreenState.Content)?.contentState !is ContentState.Offline
+                ) {
+                    _state.update {
+                        NewsFeedReducer.onClustersLoaded(clusters, lastCachedAt)
+                    }
                 }
             }
             .launchIn(viewModelScope)
@@ -56,7 +65,7 @@ class NewsFeedViewModel(
     private fun loadFeed() {
         viewModelScope.launch {
             when (val result = interactor.refresh(forceRefresh = false)) {
-                is AppResult.Success -> _state.update { NewsFeedReducer.onRefreshSuccess(it) }
+                is AppResult.Success -> Unit // observeClusters обновит state
                 is AppResult.Failure -> handleError(result.error)
             }
         }
@@ -65,7 +74,7 @@ class NewsFeedViewModel(
     private fun refresh() {
         viewModelScope.launch {
             when (val result = interactor.refresh(forceRefresh = true)) {
-                is AppResult.Success -> _state.update { NewsFeedReducer.onRefreshSuccess(it) }
+                is AppResult.Success -> Unit // observeClusters обновит state
                 is AppResult.Failure -> handleError(result.error)
             }
         }
@@ -83,21 +92,28 @@ class NewsFeedViewModel(
     }
 
     private fun handleError(error: NetworkError) {
-        when (error) {
-            is NetworkError.NoInternet -> {
-                _state.update { NewsFeedReducer.onOffline(it) }
-            }
-            is NetworkError.RateLimit -> {
-                val message = "Превышен лимит запросов. Попробуйте позже"
-                _state.update { NewsFeedReducer.onRefreshError(it, message) }
-                viewModelScope.launch {
+        viewModelScope.launch {
+            val currentState = _state.value
+            when (error) {
+                is NetworkError.NoInternet -> {
+                    val clusters = (currentState as? NewsFeedScreenState.Content)?.clusters ?: emptyList()
+                    val lastCachedAt = interactor.getLastCachedAt()
+                    _state.update {
+                        NewsFeedReducer.onOffline(
+                            state = currentState,
+                            clusters = clusters,
+                            lastCachedAt = lastCachedAt,
+                        )
+                    }
+                }
+                is NetworkError.RateLimit -> {
+                    val message = "Превышен лимит запросов. Попробуйте позже"
+                    _state.update { NewsFeedReducer.onError(currentState, message) }
                     _sideEffects.send(NewsFeedSideEffect.ShowError(message))
                 }
-            }
-            else -> {
-                val message = "Ошибка загрузки новостей"
-                _state.update { NewsFeedReducer.onRefreshError(it, message) }
-                viewModelScope.launch {
+                else -> {
+                    val message = "Ошибка загрузки новостей"
+                    _state.update { NewsFeedReducer.onError(currentState, message) }
                     _sideEffects.send(NewsFeedSideEffect.ShowError(message))
                 }
             }

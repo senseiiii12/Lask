@@ -4,6 +4,7 @@ plugins {
     id("myapp.koin")
     id("myapp.ktor")
     id("myapp.kotlin.serialization")
+    id("myapp.coil")
 }
 
 android {
@@ -39,6 +40,8 @@ dependencies {
 
     implementation(project(":feature:posts"))
     implementation(project(":feature:users"))
+
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
 
 }

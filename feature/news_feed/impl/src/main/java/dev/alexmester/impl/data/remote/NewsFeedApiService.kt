@@ -11,7 +11,6 @@ class NewsFeedApiService(private val client: HttpClient) {
     /**
      * Топ новостей по стране — используется для главной ленты.
      * [maxNewsPerCluster] — количество статей на одно событие (кластер).
-     * Мы показываем 5 статей на кластер со sticky header.
      */
     suspend fun getTopNews(
         sourceCountry: String,

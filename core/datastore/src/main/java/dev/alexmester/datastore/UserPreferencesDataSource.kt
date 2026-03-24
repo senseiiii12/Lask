@@ -26,8 +26,8 @@ class UserPreferencesDataSource(
      */
     val userPreferences: Flow<UserPreferences> = dataStore.data.map { prefs ->
         UserPreferences(
-            defaultCountry = prefs[KEY_DEFAULT_COUNTRY] ?: "us",
-            defaultLanguage = prefs[KEY_DEFAULT_LANGUAGE] ?: "en",
+            defaultCountry = prefs[KEY_DEFAULT_COUNTRY] ?: "ru",
+            defaultLanguage = prefs[KEY_DEFAULT_LANGUAGE] ?: "ru",
             isDarkTheme = if (prefs[KEY_IS_THEME_SET] == true) {
                 prefs[KEY_IS_DARK_THEME]
             } else {

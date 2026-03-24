@@ -1,12 +1,10 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -76,70 +74,80 @@ fun NewsFeedScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
 
-        PullToRefreshBox(
-            isRefreshing = state.isRefreshing,
-            onRefresh = { viewModel.handleIntent(NewsFeedIntent.Refresh) },
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .background(MaterialTheme.LaskColors.backgroundPrimary)
+                .padding(paddingValues)
         ) {
-            when {
-                state.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            when (val currentState = state) {
+
+                is NewsFeedScreenState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
                 }
 
-                state.clusters.isEmpty() && state.error != null -> {
+                is NewsFeedScreenState.Error -> {
                     Text(
-                        text = state.error!!,
+                        text = currentState.message,
+                        style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.align(Alignment.Center),
                     )
                 }
 
-                else -> {
-                    LazyColumn(
-                        contentPadding = PaddingValues(bottom = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(0.dp),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.LaskColors.backgroundPrimary),
+                is NewsFeedScreenState.Content -> {
+                    PullToRefreshBox(
+                        isRefreshing = currentState.contentState is ContentState.Refreshing,
+                        onRefresh = { viewModel.handleIntent(NewsFeedIntent.Refresh) },
+                        modifier = Modifier.fillMaxSize(),
                     ) {
-                        if (state.isOffline) {
-                            item(key = "offline_banner") {
-                                OfflineBanner(lastCachedAt = state.lastCachedAt)
-                            }
-                        }
+                        LazyColumn(
+                            contentPadding = PaddingValues(bottom = 16.dp),
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
 
-                        state.clusters.forEach { cluster ->
-                            stickyHeader(key = "header_${cluster.id}") {
-                                ClusterHeader(
-                                    modifier = Modifier.padding(horizontal = 16.dp),
-                                    title = cluster.leadArticle.title,
-                                )
+                            if (currentState.contentState is ContentState.Offline) {
+                                item(key = "offline_banner") {
+                                    OfflineBanner(
+                                        lastCachedAt = currentState.contentState.lastCachedAt
+                                    )
+                                }
                             }
 
-                            items(
-                                items = cluster.articles,
-                                key = { it.id },
-                            ) { article ->
-                                val isLast = article == cluster.articles.last()
-                                NewsArticleCard(
-                                    article = article,
-                                    onClick = {
-                                        viewModel.handleIntent(
-                                            NewsFeedIntent.ArticleClick(
-                                                articleId = article.id,
-                                                articleUrl = article.url,
+                            currentState.clusters.forEach { cluster ->
+
+                                stickyHeader(key = "header_${cluster.id}") {
+                                    ClusterHeader(
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        title = cluster.leadArticle.title
+                                    )
+                                }
+
+                                items(
+                                    items = cluster.articles,
+                                    key = { it.id },
+                                ) { article ->
+                                    val isLast = article == cluster.articles.last()
+                                    NewsArticleCard(
+                                        article = article,
+                                        onClick = {
+                                            viewModel.handleIntent(
+                                                NewsFeedIntent.ArticleClick(
+                                                    articleId = article.id,
+                                                    articleUrl = article.url,
+                                                )
                                             )
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 4.dp)
-                                        .then(
-                                            if (isLast) Modifier.padding(bottom = 24.dp)
-                                            else Modifier
-                                        ),
-                                )
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp)
+                                            .padding(
+                                                top = 4.dp,
+                                                bottom = if (isLast) 16.dp else 4.dp
+                                            ),
+                                    )
+                                }
                             }
                         }
                     }
