@@ -1,10 +1,15 @@
-package dev.alexmester.newsfeed.impl.presentation.feed
+package dev.alexmester.impl.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.impl.domain.interactor.NewsFeedInteractor
 import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.result.AppResult
+import dev.alexmester.newsfeed.impl.presentation.feed.ContentState
+import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedIntent
+import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedReducer
+import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedScreenState
+import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedSideEffect
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +20,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-
-
 class NewsFeedViewModel(
     private val interactor: NewsFeedInteractor,
 ) : ViewModel() {
@@ -24,7 +27,7 @@ class NewsFeedViewModel(
     private val _state = MutableStateFlow<NewsFeedScreenState>(NewsFeedScreenState.Loading)
     val state: StateFlow<NewsFeedScreenState> = _state.asStateFlow()
 
-    private val _sideEffects = Channel<NewsFeedSideEffect>(Channel.BUFFERED)
+    private val _sideEffects = Channel<NewsFeedSideEffect>(Channel.Factory.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
@@ -46,13 +49,11 @@ class NewsFeedViewModel(
      * обновляем Content state. Loading → Content происходит здесь.
      */
     private fun observeClusters() {
-        interactor.getClustersFlow()
-            .onEach { clusters ->
+        interactor.getClustersFlow().onEach { clusters ->
                 val lastCachedAt = interactor.getLastCachedAt()
-                // Не перезаписываем Offline state — баннер должен остаться
                 val currentState = _state.value
                 if (currentState !is NewsFeedScreenState.Content ||
-                    (currentState as? NewsFeedScreenState.Content)?.contentState !is ContentState.Offline
+                    currentState.contentState !is ContentState.Offline
                 ) {
                     _state.update {
                         NewsFeedReducer.onClustersLoaded(clusters, lastCachedAt)
@@ -65,7 +66,7 @@ class NewsFeedViewModel(
     private fun loadFeed() {
         viewModelScope.launch {
             when (val result = interactor.refresh(forceRefresh = false)) {
-                is AppResult.Success -> Unit // observeClusters обновит state
+                is AppResult.Success -> Unit
                 is AppResult.Failure -> handleError(result.error)
             }
         }
@@ -74,7 +75,7 @@ class NewsFeedViewModel(
     private fun refresh() {
         viewModelScope.launch {
             when (val result = interactor.refresh(forceRefresh = true)) {
-                is AppResult.Success -> Unit // observeClusters обновит state
+                is AppResult.Success -> Unit
                 is AppResult.Failure -> handleError(result.error)
             }
         }
@@ -96,15 +97,17 @@ class NewsFeedViewModel(
             val currentState = _state.value
             when (error) {
                 is NetworkError.NoInternet -> {
+                    val message = "Нет подключения к сети"
                     val clusters = (currentState as? NewsFeedScreenState.Content)?.clusters ?: emptyList()
                     val lastCachedAt = interactor.getLastCachedAt()
                     _state.update {
                         NewsFeedReducer.onOffline(
-                            state = currentState,
                             clusters = clusters,
                             lastCachedAt = lastCachedAt,
+                            message = message
                         )
                     }
+                    _sideEffects.send(NewsFeedSideEffect.ShowError(message))
                 }
                 is NetworkError.RateLimit -> {
                     val message = "Превышен лимит запросов. Попробуйте позже"

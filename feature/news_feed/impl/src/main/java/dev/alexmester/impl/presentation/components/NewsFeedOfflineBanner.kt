@@ -16,7 +16,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun OfflineBanner(
+fun NewsFeedOfflineBanner(
     lastCachedAt: Long?,
     modifier: Modifier = Modifier,
 ) {

@@ -8,29 +8,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 
 @Composable
-fun ClusterHeader(
+fun NewsFeedClusterHeader(
     title: String,
     modifier: Modifier = Modifier,
 ) {
     Text(
         text = title,
-        style = MaterialTheme.LaskTypography.body1SemiBold,
+        style = MaterialTheme.LaskTypography.body1,
         color = MaterialTheme.LaskColors.textPrimary,
-        maxLines = 1,
+        maxLines = 2,
         overflow = TextOverflow.Ellipsis,
         modifier = modifier
             .fillMaxWidth()
             .background(
-                MaterialTheme.LaskColors.backgroundSecondary,
-                RoundedCornerShape(12.dp)
+                color = MaterialTheme.LaskColors.backgroundSecondary,
+                shape = RoundedCornerShape(bottomEnd = 12.dp, bottomStart = 12.dp)
             )
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp,vertical = 10.dp),
     )
 }
