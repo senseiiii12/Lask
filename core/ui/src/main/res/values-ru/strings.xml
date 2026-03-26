@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_no_internet">Нет подключения к сети</string>
+    <string name="error_payment_required">Дневная квота исчерпана</string>
+    <string name="error_rate_limit">Превышен лимит запросов. Попробуйте позже</string>
+    <string name="error_unknown">Ошибка загрузки новостей</string>
+</resources>

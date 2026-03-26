@@ -1,6 +1,7 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
 import dev.alexmester.models.news.NewsCluster
+import dev.alexmester.ui.uitext.UiText
 
 //data class NewsFeedState(
 //    val clusters: List<NewsCluster> = emptyList(),
@@ -13,7 +14,7 @@ import dev.alexmester.models.news.NewsCluster
 
 sealed interface NewsFeedScreenState {
     data object Loading : NewsFeedScreenState
-    data class Error(val message: String) : NewsFeedScreenState
+    data class Error(val message: UiText) : NewsFeedScreenState
     data class Content(
         val clusters: List<NewsCluster>,
         val lastCachedAt: Long? = null,

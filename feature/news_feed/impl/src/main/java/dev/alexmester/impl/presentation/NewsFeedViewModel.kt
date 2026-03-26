@@ -10,6 +10,8 @@ import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedIntent
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedReducer
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedScreenState
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedSideEffect
+import dev.alexmester.ui.R
+import dev.alexmester.ui.uitext.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -52,6 +54,7 @@ class NewsFeedViewModel(
         interactor.getClustersFlow().onEach { clusters ->
                 val lastCachedAt = interactor.getLastCachedAt()
                 val currentState = _state.value
+                if (clusters.isEmpty()) return@onEach
                 if (currentState !is NewsFeedScreenState.Content ||
                     currentState.contentState !is ContentState.Offline
                 ) {
@@ -97,7 +100,7 @@ class NewsFeedViewModel(
             val currentState = _state.value
             when (error) {
                 is NetworkError.NoInternet -> {
-                    val message = "Нет подключения к сети"
+                    val message = UiText.StringResource(R.string.error_no_internet)
                     val clusters = (currentState as? NewsFeedScreenState.Content)?.clusters ?: emptyList()
                     val lastCachedAt = interactor.getLastCachedAt()
                     _state.update {
@@ -110,17 +113,17 @@ class NewsFeedViewModel(
                     _sideEffects.send(NewsFeedSideEffect.ShowError(message))
                 }
                 is NetworkError.PaymentRequired -> {
-                    val message = "Дневная квота исчерпана"
+                    val message = UiText.StringResource(R.string.error_payment_required)
                     _state.update { NewsFeedReducer.onError(currentState, message) }
                     _sideEffects.send(NewsFeedSideEffect.ShowError(message))
                 }
                 is NetworkError.RateLimit -> {
-                    val message = "Превышен лимит запросов. Попробуйте позже"
+                    val message = UiText.StringResource(R.string.error_rate_limit)
                     _state.update { NewsFeedReducer.onError(currentState, message) }
                     _sideEffects.send(NewsFeedSideEffect.ShowError(message))
                 }
                 else -> {
-                    val message = "Ошибка загрузки новостей"
+                    val message = UiText.StringResource(R.string.error_unknown)
                     _state.update { NewsFeedReducer.onError(currentState, message) }
                     _sideEffects.send(NewsFeedSideEffect.ShowError(message))
                 }

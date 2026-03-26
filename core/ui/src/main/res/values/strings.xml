@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_payment_required">Daily quota exceeded</string>
+    <string name="error_rate_limit">Request limit exceeded. Try again later</string>
+    <string name="error_unknown">Failed to load news</string>
+</resources>

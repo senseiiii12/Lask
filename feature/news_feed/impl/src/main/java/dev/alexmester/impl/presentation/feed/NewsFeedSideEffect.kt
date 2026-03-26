@@ -1,5 +1,7 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
+import dev.alexmester.ui.uitext.UiText
+
 sealed class NewsFeedSideEffect {
 
     data class NavigateToArticle(
@@ -7,5 +9,5 @@ sealed class NewsFeedSideEffect {
         val articleUrl: String,
     ) : NewsFeedSideEffect()
 
-    data class ShowError(val message: String) : NewsFeedSideEffect()
+    data class ShowError(val message: UiText) : NewsFeedSideEffect()
 }

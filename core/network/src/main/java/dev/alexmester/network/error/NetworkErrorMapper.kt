@@ -3,6 +3,7 @@ package dev.alexmester.network.error
 import dev.alexmester.models.error.NetworkError
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.ResponseException
+import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.SerializationException
 import java.net.ConnectException
 import java.net.SocketException

@@ -1,6 +1,7 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
 import dev.alexmester.models.news.NewsCluster
+import dev.alexmester.ui.uitext.UiText
 
 object NewsFeedReducer {
 
@@ -22,7 +23,7 @@ object NewsFeedReducer {
         contentState = ContentState.Idle,
     )
 
-    fun onError(state: NewsFeedScreenState, message: String): NewsFeedScreenState =
+    fun onError(state: NewsFeedScreenState, message: UiText): NewsFeedScreenState =
         when (state) {
             is NewsFeedScreenState.Content -> state.copy(
                 contentState = ContentState.Idle,
@@ -33,7 +34,7 @@ object NewsFeedReducer {
     fun onOffline(
         clusters: List<NewsCluster>,
         lastCachedAt: Long?,
-        message: String,
+        message: UiText,
     ): NewsFeedScreenState = when {
         clusters.isNotEmpty() -> NewsFeedScreenState.Content(
             clusters = clusters,

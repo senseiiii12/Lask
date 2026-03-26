@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import dev.alexmester.impl.presentation.NewsFeedViewModel
 import dev.alexmester.impl.presentation.components.NewsFeedList
@@ -39,12 +40,13 @@ fun NewsFeedScreen(
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val stateRefreshBox = rememberPullToRefreshState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 is NewsFeedSideEffect.ShowError ->
-                    snackbarHostState.showSnackbar(effect.message)
+                    snackbarHostState.showSnackbar(effect.message.asString(context))
                 is NewsFeedSideEffect.NavigateToArticle ->{
 //                    navController.navigate(...)
                 }
@@ -115,8 +117,9 @@ internal fun NewsFeedScreenContent(
 
                 is NewsFeedScreenState.Error -> {
                     Text(
-                        text = currentState.message,
+                        text = currentState.message.asString(),
                         style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.LaskColors.error,
                         modifier = Modifier.align(Alignment.Center),
                     )
                 }
