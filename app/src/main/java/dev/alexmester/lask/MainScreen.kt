@@ -9,25 +9,24 @@ import org.koin.compose.koinInject
 
 @Composable
 fun MainScreen() {
-    val navController = rememberNavController()
 
-    // Получаем реализации через Koin — :app знает про impl, экраны получают только api
-    val newsFeedApi = koinInject<NewsFeedApi>()
-    // val exploreApi = koinInject<ExploreApi>()
-    // val bookmarksApi = koinInject<BookmarksApi>()
-    // val settingsApi = koinInject<SettingsApi>()
-    // val searchApi = koinInject<SearchApi>()
-    // val articleDetailApi = koinInject<ArticleDetailApi>()
-
-    NavHost(
-        navController = navController,
-        startDestination = newsFeedApi.feedRoute(),
-    ) {
-        register(newsFeedApi, navController)
-        // register(exploreApi, navController)
-        // register(bookmarksApi, navController)
-        // register(settingsApi, navController)
-        // register(searchApi, navController)
-        // register(articleDetailApi, navController)
-    }
+//    // Получаем реализации через Koin — :app знает про impl, экраны получают только api
+//    val newsFeedApi = koinInject<NewsFeedApi>()
+//    // val exploreApi = koinInject<ExploreApi>()
+//    // val bookmarksApi = koinInject<BookmarksApi>()
+//    // val settingsApi = koinInject<SettingsApi>()
+//    // val searchApi = koinInject<SearchApi>()
+//    // val articleDetailApi = koinInject<ArticleDetailApi>()
+//
+//    NavHost(
+//        navController = navController,
+//        startDestination = newsFeedApi.feedRoute(),
+//    ) {
+//        register(newsFeedApi, navController)
+//        // register(exploreApi, navController)
+//        // register(bookmarksApi, navController)
+//        // register(settingsApi, navController)
+//        // register(searchApi, navController)
+//        // register(articleDetailApi, navController)
+//    }
 }

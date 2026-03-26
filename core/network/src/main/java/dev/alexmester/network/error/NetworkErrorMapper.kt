@@ -41,7 +41,7 @@ internal object NetworkErrorMapper {
         is HttpRequestTimeoutException -> NetworkError.Timeout()
         is UnknownHostException -> NetworkError.NoInternet()
         is UnresolvedAddressException -> NetworkError.NoInternet()
-        is ConnectException -> NetworkError.NoInternet()  // добавить
+        is ConnectException -> NetworkError.NoInternet()
         is SocketException -> NetworkError.NoInternet()
         is SerializationException -> NetworkError.ParseError(cause = throwable)
         else -> NetworkError.Unknown(cause = throwable, message = throwable.message)

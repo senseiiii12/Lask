@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskPalette
 import dev.alexmester.ui.desing_system.LaskTheme
@@ -20,7 +21,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             LaskTheme {
-                MainScreen()
+                val navController = rememberNavController()
+                RootScreen(navController)
             }
         }
     }
