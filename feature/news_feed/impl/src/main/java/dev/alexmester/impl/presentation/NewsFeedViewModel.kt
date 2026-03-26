@@ -109,6 +109,11 @@ class NewsFeedViewModel(
                     }
                     _sideEffects.send(NewsFeedSideEffect.ShowError(message))
                 }
+                is NetworkError.PaymentRequired -> {
+                    val message = "Дневная квота исчерпана"
+                    _state.update { NewsFeedReducer.onError(currentState, message) }
+                    _sideEffects.send(NewsFeedSideEffect.ShowError(message))
+                }
                 is NetworkError.RateLimit -> {
                     val message = "Превышен лимит запросов. Попробуйте позже"
                     _state.update { NewsFeedReducer.onError(currentState, message) }
