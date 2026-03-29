@@ -23,36 +23,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val splashViewModel: SplashViewModel by viewModel()
-
         splashScreen.setKeepOnScreenCondition {
             splashViewModel.state.value is SplashState.Loading
         }
 
         setContent {
-            val splashState by splashViewModel.state.collectAsState()
-            LaunchedEffect(splashState) {
-                val s = splashState
-                if (s is SplashState.Ready) {
-                    splashViewModel.initLocaleIfNeeded(
-                        context = this@MainActivity,
-                        isManuallySet = s.isLocaleManuallySet,
-                    )
-                }
-            }
-            LaskTheme {
-                when (val s = splashState) {
-                    SplashState.Loading -> Unit
-                    is SplashState.Ready -> {
-                        val navController = rememberNavController()
-                        RootScreen(
-                            navController = navController,
-                            startDestination = if (s.isOnboardingCompleted) FeedRoute
-                            else WelcomeRoute,
-                            onOnboardingComplete = { splashViewModel.completeOnboarding() },
-                        )
-                    }
-                }
-            }
+            AppContent(splashViewModel = splashViewModel)
         }
     }
 }

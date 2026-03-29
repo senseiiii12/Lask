@@ -45,34 +45,7 @@ val splashModule = module {
 class App : Application(), SingletonImageLoader.Factory {
 
     override fun newImageLoader(context: PlatformContext): ImageLoader {
-
-        val loggingInterceptor = HttpLoggingInterceptor { message ->
-            Log.d("CoilOkHttp", message)
-        }.apply {
-            level = HttpLoggingInterceptor.Level.HEADERS
-        }
-
         return ImageLoader.Builder(context)
-            .components {
-                add(
-                    OkHttpNetworkFetcherFactory(
-                        callFactory = {
-                            OkHttpClient.Builder()
-                                .addInterceptor { chain ->
-                                    val request = chain.request().newBuilder()
-                                        .header(
-                                            "User-Agent",
-                                            "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile Safari/537.36"
-                                        )
-                                        .build()
-                                    chain.proceed(request)
-                                }
-                                .addNetworkInterceptor(loggingInterceptor)
-                                .build()
-                        }
-                    )
-                )
-            }
             .memoryCache {
                 MemoryCache.Builder()
                     .maxSizePercent(context, percent = 0.25)
@@ -84,15 +57,6 @@ class App : Application(), SingletonImageLoader.Factory {
                     .maxSizeBytes(50L * 1024 * 1024)
                     .build()
             }
-            .eventListener(object : EventListener() {
-                override fun onSuccess(request: ImageRequest, result: SuccessResult) {
-                    Log.d("CoilImage", "✅ SUCCESS: ${request.data}")
-                }
-                override fun onError(request: ImageRequest, result: ErrorResult) {
-                    Log.e("CoilImage", "❌ ERROR: ${request.data}")
-                    Log.e("CoilImage", "❌ CAUSE: ${result.throwable}")
-                }
-            })
             .build()
     }
 

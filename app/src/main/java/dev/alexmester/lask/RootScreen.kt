@@ -16,16 +16,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import dev.alexmester.api.navigation.BookMarkRoute
-import dev.alexmester.api.navigation.ExploreRoute
 import dev.alexmester.api.navigation.FeedRoute
 import dev.alexmester.api.navigation.NewsFeedApi
-import dev.alexmester.api.navigation.ProfileRoute
+import dev.alexmester.lask.app_bottom_navigation.AppBottomBar
 import dev.alexmester.lask.welcome_screen.WelcomeRoute
 import dev.alexmester.navigation.register
-import dev.alexmester.ui.R
 import dev.alexmester.ui.components.bottom_bar.BottomBarItem
-import dev.alexmester.ui.components.bottom_bar.BottomTab
+import dev.alexmester.lask.app_bottom_navigation.AppTabs
+import dev.alexmester.lask.welcome_screen.welcomeScreen
 import dev.alexmester.ui.components.bottom_bar.LaskBottomBar
 import dev.alexmester.ui.components.welcome_screen.WelcomeScreen
 import dev.chrisbanes.haze.hazeSource
@@ -41,65 +39,21 @@ fun RootScreen(
 ) {
     val newsFeedApi = koinInject<NewsFeedApi>()
 
-    val tabs = listOf(
-        BottomTab(
-            icon = ImageVector.vectorResource(R.drawable.ic_trends),
-            title = stringResource(R.string.tab_top_news),
-            route = FeedRoute
-        ),
-        BottomTab(
-            icon = ImageVector.vectorResource(R.drawable.ic_explore),
-            title = stringResource(R.string.tab_explore),
-            route = ExploreRoute
-        ),
-        BottomTab(
-            icon = ImageVector.vectorResource(R.drawable.ic_bookmark),
-            title = stringResource(R.string.tab_bookmark),
-            route = BookMarkRoute
-        ),
-        BottomTab(
-            icon = ImageVector.vectorResource(R.drawable.ic_profile),
-            title = stringResource(R.string.tab_profile),
-            route = ProfileRoute
-        )
-    )
-
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     val showBottomBar = currentRoute != WelcomeRoute::class.qualifiedName
-    var selectedTab by remember {
-        mutableStateOf(tabs.first().route)
-    }
-
     val hazeState = rememberHazeState()
 
     Scaffold(
         modifier = Modifier,
         bottomBar = {
-            if (showBottomBar){
-                LaskBottomBar(
-                    modifier = Modifier,
+            if (showBottomBar) {
+                AppBottomBar(
+                    navController = navController,
                     hazeState = hazeState,
-                    items = tabs.map { tab ->
-                        BottomBarItem(
-                            icon = tab.icon,
-                            title = tab.title,
-                            isSelected = tab.route == selectedTab,
-                            onClick = {
-                                if (tab.route == selectedTab) return@BottomBarItem
-                                selectedTab = tab.route
-                                navController.navigate(tab.route) {
-                                    popUpTo(navController.graph.startDestinationId)
-                                    launchSingleTop = true
-//                                restoreState = true
-                                }
-                            }
-                        )
-                    }
                 )
             }
         }
     ) { padding ->
-
         NavHost(
             navController = navController,
             startDestination = startDestination,
@@ -107,17 +61,8 @@ fun RootScreen(
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
         ) {
+            welcomeScreen(navController, onOnboardingComplete)
             register(newsFeedApi, navController)
-            composable<WelcomeRoute> {
-                WelcomeScreen(
-                    onExploreClick = {
-                        onOnboardingComplete()
-                        navController.navigate(FeedRoute) {
-                            popUpTo(WelcomeRoute) { inclusive = true }
-                        }
-                    }
-                )
-            }
         }
     }
 }
