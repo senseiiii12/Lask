@@ -2,21 +2,14 @@ package dev.alexmester.newsfeed.impl.presentation.feed
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -26,20 +19,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import dev.alexmester.api.navigation.ArticleDetailRoute
 import dev.alexmester.impl.presentation.NewsFeedViewModel
 import dev.alexmester.impl.presentation.components.NewsFeedList
 import dev.alexmester.impl.presentation.components.NewsFeedTopBar
-import dev.alexmester.ui.R
 import dev.alexmester.ui.components.pull_to_refresh_box.LaskPullToRefreshBox
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -69,7 +57,7 @@ fun NewsFeedScreen(
         }
     }
 
-    NewsFeedScreenContent(
+    NewsFeedScreen(
         modifier = Modifier,
         state = state,
         stateRefreshBox = stateRefreshBox,
@@ -88,7 +76,7 @@ fun NewsFeedScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun NewsFeedScreenContent(
+internal fun NewsFeedScreen(
     modifier: Modifier,
     state: NewsFeedScreenState,
     stateRefreshBox: PullToRefreshState,

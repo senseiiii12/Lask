@@ -19,8 +19,8 @@ class ArticleDetailViewModel(
     private val articleUrl: String,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<ArticleDetailScreenState>(ArticleDetailScreenState.Loading)
-    val state: StateFlow<ArticleDetailScreenState> = _state.asStateFlow()
+    private val _state = MutableStateFlow<ArticleDetailState>(ArticleDetailState.Loading)
+    val state: StateFlow<ArticleDetailState> = _state.asStateFlow()
 
     private val _sideEffects = Channel<ArticleDetailSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
@@ -39,14 +39,7 @@ class ArticleDetailViewModel(
             ArticleDetailIntent.Clap -> onClap()
             ArticleDetailIntent.ToggleBookmark -> onToggleBookmark()
             ArticleDetailIntent.Share -> {
-                val url = (_state.value as? ArticleDetailScreenState.Content)?.article?.url
-                    ?: articleUrl
-                emitSideEffect(ArticleDetailSideEffect.ShareUrl(url))
-            }
-            ArticleDetailIntent.OpenInBrowser -> {
-                val url = (_state.value as? ArticleDetailScreenState.Content)?.article?.url
-                    ?: articleUrl
-                emitSideEffect(ArticleDetailSideEffect.OpenBrowser(url))
+                emitSideEffect(ArticleDetailSideEffect.ShareUrl(articleUrl))
             }
         }
     }
@@ -55,9 +48,9 @@ class ArticleDetailViewModel(
         viewModelScope.launch {
             val article = interactor.getArticle(articleId)
             if (article == null) {
-                _state.value = ArticleDetailScreenState.Error("Статья не найдена")
+                _state.value = ArticleDetailState.Error("Статья не найдена")
             } else {
-                _state.value = ArticleDetailScreenState.Content(article = article)
+                _state.value = ArticleDetailState.Content(article = article)
             }
         }
     }
@@ -85,7 +78,7 @@ class ArticleDetailViewModel(
     }
 
     private fun onToggleBookmark() {
-        val content = _state.value as? ArticleDetailScreenState.Content ?: return
+        val content = _state.value as? ArticleDetailState.Content ?: return
         viewModelScope.launch {
             val nowBookmarked = interactor.toggleBookmark(content.article)
             val msg = if (nowBookmarked) "Добавлено в закладки" else "Удалено из закладок"

@@ -21,16 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.alexmester.impl.presentation.ArticleDetailIntent
-import dev.alexmester.impl.presentation.ArticleDetailScreenState
+import dev.alexmester.impl.presentation.ArticleDetailState
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskPalette
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.rememberHazeState
 
 @Composable
 fun ArticleDetailBottomBar(
-    state: ArticleDetailScreenState.Content,
+    state: ArticleDetailState.Content,
     onIntent: (ArticleDetailIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val hazeState = rememberHazeState()
+
     val bookmarkColor by animateColorAsState(
         targetValue = if (state.isBookmarked) LaskPalette.Bookmark
         else MaterialTheme.LaskColors.textPrimary,
@@ -41,7 +45,12 @@ fun ArticleDetailBottomBar(
             .fillMaxWidth()
             .background(MaterialTheme.LaskColors.backgroundPrimary)
             .navigationBarsPadding()
-            .padding(horizontal = 24.dp, vertical = 12.dp),
+            .hazeEffect(state = hazeState) {
+                alpha = 0.5f
+                blurRadius = 20.dp
+                noiseFactor = 0.05f
+            }
+            .padding(horizontal = 32.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -49,7 +58,7 @@ fun ArticleDetailBottomBar(
         IconButton(onClick = { onIntent(ArticleDetailIntent.Back) }) {
             Icon(
                 imageVector = Icons.Default.KeyboardBackspace,
-                contentDescription = "Назад",
+                contentDescription = null,
                 tint = MaterialTheme.LaskColors.textPrimary,
             )
         }
@@ -65,14 +74,14 @@ fun ArticleDetailBottomBar(
                 Icon(
                     imageVector = if (state.isBookmarked) Icons.Filled.Bookmark
                     else Icons.Outlined.BookmarkBorder,
-                    contentDescription = "Закладка",
+                    contentDescription = null,
                     tint = bookmarkColor,
                 )
             }
             IconButton(onClick = { onIntent(ArticleDetailIntent.Share) }) {
                 Icon(
                     imageVector = Icons.Default.Share,
-                    contentDescription = "Поделиться",
+                    contentDescription = null,
                     tint = MaterialTheme.LaskColors.textPrimary,
                 )
             }

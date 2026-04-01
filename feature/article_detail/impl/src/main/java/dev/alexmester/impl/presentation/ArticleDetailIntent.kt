@@ -5,5 +5,4 @@ sealed class ArticleDetailIntent {
     data object Clap : ArticleDetailIntent()
     data object ToggleBookmark : ArticleDetailIntent()
     data object Share : ArticleDetailIntent()
-    data object OpenInBrowser : ArticleDetailIntent()
 }

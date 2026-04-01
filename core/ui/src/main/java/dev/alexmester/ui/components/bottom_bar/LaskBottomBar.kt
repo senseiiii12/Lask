@@ -1,6 +1,5 @@
 package dev.alexmester.ui.components.bottom_bar
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,8 +28,7 @@ fun LaskBottomBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
-            .animateContentSize(),
+            .navigationBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -48,7 +46,7 @@ fun LaskBottomBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             items.forEach { item ->
-                LaskMainContent(item)
+                LaskMainBottomBarContent(item)
             }
         }
     }

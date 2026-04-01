@@ -25,7 +25,7 @@ import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 
 @Composable
-fun LaskMainContent(item: LaskMainBottomBarItem) {
+fun LaskMainBottomBarContent(item: LaskMainBottomBarItem) {
 
     val backgroundColor = animateColorAsState(
         targetValue = if (item.isSelected) MaterialTheme.LaskColors.textPrimary

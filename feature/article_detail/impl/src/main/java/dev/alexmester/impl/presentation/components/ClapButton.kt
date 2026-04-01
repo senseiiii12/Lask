@@ -45,7 +45,7 @@ fun ClapButton(
         IconButton(onClick = onClick) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_clap_filled),
-                contentDescription = "Хлопок",
+                contentDescription = null,
                 tint = iconColor,
                 modifier = Modifier
                     .size(24.dp)

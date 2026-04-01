@@ -3,10 +3,10 @@ package dev.alexmester.impl.presentation
 object ArticleDetailReducer {
 
     fun reduce(
-        state: ArticleDetailScreenState,
+        state: ArticleDetailState,
         intent: ArticleDetailIntent,
-    ): ArticleDetailScreenState {
-        val content = state as? ArticleDetailScreenState.Content ?: return state
+    ): ArticleDetailState {
+        val content = state as? ArticleDetailState.Content ?: return state
         return when (intent) {
             is ArticleDetailIntent.Clap -> content.copy(
                 clapCount = content.clapCount + 1,
@@ -19,18 +19,18 @@ object ArticleDetailReducer {
         }
     }
 
-    fun onClapAnimationDone(state: ArticleDetailScreenState): ArticleDetailScreenState =
-        (state as? ArticleDetailScreenState.Content)?.copy(isClapAnimating = false) ?: state
+    fun onClapAnimationDone(state: ArticleDetailState): ArticleDetailState =
+        (state as? ArticleDetailState.Content)?.copy(isClapAnimating = false) ?: state
 
     fun onBookmarkSynced(
-        state: ArticleDetailScreenState,
+        state: ArticleDetailState,
         isBookmarked: Boolean,
-    ): ArticleDetailScreenState =
-        (state as? ArticleDetailScreenState.Content)?.copy(isBookmarked = isBookmarked) ?: state
+    ): ArticleDetailState =
+        (state as? ArticleDetailState.Content)?.copy(isBookmarked = isBookmarked) ?: state
 
     fun onClapCountUpdated(
-        state: ArticleDetailScreenState,
+        state: ArticleDetailState,
         count: Int,
-    ): ArticleDetailScreenState =
-        (state as? ArticleDetailScreenState.Content)?.copy(clapCount = count) ?: state
+    ): ArticleDetailState =
+        (state as? ArticleDetailState.Content)?.copy(clapCount = count) ?: state
 }
