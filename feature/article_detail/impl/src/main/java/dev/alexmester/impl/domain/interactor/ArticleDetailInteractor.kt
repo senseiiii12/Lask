@@ -16,4 +16,6 @@ class ArticleDetailInteractor(
     fun getClapCount(id: Long): Flow<Int> = repository.getClapCount(id)
 
     suspend fun addClap(id: Long) = repository.addClap(id)
+
+    suspend fun markAsRead(article: NewsArticle) = repository.markAsRead(article)
 }

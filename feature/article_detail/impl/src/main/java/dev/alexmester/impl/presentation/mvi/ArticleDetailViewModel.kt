@@ -1,5 +1,6 @@
 package dev.alexmester.impl.presentation.mvi
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.impl.domain.interactor.ArticleDetailInteractor
@@ -27,6 +28,10 @@ class ArticleDetailViewModel(
     private val _sideEffects = Channel<ArticleDetailSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
+    private var isTimeReached = false
+    private var isScrollReached = false
+    private var isMarkedAsRead = false
+
     init {
         loadArticle()
         observeBookmark()
@@ -43,6 +48,25 @@ class ArticleDetailViewModel(
             ArticleDetailIntent.Share -> {
                 emitSideEffect(ArticleDetailSideEffect.ShareUrl(articleUrl))
             }
+            ArticleDetailIntent.TimeThresholdReached -> {
+                isTimeReached = true
+                tryMarkAsRead()
+            }
+            ArticleDetailIntent.ScrollThresholdReached -> {
+                isScrollReached = true
+                tryMarkAsRead()
+            }
+        }
+    }
+
+    private fun tryMarkAsRead() {
+        if (isMarkedAsRead) return
+        if (!isTimeReached || !isScrollReached) return
+
+        val article = (_state.value as? ArticleDetailState.Content)?.article ?: return
+        isMarkedAsRead = true
+        viewModelScope.launch {
+            interactor.markAsRead(article)
         }
     }
 

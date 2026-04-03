@@ -36,4 +36,10 @@ class ArticleDetailRepositoryImpl(
 
     override suspend fun addClap(id: Long) = local.addClap(id)
 
+    override suspend fun markAsRead(article: NewsArticle) =
+        local.markAsRead(
+            articleId = article.id,
+            articleTitle = article.title,
+        )
+
 }

@@ -5,4 +5,6 @@ sealed class ArticleDetailIntent {
     data object Clap : ArticleDetailIntent()
     data object ToggleBookmark : ArticleDetailIntent()
     data object Share : ArticleDetailIntent()
+    data object TimeThresholdReached : ArticleDetailIntent()
+    data object ScrollThresholdReached : ArticleDetailIntent()
 }

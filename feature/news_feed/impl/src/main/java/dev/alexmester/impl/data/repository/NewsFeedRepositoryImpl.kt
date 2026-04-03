@@ -22,6 +22,9 @@ class NewsFeedRepositoryImpl(
     override fun getClustersFlow(): Flow<List<NewsCluster>> =
         local.getArticles().map { it.entitiesToClusters() }
 
+    override fun getReadArticleIdsFlow(): Flow<List<Long>> =
+        local.getReadArticleIds()
+
     override suspend fun refreshTopNews(
         country: String,
         language: String,

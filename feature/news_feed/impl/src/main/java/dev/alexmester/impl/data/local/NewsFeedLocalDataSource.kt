@@ -15,7 +15,7 @@ class NewsFeedLocalDataSource(
 ) {
 
     fun getArticles(): Flow<List<NewsArticleEntity>> =
-        dao.getArticlesBySource(SOURCE_FEED).onEach { Log.d("NewsFeed", "Room emitted: ${it.size} articles") }
+        dao.getArticlesBySource(SOURCE_FEED)
 
     suspend fun getLastCachedAt(): Long? =
         dao.getLastCachedAt(SOURCE_FEED)
@@ -26,4 +26,7 @@ class NewsFeedLocalDataSource(
             dao.clearBySource(SOURCE_FEED)
             dao.insertArticles(articles)
         }
+
+    fun getReadArticleIds(): Flow<List<Long>> =
+        dao.getReadArticleIdsBySource(SOURCE_FEED)
 }

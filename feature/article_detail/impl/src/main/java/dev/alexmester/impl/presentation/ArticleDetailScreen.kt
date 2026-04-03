@@ -27,14 +27,18 @@ import dev.alexmester.impl.presentation.mvi.ArticleDetailIntent
 import dev.alexmester.impl.presentation.mvi.ArticleDetailSideEffect
 import dev.alexmester.impl.presentation.mvi.ArticleDetailState
 import dev.alexmester.impl.presentation.mvi.ArticleDetailViewModel
+import dev.alexmester.impl.presentation.mvi.contentOrNull
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
+import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+
+private const val READ_TIME_THRESHOLD_MS = 10_000L
 
 @Composable
 fun ArticleDetailScreen(
@@ -48,6 +52,13 @@ fun ArticleDetailScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    val isContentReady = state is ArticleDetailState.Content
+
+    LaunchedEffect(isContentReady) {
+        if (state !is ArticleDetailState.Content) return@LaunchedEffect
+        delay(READ_TIME_THRESHOLD_MS)
+        viewModel.handleIntent(ArticleDetailIntent.TimeThresholdReached)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
@@ -83,10 +94,10 @@ internal fun ArticleDetailScreenContent(
     val hazeState = rememberHazeState()
 
     Scaffold(
+        containerColor = MaterialTheme.LaskColors.backgroundPrimary,
         contentWindowInsets = WindowInsets(top = 0),
         bottomBar = {
-            val content = state as? ArticleDetailState.Content
-            if (content != null) {
+            state.contentOrNull?.let { content ->
                 ArticleDetailBottomBar(
                     isBookmarked = content.isBookmarked,
                     clapCount = content.clapCount,
@@ -123,7 +134,10 @@ internal fun ArticleDetailScreenContent(
                 is ArticleDetailState.Content -> {
                     ArticleDetailContent(
                         article = state.article,
-                        bottomPadding = paddingValues.calculateBottomPadding()
+                        bottomPadding = paddingValues.calculateBottomPadding(),
+                        onScrollThresholdReached = {
+                            onIntent(ArticleDetailIntent.ScrollThresholdReached)
+                        },
                     )
                 }
             }

@@ -13,3 +13,6 @@ sealed interface ArticleDetailState {
         val isClapAnimating: Boolean = false,
     ) : ArticleDetailState
 }
+
+val ArticleDetailState.contentOrNull: ArticleDetailState.Content?
+    get() = this as? ArticleDetailState.Content

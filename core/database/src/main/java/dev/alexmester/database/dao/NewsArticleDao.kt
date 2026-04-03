@@ -34,4 +34,11 @@ interface NewsArticleDao {
 
     @Query("DELETE FROM news_articles")
     suspend fun clearAll()
+
+    @Query("""
+        SELECT n.id FROM news_articles n
+        INNER JOIN reading_history r ON n.id = r.articleId
+        WHERE n.sourceScreen = :source
+    """)
+    fun getReadArticleIdsBySource(source: String): Flow<List<Long>>
 }

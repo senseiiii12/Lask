@@ -9,4 +9,5 @@ interface ArticleDetailRepository {
     fun isBookmarked(id: Long): Flow<Boolean>
     fun getClapCount(id: Long): Flow<Int>
     suspend fun addClap(id: Long)
+    suspend fun markAsRead(article: NewsArticle)
 }

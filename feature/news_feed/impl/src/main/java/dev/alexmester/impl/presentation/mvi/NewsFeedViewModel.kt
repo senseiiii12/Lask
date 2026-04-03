@@ -1,5 +1,6 @@
 package dev.alexmester.impl.presentation.mvi
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.impl.domain.interactor.NewsFeedInteractor
@@ -13,11 +14,14 @@ import dev.alexmester.newsfeed.impl.presentation.feed.contentOrNull
 import dev.alexmester.newsfeed.impl.presentation.feed.isOffline
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -30,6 +34,15 @@ class NewsFeedViewModel(
 
     private val _sideEffects = Channel<NewsFeedSideEffect>(Channel.Factory.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
+
+    val readArticleIds: StateFlow<Set<Long>> = interactor
+        .getReadArticleIdsFlow()
+        .map { it.toSet() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptySet(),
+        )
 
     private var lastKnownCountry: String? = null
     private var isFeedLoaded = false
@@ -64,6 +77,8 @@ class NewsFeedViewModel(
             }
             .launchIn(viewModelScope)
     }
+
+
 
 // ── Handlers ──────────────────────────────────────────────────────────────────
 

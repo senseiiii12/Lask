@@ -1,5 +1,6 @@
 package dev.alexmester.impl.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -31,20 +34,38 @@ import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import dev.alexmester.ui.transition.sharedElementIfAvailable
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 
 @Composable
 fun ArticleDetailContent(
     article: NewsArticle,
     bottomPadding: Dp,
+    onScrollThresholdReached: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(scrollState) {
+        snapshotFlow {
+            val max = scrollState.maxValue
+            if (max <= 0) return@snapshotFlow true
+            scrollState.value.toFloat() / max >= 0.5f
+        }
+            .distinctUntilChanged()
+            .filter { it }
+            .collect {
+                onScrollThresholdReached()
+            }
+    }
+
     Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.LaskColors.backgroundPrimary)
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
         ) {
             ArticleDetailHeaderImage(
                 image = article.image,

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,13 +38,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskPalette
 import dev.alexmester.ui.desing_system.LaskTypography
@@ -62,6 +68,7 @@ fun LaskArticleCard(
     articleId: Long,
     selectionMode: Boolean = false,
     isKept: Boolean = true,
+    isRead: Boolean = false,
     onBookmarkToggle: () -> Unit = {},
     onClick: () -> Unit = {},
 ) {
@@ -82,7 +89,6 @@ fun LaskArticleCard(
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-
             Text(
                 text = title,
                 style = MaterialTheme.LaskTypography.h5,
@@ -129,6 +135,7 @@ fun LaskArticleCard(
             imageUrl = imageUrl,
             title = title,
             articleId = articleId,
+            isRead = isRead
         )
 
         AnimatedVisibility(
@@ -150,6 +157,7 @@ private fun ArticleImage(
     imageUrl: String?,
     title: String,
     articleId: Long,
+    isRead: Boolean,
 ) {
 
     val sizeMod = Modifier
@@ -159,17 +167,35 @@ private fun ArticleImage(
         .clip(RoundedCornerShape(8.dp))
 
     if (imageUrl != null) {
-        SubcomposeAsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(false)
-                .build(),
-            contentDescription = title,
-            contentScale = ContentScale.Crop,
-            modifier = sizeMod,
-            loading = { ArticleImagePlaceholder() },
-            error = { ArticleImagePlaceholder() },
-        )
+        Box(modifier = sizeMod) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    .placeholderMemoryCacheKey(imageUrl)
+                    .build(),
+                contentDescription = title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+                placeholder = ColorPainter(MaterialTheme.LaskColors.backgroundSecondary),
+                error = ColorPainter(MaterialTheme.LaskColors.backgroundSecondary),
+            )
+            if (isRead){
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .background(
+                            color = MaterialTheme.LaskColors.brand_blue10.copy(alpha = 0.8f),
+                            shape = RoundedCornerShape(topEnd = 8.dp, bottomStart = 8.dp)
+                        )
+                        .padding(vertical = 4.dp, horizontal = 8.dp)
+                    ,
+                    text = stringResource(R.string.reading_article),
+                    style = MaterialTheme.LaskTypography.footnote,
+                    color = MaterialTheme.LaskColors.textPrimary
+                )
+            }
+        }
     } else {
         ArticleImagePlaceholder(modifier = sizeMod)
     }

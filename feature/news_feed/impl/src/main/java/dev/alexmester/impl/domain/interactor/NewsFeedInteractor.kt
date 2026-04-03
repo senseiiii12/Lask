@@ -26,11 +26,8 @@ class NewsFeedInteractor(
                 clusters to prefs
             }
 
-    fun getClustersFlow(): Flow<List<NewsCluster>> =
-        repository.getClustersFlow()
-
-    fun getPreferencesFlow(): Flow<UserPreferences> =
-        preferencesDataSource.userPreferences
+    fun getReadArticleIdsFlow(): Flow<List<Long>> =
+        repository.getReadArticleIdsFlow()
 
     suspend fun refresh(): AppResult<Unit> {
         if (refreshMutex.isLocked) return AppResult.Success(Unit)

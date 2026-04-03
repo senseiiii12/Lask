@@ -23,4 +23,6 @@
     <string name="welcome_subtitle">От политики до развлечений: ваш универсальный источник всесторонней информации о последних новостях и событиях по всему миру всегда будет у вас под рукой.</string>
     <string name="welcome_explore">Исследовать →</string>
 
+    <string name="reading_article">Прочитано</string>
+
 </resources>

@@ -15,6 +15,7 @@ val articleDetailModule = module {
             newsArticleDao = get(),
             bookmarkDao = get(),
             clapDao = get(),
+            readingHistoryDao = get(),
         )
     }
 

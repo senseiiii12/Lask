@@ -22,6 +22,7 @@ import dev.alexmester.ui.components.list_card.LaskArticleCard
 fun NewsFeedList(
     modifier: Modifier = Modifier,
     state: NewsFeedScreenState.Content,
+    readArticleIds: Set<Long>,
     bottomPadding: Dp,
     onClickArticle: (articleId: Long, articleUrl: String) -> Unit,
 ) {
@@ -52,7 +53,7 @@ fun NewsFeedList(
                     authors = article.authors,
                     sentiment = article.sentiment,
                     articleId = article.id,
-                    onBookmarkToggle = {},
+                    isRead = article.id in readArticleIds,
                     onClick = { onClickArticle(article.id, article.url) }
                 )
             }
