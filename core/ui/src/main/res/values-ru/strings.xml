@@ -41,4 +41,13 @@
     <!-- Common -->
     <string name="unknown_author">Автор неизвестен</string>
 
+    <!-- Profile -->
+    <string name="profile_article_read">Прочитано</string>
+    <string name="profile_streak">Стрик</string>
+    <string name="profile_streak_days">%1$s дней</string>
+    <string name="profile_level">Уровень</string>
+    <string name="profile_read_history">История чтения</string>
+    <string name="profile_clapped_articles">Понравившиеся Статьи</string>
+    <string name="profile_read_articles">Прочитанные Статьи</string>
+
 </resources>

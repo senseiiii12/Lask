@@ -1,6 +1,8 @@
 package dev.alexmester.impl.presentation.mvi
 
+import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.api.navigation.ArticleListType
@@ -21,8 +23,6 @@ import java.time.LocalDate
 
 class ProfileViewModel(
     private val profileInteractor: ProfileInteractor,
-//    private val preferencesDataSource: UserPreferencesDataSource,
-//    private val readingHistoryDao: ReadingHistoryDao,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -46,7 +46,7 @@ class ProfileViewModel(
 
             is ProfileIntent.OnProfileNameChange -> onProfileNameChange(intent.value)
 
-            is ProfileIntent.OnProfileAvatarChange -> onProfileAvatarChange(intent.value)
+            is ProfileIntent.OnProfileAvatarChange -> onProfileAvatarChange(intent.uri)
 
             is ProfileIntent.NavigateToReadArticles ->
                 emitSideEffect(ProfileSideEffect.NavigateToArticleList(ArticleListType.READ))
@@ -63,7 +63,7 @@ class ProfileViewModel(
                 _state.update { current ->
                     current.copy(
                         profileName = pair.first.profileName,
-                        avatarUri = pair.first.avatarUri,
+                        avatarUri = pair.first.avatarUri?.toUri(),
                         streakCount = pair.first.streakCount,
                         currentLevel = pair.first.currentLevel,
                         currentXp = pair.first.currentXp,
@@ -94,7 +94,6 @@ class ProfileViewModel(
                 imageUri = _state.value.editAvatarUriDraft ?: _state.value.avatarUri,
                 name = _state.value.editNameDraft
             )
-        }.invokeOnCompletion {
             cancelEditMode()
         }
     }
@@ -115,12 +114,11 @@ class ProfileViewModel(
         }
     }
 
-    private fun onProfileAvatarChange(value: String?){
+    private fun onProfileAvatarChange(value: Uri?){
         _state.update { current ->
             current.copy(editAvatarUriDraft = value)
         }
     }
-
 
     private fun emitSideEffect(effect: ProfileSideEffect) {
         viewModelScope.launch { _sideEffects.send(effect) }

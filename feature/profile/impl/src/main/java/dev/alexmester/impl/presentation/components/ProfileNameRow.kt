@@ -68,7 +68,7 @@ fun ProfileNameRow(
                             value = editName,
                             onValueChange = { onIntent(ProfileIntent.OnProfileNameChange(it)) },
                             singleLine = true,
-                            textStyle = MaterialTheme.LaskTypography.h4.copy(
+                            textStyle = MaterialTheme.LaskTypography.h5.copy(
                                 color = MaterialTheme.LaskColors.textPrimary
                             ),
                             enabled = isEdit,
@@ -119,7 +119,7 @@ fun ProfileNameRow(
                         Text(
                             modifier = modifier.weight(1f, fill = false),
                             text = name,
-                            style = MaterialTheme.LaskTypography.h4,
+                            style = MaterialTheme.LaskTypography.h5,
                             color = MaterialTheme.LaskColors.textPrimary,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1

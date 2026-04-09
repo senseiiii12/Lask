@@ -1,12 +1,13 @@
 package dev.alexmester.impl.presentation.mvi
 
+import android.net.Uri
 import dev.alexmester.impl.presentation.components.Levels
 
 data class ProfileState(
     val profileName: String = "Anonim",
     val editNameDraft: String = "",
-    val avatarUri: String? = null,
-    val editAvatarUriDraft: String? = null,
+    val avatarUri: Uri? = null,
+    val editAvatarUriDraft: Uri? = null,
     val articleReadCount: Int = 0,
     val streakCount: Int = 0,
     val currentLevel: Int = 1,
@@ -26,7 +27,7 @@ data class ProfileState(
 
         fun mock(
             profileName: String = "Test User",
-            avatarUri: String? = null,
+            avatarUri: Uri? = null,
             articleReadCount: Int = 42,
             streakCount: Int = 7,
             currentLevel: Int = 12,

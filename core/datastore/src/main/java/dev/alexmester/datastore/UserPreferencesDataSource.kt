@@ -1,5 +1,6 @@
 package dev.alexmester.datastore
 
+import android.net.Uri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -88,10 +89,10 @@ class UserPreferencesDataSource(
         dataStore.edit { it[KEY_PROFILE_NAME] = name.trim().ifEmpty { "Anonim" } }
     }
 
-    suspend fun updateAvatarUri(uri: String?) {
+    suspend fun updateAvatarUri(uri: Uri?) {
         dataStore.edit { prefs ->
             if (uri == null) prefs.remove(KEY_AVATAR_URI)
-            else prefs[KEY_AVATAR_URI] = uri
+            else prefs[KEY_AVATAR_URI] = uri.toString()
         }
     }
 

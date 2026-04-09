@@ -10,8 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTheme
 import dev.alexmester.ui.desing_system.LaskTypography
@@ -24,9 +26,7 @@ fun ProfileStatisticRow(
     levelCount: Int = 0,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.LaskColors.backgroundPrimary),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -34,7 +34,7 @@ fun ProfileStatisticRow(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = "Article Read",
+                text = stringResource(R.string.profile_article_read),
                 style = MaterialTheme.LaskTypography.body1,
                 color = MaterialTheme.LaskColors.textSecondary
             )
@@ -48,12 +48,12 @@ fun ProfileStatisticRow(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = "Streak",
+                text = stringResource(R.string.profile_streak),
                 style = MaterialTheme.LaskTypography.body1,
                 color = MaterialTheme.LaskColors.textSecondary
             )
             Text(
-                text = "${streakCount} Days",
+                text = stringResource(R.string.profile_streak_days,streakCount),
                 style = MaterialTheme.LaskTypography.h4,
                 color = MaterialTheme.LaskColors.textPrimary
             )
@@ -62,7 +62,7 @@ fun ProfileStatisticRow(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = "Level",
+                text = stringResource(R.string.profile_level),
                 style = MaterialTheme.LaskTypography.body1,
                 color = MaterialTheme.LaskColors.textSecondary
             )

@@ -10,10 +10,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.alexmester.impl.presentation.mvi.ProfileIntent
 import dev.alexmester.impl.presentation.mvi.ProfileState
+import dev.alexmester.ui.R
 import dev.alexmester.ui.components.menu.LaskRowMenu
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTheme
@@ -25,11 +27,7 @@ fun ProfileContent(
     profileState: ProfileState,
     onIntent: (ProfileIntent) -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.LaskColors.backgroundPrimary)
-    ) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(24.dp))
         ProfileTopHeader(
             avatarUri = profileState.avatarUri,
@@ -56,7 +54,7 @@ fun ProfileContent(
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "Reading History",
+            text = stringResource(R.string.profile_read_history),
             style = MaterialTheme.LaskTypography.h5,
             color = MaterialTheme.LaskColors.textPrimary
         )
@@ -66,12 +64,12 @@ fun ProfileContent(
         ) {
             LaskRowMenu(
                 modifier = Modifier,
-                menuName = "Clapped Articles",
+                menuName = stringResource(R.string.profile_clapped_articles),
                 onClick = { onIntent(ProfileIntent.NavigateToClappedArticles) }
             )
             LaskRowMenu(
                 modifier = Modifier,
-                menuName = "Read Articles",
+                menuName = stringResource(R.string.profile_read_articles),
                 onClick = { onIntent(ProfileIntent.NavigateToReadArticles) }
             )
         }

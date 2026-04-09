@@ -41,4 +41,14 @@
     <!-- Common -->
     <string name="unknown_author">Unknown author</string>
 
+    <!-- Profile -->
+    <string name="profile_article_read">Article Read</string>
+    <string name="profile_streak">Streak</string>
+    <string name="profile_streak_days">%1$s Days</string>
+    <string name="profile_level">Level</string>
+    <string name="profile_read_history">Reading History</string>
+    <string name="profile_clapped_articles">Clapped Articles</string>
+    <string name="profile_read_articles">Read Articles</string>
+
+
 </resources>

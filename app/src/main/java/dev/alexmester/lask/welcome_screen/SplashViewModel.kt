@@ -16,6 +16,8 @@ class SplashViewModel(
     private val _state = MutableStateFlow<SplashState>(SplashState.Loading)
     val state: StateFlow<SplashState> = _state
 
+    private var isInitialized = false
+
     init {
         observePreferences()
     }
@@ -23,16 +25,15 @@ class SplashViewModel(
     private fun observePreferences() {
         viewModelScope.launch {
             preferencesDataSource.userPreferences.collect { prefs ->
-
+                if (isInitialized) return@collect
                 if (!prefs.isLocaleManuallySet) {
                     _state.value = SplashState.Initializing
-
                     preferencesDataSource.initLocaleFromDevice(
                         country = deviceLocaleProvider.getCountry(),
                         language = deviceLocaleProvider.getLanguage(),
                     )
                 }
-
+                isInitialized = true
                 _state.value = SplashState.Ready(
                     isOnboardingCompleted = prefs.isOnboardingCompleted,
                 )

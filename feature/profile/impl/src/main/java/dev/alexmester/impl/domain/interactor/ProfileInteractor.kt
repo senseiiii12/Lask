@@ -1,5 +1,6 @@
 package dev.alexmester.impl.domain.interactor
 
+import android.net.Uri
 import dev.alexmester.database.dao.ReadingHistoryDao
 import dev.alexmester.datastore.UserPreferencesDataSource
 import dev.alexmester.datastore.model.UserPreferences
@@ -12,7 +13,7 @@ class ProfileInteractor(
     private val readingHistoryDao: ReadingHistoryDao,
 ) {
 
-    suspend fun applyEditChanges(imageUri: String?, name: String){
+    suspend fun applyEditChanges(imageUri: Uri?, name: String){
         preferencesDataSource.updateAvatarUri(imageUri)
         preferencesDataSource.updateProfileName(name)
     }
