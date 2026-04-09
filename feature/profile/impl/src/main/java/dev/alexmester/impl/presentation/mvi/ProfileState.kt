@@ -4,13 +4,14 @@ import dev.alexmester.impl.presentation.components.Levels
 
 data class ProfileState(
     val profileName: String = "Anonim",
+    val editNameDraft: String = "",
     val avatarUri: String? = null,
+    val editAvatarUriDraft: String? = null,
     val articleReadCount: Int = 0,
     val streakCount: Int = 0,
     val currentLevel: Int = 1,
     val currentXp: Float = 0f,
     val isEditingMode: Boolean = false,
-    val editNameDraft: String = "",
 ) {
     val level: Levels
         get() = when {

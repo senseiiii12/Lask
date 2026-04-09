@@ -11,6 +11,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import dev.alexmester.api.navigation.ArticleDetailRoute
+import dev.alexmester.api.navigation.ArticleListRoute
 import dev.alexmester.lask.welcome_screen.WelcomeRoute
 import dev.alexmester.ui.components.bottom_bar.LaskMainBottomBarItem
 import dev.alexmester.ui.components.bottom_bar.LaskBottomBar
@@ -60,6 +61,7 @@ fun NavDestination?.shouldShowBottomBar(): Boolean {
 
     return hierarchy.none {
         it.route?.contains(ArticleDetailRoute::class.qualifiedName!!) == true ||
-        it.route?.contains(WelcomeRoute::class.qualifiedName!!) == true
+        it.route?.contains(WelcomeRoute::class.qualifiedName!!) == true ||
+        it.route?.contains(ArticleListRoute::class.qualifiedName!!) == true
     }
 }

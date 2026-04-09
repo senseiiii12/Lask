@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.alexmester.impl.presentation.mvi.ProfileIntent
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.buttons.LaskEditButton
 import dev.alexmester.ui.desing_system.LaskColors
@@ -40,13 +41,11 @@ import dev.alexmester.ui.desing_system.LaskTypography
 @Composable
 fun ProfileNameRow(
     modifier: Modifier = Modifier,
-    profileName: String,
+    name: String,
+    editName: String,
     levelData: Levels,
-    onProfileNameChange: (String) -> Unit,
-    isEdit: Boolean = false,
-    onEdit: () -> Unit,
-    onApply: () -> Unit,
-    onCancel: () -> Unit,
+    isEdit: Boolean,
+    onIntent: (ProfileIntent) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -66,8 +65,8 @@ fun ProfileNameRow(
                     ) {
                         BasicTextField(
                             modifier = Modifier.weight(1f),
-                            value = profileName,
-                            onValueChange = { onProfileNameChange(it) },
+                            value = editName,
+                            onValueChange = { onIntent(ProfileIntent.OnProfileNameChange(it)) },
                             singleLine = true,
                             textStyle = MaterialTheme.LaskTypography.h4.copy(
                                 color = MaterialTheme.LaskColors.textPrimary
@@ -75,11 +74,11 @@ fun ProfileNameRow(
                             enabled = isEdit,
                         ) { innerTextField ->
                             OutlinedTextFieldDefaults.DecorationBox(
-                                value = profileName,
+                                value = editName,
                                 innerTextField = innerTextField,
                                 placeholder = {
                                     Text(
-                                        text = profileName,
+                                        text = editName,
                                         style = MaterialTheme.LaskTypography.h5,
                                         color = MaterialTheme.LaskColors.textPrimary,
                                         overflow = TextOverflow.Ellipsis,
@@ -107,8 +106,8 @@ fun ProfileNameRow(
                         }
                         ButtonsInEditMode(
                             modifier = Modifier,
-                            onApply = onApply,
-                            onCancel = onCancel
+                            onApply = { onIntent(ProfileIntent.OnApplyEditChanges) },
+                            onCancel = { onIntent(ProfileIntent.OnCancelInitMode) }
                         )
                     }
                 }else{
@@ -119,7 +118,7 @@ fun ProfileNameRow(
                     ) {
                         Text(
                             modifier = modifier.weight(1f, fill = false),
-                            text = profileName,
+                            text = name,
                             style = MaterialTheme.LaskTypography.h4,
                             color = MaterialTheme.LaskColors.textPrimary,
                             overflow = TextOverflow.Ellipsis,
@@ -128,7 +127,7 @@ fun ProfileNameRow(
                         LaskEditButton(
                             modifier = Modifier.size(30.dp),
                             tint = MaterialTheme.LaskColors.textLink,
-                            onClick = onEdit
+                            onClick = { onIntent(ProfileIntent.OnInitEditMode) }
                         )
                     }
                 }
@@ -205,12 +204,11 @@ private fun ProfileNameRowPreviewLight() {
     LaskTheme(darkTheme = false) {
         ProfileNameRow(
             modifier = Modifier,
-            profileName = "Dianne Russell",
+            name = "Dianne Russell",
+            editName = "Dianne",
+            isEdit = true,
             levelData = Levels.LEVEL_5,
-            onProfileNameChange = {},
-            onEdit = {},
-            onApply = {},
-            onCancel = {}
+            onIntent = {}
         )
     }
 }
@@ -220,12 +218,11 @@ private fun ProfileNameRowPreviewDark() {
     LaskTheme(darkTheme = true) {
         ProfileNameRow(
             modifier = Modifier,
-            profileName = "Dianne Russell",
+            name = "Dianne Russell",
+            editName = "123",
+            isEdit = false,
             levelData = Levels.LEVEL_5,
-            onProfileNameChange = {},
-            onEdit = {},
-            onApply = {},
-            onCancel = {}
+            onIntent = {}
         )
     }
 }

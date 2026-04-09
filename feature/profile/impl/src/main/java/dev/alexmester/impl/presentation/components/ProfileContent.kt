@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.alexmester.impl.presentation.mvi.ProfileIntent
 import dev.alexmester.impl.presentation.mvi.ProfileState
 import dev.alexmester.ui.components.menu.LaskRowMenu
 import dev.alexmester.ui.desing_system.LaskColors
@@ -22,13 +23,7 @@ import dev.alexmester.ui.desing_system.LaskTypography
 fun ProfileContent(
     modifier: Modifier = Modifier,
     profileState: ProfileState,
-    onProfileNameChange: (String) -> Unit,
-    onEdit: () -> Unit,
-    onApply: () -> Unit,
-    onCancel: () -> Unit,
-    onAvatarSelected: (String) -> Unit,
-    onClappedArticleClick: () -> Unit,
-    onReadArticleClick: () -> Unit,
+    onIntent: (ProfileIntent) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -38,14 +33,12 @@ fun ProfileContent(
         Spacer(modifier = Modifier.height(24.dp))
         ProfileTopHeader(
             avatarUri = profileState.avatarUri,
-            profileName = profileState.profileName,
+            editAvatarUri = profileState.editAvatarUriDraft,
+            name = profileState.profileName,
+            editName = profileState.editNameDraft,
             currentLevel = profileState.level,
             isEdit = profileState.isEditingMode,
-            onAvatarSelected = { onAvatarSelected(it) },
-            onProfileNameChange = { onProfileNameChange(it) },
-            onEdit = onEdit,
-            onApply = onApply,
-            onCancel = onCancel
+            onIntent = { onIntent(it) }
         )
         Spacer(modifier = Modifier.height(24.dp))
         ProfileStatisticRow(
@@ -74,12 +67,12 @@ fun ProfileContent(
             LaskRowMenu(
                 modifier = Modifier,
                 menuName = "Clapped Articles",
-                onClick = onClappedArticleClick
+                onClick = { onIntent(ProfileIntent.NavigateToClappedArticles) }
             )
             LaskRowMenu(
                 modifier = Modifier,
                 menuName = "Read Articles",
-                onClick = onReadArticleClick
+                onClick = { onIntent(ProfileIntent.NavigateToReadArticles) }
             )
         }
     }
@@ -92,13 +85,7 @@ private fun ProfileContentPreviewDark() {
         ProfileContent(
             modifier = Modifier,
             profileState = ProfileState.mock(),
-            onProfileNameChange = {},
-            onEdit = {},
-            onApply = {},
-            onCancel = {},
-            onAvatarSelected = {},
-            onClappedArticleClick = {},
-            onReadArticleClick = {}
+            onIntent = {}
         )
     }
 }
@@ -110,13 +97,7 @@ private fun ProfileContentPreviewLight() {
             modifier = Modifier,
             profileState = ProfileState.mock()
                 .copy(isEditingMode = false),
-            onProfileNameChange = {},
-            onEdit = {},
-            onApply = {},
-            onCancel = {},
-            onAvatarSelected = {},
-            onClappedArticleClick = {},
-            onReadArticleClick = {}
+            onIntent = {}
         )
     }
 }

@@ -5,6 +5,7 @@ import dev.alexmester.datastore.di.dataStoreModule
 import dev.alexmester.impl.di.articleDetailModule
 import dev.alexmester.impl.di.bookmarksModule
 import dev.alexmester.impl.di.newsFeedModule
+import dev.alexmester.impl.di.profileModule
 import dev.alexmester.network.di.networkModule
 
 object AppModules {
@@ -19,6 +20,7 @@ object AppModules {
         // Features
         newsFeedModule,
         articleDetailModule,
-        bookmarksModule
+        bookmarksModule,
+        profileModule,
     )
 }

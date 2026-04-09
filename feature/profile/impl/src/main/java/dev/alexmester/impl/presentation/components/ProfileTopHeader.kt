@@ -3,6 +3,7 @@ package dev.alexmester.impl.presentation.components
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,8 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import dev.alexmester.impl.presentation.mvi.ProfileIntent
 import dev.alexmester.ui.components.avatars.AuthorAvatar
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTheme
@@ -37,21 +40,20 @@ import dev.alexmester.ui.desing_system.LaskTheme
 fun ProfileTopHeader(
     modifier: Modifier = Modifier,
     avatarUri: String?,
-    profileName: String,
+    editAvatarUri: String?,
+    name: String,
+    editName: String,
     currentLevel: Levels,
     isEdit: Boolean,
-    onAvatarSelected: (String) -> Unit,
-    onProfileNameChange: (String) -> Unit,
-    onEdit: () -> Unit,
-    onApply: () -> Unit,
-    onCancel: () -> Unit,
+    onIntent: (ProfileIntent) -> Unit,
 ) {
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.toString()?.let { onAvatarSelected(it) }
+        uri?.toString()?.let { onIntent(ProfileIntent.OnProfileAvatarChange(it)) }
     }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -75,7 +77,9 @@ fun ProfileTopHeader(
         ) {
             if (isEdit) {
                 Box(
-                    modifier = Modifier.align(Alignment.Center).zIndex(1f),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .zIndex(1f),
                 ) {
                     Icon(
                         imageVector = Icons.Default.AddPhotoAlternate,
@@ -83,6 +87,19 @@ fun ProfileTopHeader(
                         tint = MaterialTheme.LaskColors.textLink,
                     )
                 }
+            }
+            if (editAvatarUri != null) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(editAvatarUri)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape),
+                )
             }
             if (avatarUri != null) {
                 AsyncImage(
@@ -94,14 +111,19 @@ fun ProfileTopHeader(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(120.dp)
-                        .clip(CircleShape),
-                    placeholder = ColorPainter(MaterialTheme.LaskColors.brand_blue10)
+                        .clip(CircleShape)
+                        .border(
+                            2.dp,
+                            MaterialTheme.LaskColors.success,
+                            CircleShape
+                        ),
                 )
-            } else {
-                if (!isEdit){
+            }
+            else {
+                if (!isEdit) {
                     AuthorAvatar(
                         modifier = Modifier.size(120.dp),
-                        char = profileName.firstOrNull()?.uppercase() ?: "A",
+                        char = name.firstOrNull()?.uppercase() ?: "A",
                     )
                 }
             }
@@ -109,13 +131,11 @@ fun ProfileTopHeader(
 
         ProfileNameRow(
             modifier = Modifier,
-            profileName = profileName,
+            name = name,
             levelData = currentLevel,
             isEdit = isEdit,
-            onProfileNameChange = { onProfileNameChange(it) },
-            onEdit = onEdit,
-            onApply = onApply,
-            onCancel = onCancel
+            onIntent = { onIntent(it) },
+            editName = editName
         )
     }
 }
@@ -126,31 +146,28 @@ private fun ProfileTopHeaderPreviewDark() {
     LaskTheme(darkTheme = true) {
         ProfileTopHeader(
             avatarUri = null,
-            profileName = "Dianne",
+            editAvatarUri = null,
+            name = "Dianne",
+            editName = "Dia",
             currentLevel = Levels.LEVEL_5,
             isEdit = true,
-            onAvatarSelected = {},
-            onProfileNameChange = { },
-            onEdit = {},
-            onApply = {},
-            onCancel = {},
+            onIntent = {}
         )
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun ProfileTopHeaderPreviewLight() {
     LaskTheme(darkTheme = false) {
         ProfileTopHeader(
             avatarUri = null,
-            profileName = "Dianne",
+            editAvatarUri = null,
+            name = "Dianne",
+            editName = "Dianne",
             currentLevel = Levels.LEVEL_5,
             isEdit = false,
-            onAvatarSelected = {},
-            onProfileNameChange = { },
-            onEdit = {},
-            onApply = {},
-            onCancel = {},
+            onIntent = {}
         )
     }
 }
