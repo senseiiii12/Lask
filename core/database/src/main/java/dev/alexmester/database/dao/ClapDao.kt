@@ -21,4 +21,7 @@ interface ClapDao {
 
     @Query("UPDATE claps SET count = count + 1 WHERE articleId = :articleId")
     suspend fun increment(articleId: Long)
+
+    @Query("SELECT * FROM claps WHERE count > 0")
+    fun getAllClaps(): Flow<List<ClapEntity>>
 }

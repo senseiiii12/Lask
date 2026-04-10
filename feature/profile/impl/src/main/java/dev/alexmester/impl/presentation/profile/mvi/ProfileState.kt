@@ -1,7 +1,7 @@
-package dev.alexmester.impl.presentation.mvi
+package dev.alexmester.impl.presentation.profile.mvi
 
 import android.net.Uri
-import dev.alexmester.impl.presentation.components.Levels
+import dev.alexmester.impl.presentation.profile.components.Levels
 
 data class ProfileState(
     val profileName: String = "Anonim",

@@ -1,6 +1,5 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.impl.presentation.profile.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

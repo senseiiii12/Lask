@@ -3,11 +3,13 @@ package dev.alexmester.impl.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import dev.alexmester.api.navigation.ArticleDetailApi
 import dev.alexmester.api.navigation.ArticleListRoute
 import dev.alexmester.api.navigation.ProfileApi
 import dev.alexmester.api.navigation.ProfileRoute
-import dev.alexmester.impl.presentation.ProfileScreen
+import dev.alexmester.impl.presentation.article_list.ArticleListScreen
+import dev.alexmester.impl.presentation.profile.ProfileScreen
 
 class ProfileImpl(
     private val articleDetailApi: ArticleDetailApi,
@@ -27,20 +29,20 @@ class ProfileImpl(
             )
         }
 
-//        navGraphBuilder.composable<ArticleListRoute> { backStackEntry ->
-//            val route = backStackEntry.toRoute<ArticleListRoute>()
-//            ArticleListScreen(
-//                type = route.type,
-//                onBack = { navController.navigateUp() },
-//                onArticleClick = { id, url ->
-//                    navController.navigate(
-//                        articleDetailApi.articleDetailRoute(
-//                            articleId = id,
-//                            articleUrl = url,
-//                        )
-//                    )
-//                },
-//            )
-//        }
+        navGraphBuilder.composable<ArticleListRoute> { backStackEntry ->
+            val route = backStackEntry.toRoute<ArticleListRoute>()
+            ArticleListScreen(
+                type = route.type,
+                onBack = { navController.navigateUp() },
+                onArticleClick = { id, url ->
+                    navController.navigate(
+                        articleDetailApi.articleDetailRoute(
+                            articleId = id,
+                            articleUrl = url,
+                        )
+                    )
+                },
+            )
+        }
     }
 }

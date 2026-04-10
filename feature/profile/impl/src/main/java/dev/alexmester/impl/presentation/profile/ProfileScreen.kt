@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation
+package dev.alexmester.impl.presentation.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -16,11 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alexmester.api.navigation.ArticleListType
-import dev.alexmester.impl.presentation.components.ProfileContent
-import dev.alexmester.impl.presentation.mvi.ProfileIntent
-import dev.alexmester.impl.presentation.mvi.ProfileSideEffect
-import dev.alexmester.impl.presentation.mvi.ProfileState
-import dev.alexmester.impl.presentation.mvi.ProfileViewModel
+import dev.alexmester.impl.presentation.profile.components.ProfileContent
+import dev.alexmester.impl.presentation.profile.mvi.ProfileIntent
+import dev.alexmester.impl.presentation.profile.mvi.ProfileSideEffect
+import dev.alexmester.impl.presentation.profile.mvi.ProfileState
+import dev.alexmester.impl.presentation.profile.mvi.ProfileViewModel
 import dev.alexmester.ui.desing_system.LaskColors
 import org.koin.compose.viewmodel.koinViewModel
 

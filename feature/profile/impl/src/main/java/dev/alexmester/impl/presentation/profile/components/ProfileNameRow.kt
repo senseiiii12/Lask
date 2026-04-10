@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.impl.presentation.profile.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
@@ -21,7 +21,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.alexmester.impl.presentation.mvi.ProfileIntent
+import dev.alexmester.impl.presentation.profile.mvi.ProfileIntent
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.buttons.LaskEditButton
 import dev.alexmester.ui.desing_system.LaskColors

@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.impl.presentation.profile.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues

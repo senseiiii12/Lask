@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.impl.presentation.profile.components
 
 import android.net.Uri
 import androidx.compose.foundation.background

@@ -3,15 +3,6 @@ package dev.alexmester.database.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/**
- * Кэш новостных статей из /top-news и /search-news.
- *
- * [cachedAt] — unix timestamp (ms) момента сохранения.
- * Используется для отображения "обновлено X минут назад" в UI.
- *
- * [sourceScreen] — откуда пришла статья (FEED, SEARCH).
- * Нужно чтобы при pull-to-refresh в ленте не затирать результаты поиска.
- */
 @Entity(tableName = "news_articles")
 data class NewsArticleEntity(
     @PrimaryKey val id: Long,
@@ -22,12 +13,12 @@ data class NewsArticleEntity(
     val image: String?,
     val video: String?,
     val publishDate: String,
-    val authors: String,           // JSON-сериализованный List<String> через TypeConverter
+    val authors: String,
     val category: String?,
     val language: String?,
     val sourceCountry: String?,
     val sentiment: Double?,
-    val cachedAt: Long,            // System.currentTimeMillis()
+    val cachedAt: Long,
     val sourceScreen: String,
     val clusterId: Int = -1,
 ){

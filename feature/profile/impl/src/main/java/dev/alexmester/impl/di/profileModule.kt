@@ -1,7 +1,7 @@
 package dev.alexmester.impl.di
 
 import dev.alexmester.impl.domain.interactor.ProfileInteractor
-import dev.alexmester.impl.presentation.mvi.ProfileViewModel
+import dev.alexmester.impl.presentation.profile.mvi.ProfileViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -20,7 +20,7 @@ val profileModule = module {
 //    single<ArticleListRepository> {
 //        ArticleListRepositoryImpl(local = get())
 //    }
-//
+
     factory {
         ProfileInteractor(
             preferencesDataSource = get(),

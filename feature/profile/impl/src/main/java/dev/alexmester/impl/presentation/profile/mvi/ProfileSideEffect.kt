@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation.mvi
+package dev.alexmester.impl.presentation.profile.mvi
 
 import dev.alexmester.api.navigation.ArticleListType
 
