@@ -1,9 +1,7 @@
 package dev.alexmester.impl.presentation.mvi
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.alexmester.datastore.UserPreferencesDataSource
 import dev.alexmester.impl.domain.interactor.ArticleDetailInteractor
 import dev.alexmester.ui.R
 import dev.alexmester.ui.uitext.UiText
@@ -17,9 +15,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val CLAP_ANIMATION_RESET_MS = 600L
+
 class ArticleDetailViewModel(
     private val interactor: ArticleDetailInteractor,
-    private val userPreferencesDataSource: UserPreferencesDataSource,
     private val articleId: Long,
     private val articleUrl: String,
 ) : ViewModel() {
@@ -30,79 +29,81 @@ class ArticleDetailViewModel(
     private val _sideEffects = Channel<ArticleDetailSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
-    private var isTimeReached = false
-    private var isScrollReached = false
+    private var isTimeThresholdReached = false
+    private var isScrollThresholdReached = false
     private var isMarkedAsRead = false
 
     init {
         loadArticle()
-        observeBookmark()
-        observeClapCount()
     }
 
     fun handleIntent(intent: ArticleDetailIntent) {
-        _state.update { ArticleDetailReducer.reduce(it, intent) }
-
         when (intent) {
-            ArticleDetailIntent.Back -> emitSideEffect(ArticleDetailSideEffect.NavigateBack)
+            ArticleDetailIntent.Back ->
+                emitSideEffect(ArticleDetailSideEffect.NavigateBack)
+
             ArticleDetailIntent.Clap -> onClap()
+
             ArticleDetailIntent.ToggleBookmark -> onToggleBookmark()
-            ArticleDetailIntent.Share -> {
+
+            ArticleDetailIntent.Share ->
                 emitSideEffect(ArticleDetailSideEffect.ShareUrl(articleUrl))
-            }
+
             ArticleDetailIntent.TimeThresholdReached -> {
-                isTimeReached = true
+                isTimeThresholdReached = true
                 tryMarkAsRead()
             }
+
             ArticleDetailIntent.ScrollThresholdReached -> {
-                isScrollReached = true
+                isScrollThresholdReached = true
                 tryMarkAsRead()
             }
         }
     }
 
-    private fun tryMarkAsRead() {
-        if (isMarkedAsRead) return
-        if (!isTimeReached || !isScrollReached) return
-
-        val article = _state.value.contentOrNull?.article ?: return
-        isMarkedAsRead = true
-        viewModelScope.launch {
-            interactor.markAsRead(article)
-            userPreferencesDataSource.addXp(100f)
-        }
-    }
+    // ── Private ───────────────────────────────────────────────────────────────
 
     private fun loadArticle() {
         viewModelScope.launch {
             val article = interactor.getArticle(articleId)
+
             if (article == null) {
-                val message = UiText.StringResource(R.string.error_article_not_found)
-                _state.value = ArticleDetailState.Error(message)
-            } else {
-                val isBookmarked = interactor.isBookmarkedOnce(articleId)
-                val clapCount = interactor.getClapCountOnce(articleId) ?: 0
-                _state.value = ArticleDetailState.Content(
-                    article = article,
-                    isBookmarked = isBookmarked,
-                    clapCount = clapCount,
+                _state.value = ArticleDetailState.Error(
+                    UiText.StringResource(R.string.error_article_not_found)
                 )
+                return@launch
             }
+
+            val isBookmarked = interactor.isBookmarked(articleId)
+            val clapCount = interactor.getClapCount(articleId)
+
+            _state.value = ArticleDetailState.Content(
+                article = article,
+                isBookmarked = isBookmarked,
+                clapCount = clapCount,
+            )
+
+            observeBookmark()
+            observeClapCount()
         }
     }
 
     private fun observeBookmark() {
-        interactor.isBookmarked(articleId)
+        interactor.observeIsBookmarked(articleId)
             .onEach { isBookmarked ->
-                _state.update { ArticleDetailReducer.onBookmarkUpdate(it, isBookmarked) }
+                _state.update { state ->
+                    state.contentOrNull?.copy(isBookmarked = isBookmarked) ?: state
+                }
             }
             .launchIn(viewModelScope)
     }
 
     private fun observeClapCount() {
-        interactor.getClapCount(articleId)
+        interactor.observeClapCount(articleId)
             .onEach { count ->
-                _state.update { ArticleDetailReducer.onClapCountUpdated(it, count) }
+                _state.update { state ->
+                    state.contentOrNull?.copy(clapCount = count) ?: state
+                }
             }
             .launchIn(viewModelScope)
     }
@@ -110,20 +111,29 @@ class ArticleDetailViewModel(
     private fun onClap() {
         viewModelScope.launch {
             interactor.addClap(articleId)
-            userPreferencesDataSource.addXp(10f)
+            _state.update { it.contentOrNull?.copy(isClapAnimating = true) ?: it }
+//            delay(CLAP_ANIMATION_RESET_MS)
+//            _state.update { it.contentOrNull?.copy(isClapAnimating = false) ?: it }
         }
     }
 
     private fun onToggleBookmark() {
-        val content = _state.value.contentOrNull ?: return
         viewModelScope.launch {
-            val nowBookmarked = interactor.toggleBookmark(content.article)
-            val msg = if (nowBookmarked)
+            val nowBookmarked = interactor.toggleBookmark(articleId)
+            val message = if (nowBookmarked)
                 UiText.StringResource(R.string.bookmark_add)
             else
                 UiText.StringResource(R.string.bookmark_removed)
-            emitSideEffect(ArticleDetailSideEffect.ShowSnackbar(msg))
-            userPreferencesDataSource.addXp(50f)
+            emitSideEffect(ArticleDetailSideEffect.ShowSnackbar(message))
+        }
+    }
+
+    private fun tryMarkAsRead() {
+        if (isMarkedAsRead) return
+        if (!isTimeThresholdReached || !isScrollThresholdReached) return
+        isMarkedAsRead = true
+        viewModelScope.launch {
+            interactor.markAsRead(articleId)
         }
     }
 

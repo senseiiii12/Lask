@@ -13,12 +13,11 @@ val databaseModule = module {
             klass = AppDatabase::class.java,
             name = "lask_database",
         )
-            .fallbackToDestructiveMigrationFrom(1,2,3)
+            .fallbackToDestructiveMigrationFrom(1,2,3,4)
             .build()
     }
 
-    single { get<AppDatabase>().newsArticleDao() }
-    single { get<AppDatabase>().bookmarkDao() }
-    single { get<AppDatabase>().clapDao() }
-    single { get<AppDatabase>().readingHistoryDao() }
+    single { get<AppDatabase>().articleDao() }
+    single { get<AppDatabase>().articleUserStateDao()}
+    single { get<AppDatabase>().feedCacheDao() }
 }

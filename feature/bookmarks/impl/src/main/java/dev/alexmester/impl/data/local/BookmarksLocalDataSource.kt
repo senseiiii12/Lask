@@ -1,19 +1,35 @@
 package dev.alexmester.impl.data.local
 
-import dev.alexmester.database.dao.BookmarkDao
-import dev.alexmester.database.entity.BookmarkEntity
+import dev.alexmester.database.dao.ArticleUserStateDao
+import dev.alexmester.database.entity.ArticleEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class BookmarksLocalDataSource(
-    private val dao: BookmarkDao,
+    private val userStateDao: ArticleUserStateDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    fun getAllBookmarks(): Flow<List<BookmarkEntity>> = dao.getAllBookmarks()
+    /**
+     * Flow всех закладок — статьи отсортированы по времени добавления (новые первыми).
+     * JOIN происходит в БД, возвращаем сразу ArticleEntity.
+     */
+    fun observeBookmarkedArticles(): Flow<List<ArticleEntity>> =
+        userStateDao.observeBookmarkedArticles()
 
-    suspend fun deleteBookmarks(ids: Set<Long>) = withContext(ioDispatcher) {
-        ids.forEach { dao.deleteBookmark(it) }
+    /**
+     * Снимаем флаг isBookmarked — статья остаётся в articles,
+     * если у неё есть isRead или clapCount > 0.
+     * Физически удалится только через ArticleDao.deleteOrphaned().
+     */
+    suspend fun removeBookmarks(ids: Set<Long>) = withContext(ioDispatcher) {
+        ids.forEach { articleId ->
+            userStateDao.updateBookmark(
+                articleId = articleId,
+                isBookmarked = false,
+                bookmarkedAt = null,
+            )
+        }
     }
 }

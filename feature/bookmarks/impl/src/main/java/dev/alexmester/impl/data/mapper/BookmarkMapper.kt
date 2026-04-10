@@ -1,12 +1,12 @@
 package dev.alexmester.impl.data.mapper
 
-import dev.alexmester.database.entity.BookmarkEntity
+import dev.alexmester.database.entity.ArticleEntity
 import dev.alexmester.models.news.NewsArticle
 import kotlinx.serialization.json.Json
 
 private val json = Json { ignoreUnknownKeys = true }
 
-fun BookmarkEntity.toDomain(): NewsArticle = NewsArticle(
+fun ArticleEntity.toDomain(): NewsArticle = NewsArticle(
     id = id,
     title = title,
     text = text,

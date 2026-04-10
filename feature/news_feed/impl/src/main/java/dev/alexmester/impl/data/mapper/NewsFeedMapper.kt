@@ -1,6 +1,8 @@
 package dev.alexmester.impl.data.mapper
 
-import dev.alexmester.database.entity.NewsArticleEntity
+import dev.alexmester.database.dao.FeedArticleWithState
+import dev.alexmester.database.entity.ArticleEntity
+import dev.alexmester.database.entity.FeedCacheEntity
 import dev.alexmester.impl.data.remote.dto.NewsArticleDto
 import dev.alexmester.impl.data.remote.dto.NewsClusterDto
 import dev.alexmester.models.news.NewsArticle
@@ -9,63 +11,9 @@ import kotlinx.serialization.json.Json
 
 private val json = Json { ignoreUnknownKeys = true }
 
-// ── DTO → Entity ──────────────────────────────────────────────────────────────
+// ── DTO → ArticleEntity ───────────────────────────────────────────────────────
 
-fun NewsArticleDto.toEntity(sourceScreen: String, clusterId: Int): NewsArticleEntity =
-    NewsArticleEntity(
-        id = id,
-        title = title,
-        text = text,
-        summary = summary,
-        url = url,
-        image = image,
-        video = video,
-        publishDate = publishDate,
-        authors = json.encodeToString(authors),
-        category = category,
-        language = language,
-        sourceCountry = sourceCountry,
-        sentiment = sentiment,
-        cachedAt = System.currentTimeMillis(),
-        sourceScreen = sourceScreen,
-        clusterId = clusterId,
-    )
-
-fun List<NewsClusterDto>.dtosToEntities(sourceScreen: String): List<NewsArticleEntity> =
-    flatMapIndexed { index, cluster ->
-        cluster.news.map { dto -> dto.toEntity(sourceScreen, clusterId = index) }
-    }
-
-// ── DTO → Domain ──────────────────────────────────────────────────────────────
-
-fun NewsArticleDto.toDomain(): NewsArticle = NewsArticle(
-    id = id,
-    title = title,
-    text = text,
-    summary = summary,
-    url = url,
-    image = image,
-    video = video,
-    publishDate = publishDate,
-    authors = authors,
-    category = category,
-    language = language,
-    sourceCountry = sourceCountry,
-    sentiment = sentiment,
-)
-
-fun NewsClusterDto.toDomain(id: Int): NewsCluster = NewsCluster(
-    id = id,
-    articles = news.map { it.toDomain() },
-)
-
-fun List<NewsClusterDto>.dtosToDomain(): List<NewsCluster> =
-    mapIndexed { index, dto -> dto.toDomain(index) }
-        .filter { it.articles.isNotEmpty() }
-
-// ── Domain → Entity ───────────────────────────────────────────────────────────
-
-fun NewsArticle.toEntity(sourceScreen: String, clusterId: Int): NewsArticleEntity = NewsArticleEntity(
+fun NewsArticleDto.toArticleEntity(): ArticleEntity = ArticleEntity(
     id = id,
     title = title,
     text = text,
@@ -79,21 +27,44 @@ fun NewsArticle.toEntity(sourceScreen: String, clusterId: Int): NewsArticleEntit
     language = language,
     sourceCountry = sourceCountry,
     sentiment = sentiment,
-    cachedAt = System.currentTimeMillis(),
-    sourceScreen = sourceScreen,
-    clusterId = clusterId,
 )
 
-fun List<NewsCluster>.toEntities(sourceScreen: String): List<NewsArticleEntity> =
-    flatMap { cluster ->
-        cluster.articles.map { article ->
-            article.toEntity(sourceScreen, clusterId = cluster.id)
+// ── DTO → FeedCacheEntity ─────────────────────────────────────────────────────
+
+fun NewsArticleDto.toFeedCacheEntity(
+    feedType: String,
+    clusterId: Int,
+    position: Int,
+): FeedCacheEntity = FeedCacheEntity(
+    feedType = feedType,
+    articleId = id,
+    clusterId = clusterId,
+    position = position,
+    cachedAt = System.currentTimeMillis(),
+)
+
+/**
+ * Разворачиваем список кластеров в два плоских списка:
+ * - все ArticleEntity (для вставки в articles с IGNORE)
+ * - все FeedCacheEntity (для вставки в feed_cache с REPLACE)
+ */
+fun List<NewsClusterDto>.toEntities(feedType: String): Pair<List<ArticleEntity>, List<FeedCacheEntity>> {
+    val articles = mutableListOf<ArticleEntity>()
+    val feedCache = mutableListOf<FeedCacheEntity>()
+
+    forEachIndexed { clusterIndex, cluster ->
+        cluster.news.forEachIndexed { position, dto ->
+            articles.add(dto.toArticleEntity())
+            feedCache.add(dto.toFeedCacheEntity(feedType, clusterIndex, position))
         }
     }
 
-// ── Entity → Domain ───────────────────────────────────────────────────────────
+    return articles to feedCache
+}
 
-fun NewsArticleEntity.toDomain(): NewsArticle = NewsArticle(
+// ── FeedArticleWithState → Domain ─────────────────────────────────────────────
+
+fun FeedArticleWithState.toDomain(): NewsArticle = NewsArticle(
     id = id,
     title = title,
     text = text,
@@ -109,13 +80,38 @@ fun NewsArticleEntity.toDomain(): NewsArticle = NewsArticle(
     sentiment = sentiment,
 )
 
-fun List<NewsArticleEntity>.entitiesToClusters(): List<NewsCluster> =
+/**
+ * Группируем плоский список FeedArticleWithState обратно в кластеры.
+ * Порядок сохранён через clusterId + position (ORDER BY в запросе).
+ */
+fun List<FeedArticleWithState>.toClusters(): List<NewsCluster> =
     groupBy { it.clusterId }
         .entries
         .sortedBy { it.key }
-        .map { (clusterId, entities) ->
+        .map { (clusterId, rows) ->
             NewsCluster(
                 id = clusterId,
-                articles = entities.map { it.toDomain() },
+                articles = rows
+                    .sortedBy { it.position }
+                    .map { it.toDomain() },
             )
         }
+        .filter { it.articles.isNotEmpty() }
+
+// ── ArticleEntity → Domain ────────────────────────────────────────────────────
+
+fun ArticleEntity.toDomain(): NewsArticle = NewsArticle(
+    id = id,
+    title = title,
+    text = text,
+    summary = summary,
+    url = url,
+    image = image,
+    video = video,
+    publishDate = publishDate,
+    authors = json.decodeFromString(authors),
+    category = category,
+    language = language,
+    sourceCountry = sourceCountry,
+    sentiment = sentiment,
+)

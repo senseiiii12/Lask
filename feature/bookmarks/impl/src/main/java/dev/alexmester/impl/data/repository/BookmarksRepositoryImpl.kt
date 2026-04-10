@@ -11,9 +11,11 @@ class BookmarksRepositoryImpl(
     private val local: BookmarksLocalDataSource,
 ) : BookmarksRepository {
 
-    override fun getAllBookmarks(): Flow<List<NewsArticle>> =
-        local.getAllBookmarks().map { entities -> entities.map { it.toDomain() } }
+    override fun observeBookmarks(): Flow<List<NewsArticle>> =
+        local.observeBookmarkedArticles().map { entities ->
+            entities.map { it.toDomain() }
+        }
 
-    override suspend fun deleteBookmarks(ids: Set<Long>) =
-        local.deleteBookmarks(ids)
+    override suspend fun removeBookmarks(ids: Set<Long>) =
+        local.removeBookmarks(ids)
 }

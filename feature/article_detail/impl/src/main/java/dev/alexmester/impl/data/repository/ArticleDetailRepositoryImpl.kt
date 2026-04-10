@@ -1,7 +1,6 @@
 package dev.alexmester.impl.data.repository
 
 import dev.alexmester.impl.data.local.ArticleDetailLocalDataSource
-import dev.alexmester.impl.data.mappers.toBookmarkEntity
 import dev.alexmester.impl.data.mappers.toDomain
 import dev.alexmester.impl.domain.repository.ArticleDetailRepository
 import dev.alexmester.models.news.NewsArticle
@@ -11,41 +10,33 @@ class ArticleDetailRepositoryImpl(
     private val local: ArticleDetailLocalDataSource,
 ) : ArticleDetailRepository {
 
-    override suspend fun getArticleById(id: Long): NewsArticle? {
-        val bookmark = local.getBookmarkById(id)
-        if (bookmark != null) return bookmark.toDomain()
+    override suspend fun getArticleById(id: Long): NewsArticle? =
+        local.getArticleById(id)?.toDomain()
 
-        val entity = local.getArticleById(id) ?: return null
-        return entity.toDomain()
-    }
+    // ── Bookmark ──────────────────────────────────────────────────────────────
 
-    override suspend fun toggleBookmark(article: NewsArticle): Boolean {
-        val isCurrentlyBookmarked = local.getBookmarkById(article.id) != null
-        return if (isCurrentlyBookmarked) {
-            local.deleteBookmark(article.id)
-            false
-        } else {
-            local.insertBookmark(article.toBookmarkEntity())
-            true
-        }
-    }
+    override fun observeIsBookmarked(id: Long): Flow<Boolean> =
+        local.observeIsBookmarked(id)
 
-    override fun isBookmarked(id: Long): Flow<Boolean> = local.isBookmarkedFlow(id)
+    override suspend fun isBookmarked(id: Long): Boolean =
+        local.isBookmarked(id)
 
-    override suspend fun isBookmarkedOnce(id: Long): Boolean =
-        local.getBookmarkById(id) != null
+    override suspend fun toggleBookmark(articleId: Long): Boolean =
+        local.toggleBookmark(articleId)
 
-    override suspend fun getClapCountOnce(id: Long): Int? =
-        local.getClapCountById(id)
+    // ── Clap ──────────────────────────────────────────────────────────────────
 
-    override fun getClapCount(id: Long): Flow<Int> = local.getClapFlow(id)
+    override fun observeClapCount(id: Long): Flow<Int> =
+        local.observeClapCount(id)
 
-    override suspend fun addClap(id: Long) = local.addClap(id)
+    override suspend fun getClapCount(id: Long): Int =
+        local.getClapCount(id)
 
-    override suspend fun markAsRead(article: NewsArticle) =
-        local.markAsRead(
-            articleId = article.id,
-            articleTitle = article.title,
-        )
+    override suspend fun addClap(articleId: Long) =
+        local.addClap(articleId)
 
+    // ── Read ──────────────────────────────────────────────────────────────────
+
+    override suspend fun markAsRead(articleId: Long) =
+        local.markAsRead(articleId)
 }

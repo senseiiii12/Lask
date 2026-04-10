@@ -39,7 +39,7 @@ class BookmarksViewModel(
     }
 
     private fun observeBookmarks() {
-        interactor.getBookmarksFlow()
+        interactor.observeBookmarks()
             .onEach { articles ->
                 _state.update { current ->
                     BookmarksReducer.onArticlesUpdated(current, articles)
@@ -48,27 +48,23 @@ class BookmarksViewModel(
             .launchIn(viewModelScope)
     }
 
-    private fun cancelDeletion(){
-        viewModelScope.launch {
-            _state.update { current ->
-                BookmarksReducer.onCloseEditMode(current)
-            }
-        }
-    }
-
     private fun confirmDeletion() {
         val content = _state.value.contentOrNull ?: return
         val idsToRemove = content.pendingRemovalIds
+
         if (idsToRemove.isEmpty()) {
             _state.update { BookmarksReducer.reduce(it, BookmarksIntent.ToggleEditMode) }
             return
         }
+
         viewModelScope.launch {
-            interactor.deleteBookmarks(idsToRemove)
-            _state.update { current ->
-                BookmarksReducer.onCloseEditMode(current)
-            }
+            _state.update { BookmarksReducer.onCloseEditMode(it) }
+            interactor.removeBookmarks(idsToRemove)
         }
+    }
+
+    private fun cancelDeletion() {
+        _state.update { BookmarksReducer.onCloseEditMode(it) }
     }
 
     private fun emitSideEffect(effect: BookmarksSideEffect) {

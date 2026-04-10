@@ -7,17 +7,36 @@ import kotlinx.coroutines.flow.Flow
 class ArticleDetailInteractor(
     private val repository: ArticleDetailRepository,
 ) {
-    suspend fun getArticle(id: Long): NewsArticle? = repository.getArticleById(id)
+    suspend fun getArticle(id: Long): NewsArticle? =
+        repository.getArticleById(id)
 
-    suspend fun toggleBookmark(article: NewsArticle): Boolean = repository.toggleBookmark(article)
+    // ── Bookmark ──────────────────────────────────────────────────────────────
 
-    fun isBookmarked(id: Long): Flow<Boolean> = repository.isBookmarked(id)
-    fun getClapCount(id: Long): Flow<Int> = repository.getClapCount(id)
+    fun observeIsBookmarked(id: Long): Flow<Boolean> =
+        repository.observeIsBookmarked(id)
 
-    suspend fun isBookmarkedOnce(id: Long): Boolean = repository.isBookmarkedOnce(id)
-    suspend fun getClapCountOnce(id: Long): Int? = repository.getClapCountOnce(id)
+    suspend fun isBookmarked(id: Long): Boolean =
+        repository.isBookmarked(id)
 
-    suspend fun addClap(id: Long) = repository.addClap(id)
+    /**
+     * Возвращает новое состояние: true = добавлено, false = удалено.
+     */
+    suspend fun toggleBookmark(articleId: Long): Boolean =
+        repository.toggleBookmark(articleId)
 
-    suspend fun markAsRead(article: NewsArticle) = repository.markAsRead(article)
+    // ── Clap ──────────────────────────────────────────────────────────────────
+
+    fun observeClapCount(id: Long): Flow<Int> =
+        repository.observeClapCount(id)
+
+    suspend fun getClapCount(id: Long): Int =
+        repository.getClapCount(id)
+
+    suspend fun addClap(articleId: Long) =
+        repository.addClap(articleId)
+
+    // ── Read ──────────────────────────────────────────────────────────────────
+
+    suspend fun markAsRead(articleId: Long) =
+        repository.markAsRead(articleId)
 }

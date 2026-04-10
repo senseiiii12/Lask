@@ -4,6 +4,6 @@ import dev.alexmester.models.news.NewsArticle
 import kotlinx.coroutines.flow.Flow
 
 interface BookmarksRepository {
-    fun getAllBookmarks(): Flow<List<NewsArticle>>
-    suspend fun deleteBookmarks(ids: Set<Long>)
+    fun observeBookmarks(): Flow<List<NewsArticle>>
+    suspend fun removeBookmarks(ids: Set<Long>)
 }

@@ -14,7 +14,7 @@ val bookmarksModule = module {
 
     single {
         BookmarksLocalDataSource(
-            dao = get(),
+            userStateDao = get(),
             ioDispatcher = get(named(DISPATCHER_IO)),
         )
     }
@@ -27,5 +27,7 @@ val bookmarksModule = module {
         BookmarksInteractor(repository = get())
     }
 
-    viewModel { BookmarksViewModel(interactor = get()) }
+    viewModel {
+        BookmarksViewModel(interactor = get())
+    }
 }

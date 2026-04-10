@@ -1,25 +1,9 @@
 package dev.alexmester.impl.presentation.mvi
 
+
 object ArticleDetailReducer {
 
-    fun reduce(
-        state: ArticleDetailState,
-        intent: ArticleDetailIntent,
-    ): ArticleDetailState {
-        val content = state.contentOrNull ?: return state
-        return when (intent) {
-            is ArticleDetailIntent.Clap -> content.copy(
-                clapCount = content.clapCount + 1,
-                isClapAnimating = true,
-            )
-            is ArticleDetailIntent.ToggleBookmark -> content.copy(
-                isBookmarked = !content.isBookmarked,
-            )
-            else -> state
-        }
-    }
-
-    fun onBookmarkUpdate(
+    fun onBookmarkUpdated(
         state: ArticleDetailState,
         isBookmarked: Boolean,
     ): ArticleDetailState =
@@ -30,4 +14,10 @@ object ArticleDetailReducer {
         count: Int,
     ): ArticleDetailState =
         state.contentOrNull?.copy(clapCount = count) ?: state
+
+    fun onClapAnimating(
+        state: ArticleDetailState,
+        isAnimating: Boolean,
+    ): ArticleDetailState =
+        state.contentOrNull?.copy(isClapAnimating = isAnimating) ?: state
 }

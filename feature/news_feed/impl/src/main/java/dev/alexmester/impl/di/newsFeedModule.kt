@@ -14,14 +14,17 @@ import org.koin.dsl.module
 val newsFeedModule = module {
 
     single { NewsFeedApiService(client = get()) }
+
     single {
         NewsFeedLocalDataSource(
-            newsArticleDao = get(),
-            readingHistoryDao = get(),
             db = get(),
+            articleDao = get(),
+            feedCacheDao = get(),
+            userStateDao = get(),
             ioDispatcher = get(named(DISPATCHER_IO)),
         )
     }
+
     single<NewsFeedRepository> {
         NewsFeedRepositoryImpl(
             remote = get(),

@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 class BookmarksInteractor(
     private val repository: BookmarksRepository,
 ) {
-    fun getBookmarksFlow(): Flow<List<NewsArticle>> = repository.getAllBookmarks()
+    fun observeBookmarks(): Flow<List<NewsArticle>> =
+        repository.observeBookmarks()
 
-    suspend fun deleteBookmarks(ids: Set<Long>) = repository.deleteBookmarks(ids)
+    suspend fun removeBookmarks(ids: Set<Long>) =
+        repository.removeBookmarks(ids)
 }

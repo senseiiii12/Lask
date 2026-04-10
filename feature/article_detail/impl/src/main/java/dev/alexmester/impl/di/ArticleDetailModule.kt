@@ -14,10 +14,8 @@ val articleDetailModule = module {
 
     single {
         ArticleDetailLocalDataSource(
-            newsArticleDao = get(),
-            bookmarkDao = get(),
-            clapDao = get(),
-            readingHistoryDao = get(),
+            articleDao = get(),
+            userStateDao = get(),
             ioDispatcher = get(named(DISPATCHER_IO)),
         )
     }
@@ -33,7 +31,6 @@ val articleDetailModule = module {
     viewModel { (articleId: Long, articleUrl: String) ->
         ArticleDetailViewModel(
             interactor = get(),
-            userPreferencesDataSource = get(),
             articleId = articleId,
             articleUrl = articleUrl,
         )

@@ -1,13 +1,9 @@
 package dev.alexmester.impl.data.local
 
-import dev.alexmester.database.dao.BookmarkDao
-import dev.alexmester.database.dao.ClapDao
-import dev.alexmester.database.dao.NewsArticleDao
-import dev.alexmester.database.dao.ReadingHistoryDao
-import dev.alexmester.database.entity.BookmarkEntity
-import dev.alexmester.database.entity.ClapEntity
-import dev.alexmester.database.entity.NewsArticleEntity
-import dev.alexmester.database.entity.ReadingHistoryEntity
+import dev.alexmester.database.dao.ArticleDao
+import dev.alexmester.database.dao.ArticleUserStateDao
+import dev.alexmester.database.entity.ArticleEntity
+import dev.alexmester.database.entity.ArticleUserStateEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,49 +11,76 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class ArticleDetailLocalDataSource(
-    private val newsArticleDao: NewsArticleDao,
-    private val bookmarkDao: BookmarkDao,
-    private val clapDao: ClapDao,
-    private val readingHistoryDao: ReadingHistoryDao,
+    private val articleDao: ArticleDao,
+    private val userStateDao: ArticleUserStateDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    suspend fun getArticleById(id: Long): NewsArticleEntity? =
-        withContext(ioDispatcher) { newsArticleDao.getArticleById(id) }
+    // ── Article ───────────────────────────────────────────────────────────────
 
-    suspend fun getBookmarkById(id: Long): BookmarkEntity? =
-        withContext(ioDispatcher) { bookmarkDao.getBookmarkById(id) }
+    suspend fun getArticleById(id: Long): ArticleEntity? =
+        withContext(ioDispatcher) { articleDao.getArticleById(id) }
 
-    suspend fun getClapCountById(id: Long): Int? =
-        withContext(ioDispatcher) { clapDao.getClapCount(id) }
+    // ── UserState helpers ─────────────────────────────────────────────────────
 
-    fun isBookmarkedFlow(id: Long): Flow<Boolean> = bookmarkDao.isBookmarked(id)
-
-    fun getClapFlow(id: Long): Flow<Int> =
-        clapDao.getClapFlow(id).map { it?.count ?: 0 }
-
-    suspend fun insertBookmark(bookmark: BookmarkEntity) =
-        withContext(ioDispatcher) { bookmarkDao.insertBookmark(bookmark) }
-
-    suspend fun deleteBookmark(id: Long) =
-        withContext(ioDispatcher) { bookmarkDao.deleteBookmark(id) }
-
-    suspend fun addClap(id: Long) = withContext(ioDispatcher) {
-        val existing = clapDao.getClapCount(id)
-        if (existing == null) {
-            clapDao.upsert(ClapEntity(articleId = id, count = 1))
-        } else {
-            clapDao.increment(id)
-        }
+    /**
+     * Гарантируем существование строки user state перед любым UPDATE.
+     * Вызываем перед bookmark/clap/read операциями.
+     */
+    private suspend fun ensureUserState(articleId: Long) {
+        userStateDao.insertIfAbsent(ArticleUserStateEntity(articleId = articleId))
     }
 
-    suspend fun markAsRead(articleId: Long, articleTitle: String) =
+    // ── Bookmark ──────────────────────────────────────────────────────────────
+
+    fun observeIsBookmarked(id: Long): Flow<Boolean> =
+        userStateDao.observeIsBookmarked(id).map { it ?: false }
+
+    suspend fun isBookmarked(id: Long): Boolean =
         withContext(ioDispatcher) {
-            readingHistoryDao.upsert(
-                ReadingHistoryEntity(
-                    articleId = articleId,
-                    articleTitle = articleTitle,
-                    readAt = System.currentTimeMillis(),
-                )
+            userStateDao.isBookmarked(id) ?: false
+        }
+
+    /**
+     * Возвращает новое состояние закладки после переключения.
+     */
+    suspend fun toggleBookmark(articleId: Long): Boolean =
+        withContext(ioDispatcher) {
+            ensureUserState(articleId)
+            val current = userStateDao.isBookmarked(articleId) ?: false
+            val newState = !current
+            val bookmarkedAt = if (newState) System.currentTimeMillis() else null
+            userStateDao.updateBookmark(
+                articleId = articleId,
+                isBookmarked = newState,
+                bookmarkedAt = bookmarkedAt,
+            )
+            newState
+        }
+
+    // ── Clap ──────────────────────────────────────────────────────────────────
+
+    fun observeClapCount(id: Long): Flow<Int> =
+        userStateDao.observeClapCount(id).map { it ?: 0 }
+
+    suspend fun getClapCount(id: Long): Int =
+        withContext(ioDispatcher) {
+            userStateDao.getClapCount(id) ?: 0
+        }
+
+    suspend fun addClap(articleId: Long) =
+        withContext(ioDispatcher) {
+            ensureUserState(articleId)
+            userStateDao.incrementClap(articleId)
+        }
+
+    // ── Read ──────────────────────────────────────────────────────────────────
+
+    suspend fun markAsRead(articleId: Long) =
+        withContext(ioDispatcher) {
+            ensureUserState(articleId)
+            userStateDao.markAsRead(
+                articleId = articleId,
+                readAt = System.currentTimeMillis(),
             )
         }
 }
