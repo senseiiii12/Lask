@@ -30,7 +30,7 @@ android {
         }
     }
 
-    targetProjectPath = ":app"
+    targetProjectPath = ":lask"
     experimentalProperties["android.experimental.self-instrumenting"] = true
 }
 

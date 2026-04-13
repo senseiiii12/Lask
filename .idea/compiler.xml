@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
+      <module name="Lask.app" target="21" />
       <module name="Lask.core.feature-navigation-api" target="21" />
       <module name="Lask.core.feature-navigation-api.main" target="21" />
       <module name="Lask.core.feature-navigation-api.test" target="21" />
