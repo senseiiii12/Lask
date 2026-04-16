@@ -36,9 +36,15 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SystemScreen(
     onBack: () -> Unit,
     onNavigateToLocalePicker: (LocalePickerType) -> Unit,
+    countryOverride: String? = null,
+    languageOverride: String? = null,
     viewModel: SystemViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(countryOverride, languageOverride) {
+        viewModel.applyLocaleOverride(countryOverride, languageOverride)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->

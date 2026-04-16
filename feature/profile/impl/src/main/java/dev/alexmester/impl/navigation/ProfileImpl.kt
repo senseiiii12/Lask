@@ -68,20 +68,35 @@ class ProfileImpl(
             }
         }
 
-        navGraphBuilder.composable<SystemRoute> {
-            SystemScreen(
-                onBack = { navController.navigateUp() },
-                onNavigateToLocalePicker = { type ->
-                    navController.navigate(LocalePickerRoute(type))
-                },
-            )
-        }
-
         navGraphBuilder.composable<LocalePickerRoute> { backStackEntry ->
             val route = backStackEntry.toRoute<LocalePickerRoute>()
             LocalePickerScreen(
                 type = route.type,
                 onBack = { navController.navigateUp() },
+                onCountryOverride = { country ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("country_override", country)
+                },
+                onLanguageOverride = { language ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("language_override", language)
+                },
+            )
+        }
+
+        navGraphBuilder.composable<SystemRoute> {
+            val countryOverride = it.savedStateHandle.remove<String>("country_override")
+            val languageOverride = it.savedStateHandle.remove<String>("language_override")
+
+            SystemScreen(
+                onBack = { navController.navigateUp() },
+                onNavigateToLocalePicker = { type ->
+                    navController.navigate(LocalePickerRoute(type))
+                },
+                countryOverride = countryOverride,
+                languageOverride = languageOverride,
             )
         }
 
