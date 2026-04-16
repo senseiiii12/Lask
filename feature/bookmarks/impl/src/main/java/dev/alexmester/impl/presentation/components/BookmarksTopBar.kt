@@ -2,26 +2,17 @@ package dev.alexmester.impl.presentation.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import dev.alexmester.impl.presentation.mvi.BookmarksIntent
 import dev.alexmester.ui.R
+import dev.alexmester.ui.components.buttons.LaskTextButton
 import dev.alexmester.ui.components.buttons.LaskEditButton
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
@@ -48,20 +39,16 @@ internal fun BookmarksTopBar(
             AnimatedContent(targetState = isEditMode) { isEdit ->
                 if (isEdit) {
                     Row {
-                        TextButton(onClick = { onIntent(BookmarksIntent.CancelDeletion) }) {
-                            Text(
-                                text = stringResource(R.string.bookmarks_cancel),
-                                style = MaterialTheme.LaskTypography.body2SemiBold,
-                                color = MaterialTheme.LaskColors.error,
-                            )
-                        }
-                        TextButton(onClick = { onIntent(BookmarksIntent.ConfirmDeletion) }) {
-                            Text(
-                                text = stringResource(R.string.bookmarks_done),
-                                style = MaterialTheme.LaskTypography.body2SemiBold,
-                                color = MaterialTheme.LaskColors.brand_blue,
-                            )
-                        }
+                        LaskTextButton(
+                            text = stringResource(R.string.bookmarks_cancel),
+                            textColor = MaterialTheme.LaskColors.error,
+                            onClick = { onIntent(BookmarksIntent.CancelDeletion) },
+                        )
+                        LaskTextButton(
+                            text = stringResource(R.string.bookmarks_done),
+                            textColor = MaterialTheme.LaskColors.brand_blue,
+                            onClick = { onIntent(BookmarksIntent.ConfirmDeletion) },
+                        )
                     }
                 } else {
                     LaskEditButton(

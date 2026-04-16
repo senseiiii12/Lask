@@ -37,7 +37,6 @@ sealed interface UiText {
         is DynamicString -> value
     }
 
-    // Для использования вне Composable — в LaunchedEffect, корутинах
     fun asString(context: Context): String = when (this) {
         is StringResource -> context.getString(resId, *args)
         is DynamicString -> value

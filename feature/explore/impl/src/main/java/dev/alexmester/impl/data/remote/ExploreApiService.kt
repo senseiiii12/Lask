@@ -18,6 +18,7 @@ class ExploreApiService(
     ): SearchNewsResponseDto =
         client.get("search-news") {
             parameter("text", text)
+            parameter("text-match-indexes", "title")
             parameter("language", language)
             parameter("offset", offset)
             parameter("number", number)

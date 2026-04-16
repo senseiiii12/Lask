@@ -6,24 +6,11 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Interests
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,18 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.alexmester.impl.presentation.interests.components.InterestsTopBar
 import dev.alexmester.impl.presentation.interests.mvi.InterestsIntent
 import dev.alexmester.impl.presentation.interests.mvi.InterestsSideEffect
 import dev.alexmester.impl.presentation.interests.mvi.InterestsState
 import dev.alexmester.impl.presentation.interests.mvi.InterestsViewModel
-import dev.alexmester.ui.R
-import dev.alexmester.ui.components.buttons.LaskBackButton
 import dev.alexmester.ui.components.buttons.LaskChipButton
 import dev.alexmester.ui.components.buttons.LaskChipButtonVariants
+import dev.alexmester.ui.components.buttons.LaskTextButton
+import dev.alexmester.ui.components.input_field.LaskTextField
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
@@ -71,7 +57,6 @@ fun InterestsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun InterestsScreenContent(
     state: InterestsState,
@@ -82,21 +67,7 @@ internal fun InterestsScreenContent(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                navigationIcon = {
-                    LaskBackButton(onClick = { onIntent(InterestsIntent.Back) })
-                },
-                title = {
-                    Text(
-                        text = stringResource(R.string.profile_menu_interests),
-                        style = MaterialTheme.LaskTypography.h5,
-                        color = MaterialTheme.LaskColors.textPrimary,
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.LaskColors.brand_blue10,
-                ),
-            )
+            InterestsTopBar(onClick = { onIntent(InterestsIntent.Back) })
         },
         containerColor = MaterialTheme.LaskColors.backgroundPrimary,
     ) { paddingValues ->
@@ -111,81 +82,38 @@ internal fun InterestsScreenContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                OutlinedTextField(
-                    value = state.inputText,
+                LaskTextField(
+                    modifier = Modifier.weight(1f).focusRequester(focusRequester),
+                    text = state.inputText,
+                    placeholderText = "Write you interests",
+                    leadingIcon = Icons.Default.Interests,
                     onValueChange = { onIntent(InterestsIntent.OnInputChange(it)) },
-                    textStyle = MaterialTheme.LaskTypography.body2,
-                    modifier = Modifier
-                        .weight(1f)
-                        .focusRequester(focusRequester),
-                    placeholder = {
-                        Text(
-                            text = "Write you interests",
-                            style = MaterialTheme.LaskTypography.body2,
-                            color = MaterialTheme.LaskColors.textSecondary,
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Interests,
-                            contentDescription = null,
-                            tint = MaterialTheme.LaskColors.textSecondary,
-                        )
-                    },
-                    trailingIcon = {
-                        if (state.inputText.isNotEmpty()) {
-                            IconButton(onClick = { onIntent(InterestsIntent.OnInputChange("")) }) {
-                                Icon(
-                                    imageVector = Icons.Default.Cancel,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.LaskColors.textSecondary,
-                                )
-                            }
+                    onClearClick = { onIntent(InterestsIntent.OnInputChange("")) },
+                    onDone = {
+                        if (state.canAdd) {
+                            onIntent(InterestsIntent.Add)
+                            keyboard?.hide()
                         }
-                    },
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.LaskColors.brand_blue,
-                        unfocusedBorderColor = MaterialTheme.LaskColors.brand_blue10,
-                        focusedTextColor = MaterialTheme.LaskColors.textPrimary,
-                        unfocusedTextColor = MaterialTheme.LaskColors.textPrimary,
-                        cursorColor = MaterialTheme.LaskColors.brand_blue,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            if (state.canAdd) {
-                                onIntent(InterestsIntent.Add)
-                                keyboard?.hide()
-                            }
-                        }
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    }
                 )
-
-                TextButton(
+                LaskTextButton(
+                    modifier = Modifier,
+                    text = "Add",
+                    textColor = if (state.canAdd) MaterialTheme.LaskColors.brand_blue
+                    else MaterialTheme.LaskColors.textSecondary,
                     onClick = {
                         if (state.canAdd) {
                             onIntent(InterestsIntent.Add)
                             keyboard?.hide()
                         }
                     },
-                    enabled = state.canAdd,
-                ) {
-                    Text(
-                        text = "Add",
-                        style = MaterialTheme.LaskTypography.button1,
-                        color = if (state.canAdd)
-                            MaterialTheme.LaskColors.brand_blue
-                        else
-                            MaterialTheme.LaskColors.textSecondary,
-                    )
-                }
+                    isEnable = state.canAdd
+                )
             }
 
-            // ── Added Interests ───────────────────────────────────────────
             if (state.interests.isNotEmpty()) {
                 Text(
+                    modifier = Modifier.padding(horizontal = 4.dp),
                     text = "You Interests",
                     style = MaterialTheme.LaskTypography.footnote,
                     color = MaterialTheme.LaskColors.textSecondary,
