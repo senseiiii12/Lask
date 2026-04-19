@@ -3,16 +3,16 @@ package dev.alexmester.impl.presentation.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.impl.domain.usecase.GetCurrentLocaleUseCase
-import dev.alexmester.impl.domain.usecase.ObserveFeedClustersUseCase
 import dev.alexmester.impl.domain.usecase.GetLastCachedAtUseCase
+import dev.alexmester.impl.domain.usecase.ObserveFeedClustersUseCase
 import dev.alexmester.impl.domain.usecase.ObserveReadArticleIdsUseCase
 import dev.alexmester.impl.domain.usecase.RefreshFeedUseCase
 import dev.alexmester.models.news.NewsCluster
 import dev.alexmester.models.result.AppResult
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedIntent
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedReducer
-import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedState
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedSideEffect
+import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedState
 import dev.alexmester.newsfeed.impl.presentation.feed.contentOrNull
 import dev.alexmester.newsfeed.impl.presentation.feed.isOffline
 import kotlinx.coroutines.channels.Channel
@@ -50,8 +50,8 @@ class NewsFeedViewModel(
             initialValue = emptySet(),
         )
 
-    private var lastKnownCountry: String? = null
-    private var isFeedLoaded = false
+    private var selectedCountry: String? = null
+    private var isInitialLoadHandled = false
 
     init {
         observeClusters()
@@ -61,7 +61,7 @@ class NewsFeedViewModel(
         _state.update { NewsFeedReducer.reduce(it, intent) }
 
         when (intent) {
-            is NewsFeedIntent.Refresh -> loadFeed()
+            is NewsFeedIntent.Refresh -> requestFeedRefresh()
             is NewsFeedIntent.ArticleClick -> emitSideEffect(
                 NewsFeedSideEffect.NavigateToArticle(intent.articleId, intent.articleUrl)
             )
@@ -71,45 +71,48 @@ class NewsFeedViewModel(
     private fun observeClusters() {
         observeFeedClusters()
             .onEach { (clusters, prefs) ->
-                when {
-                    isCountryChanged(prefs.defaultCountry) -> onCountryChanged(prefs.defaultCountry)
-                    !isFeedLoaded -> onFirstLoad(clusters, prefs.defaultCountry)
-                    else -> onCacheUpdated(clusters, prefs.defaultCountry)
-                }
+                processClusterUpdate(
+                    clusters = clusters,
+                    country = prefs.defaultCountry,
+                )
             }
             .launchIn(viewModelScope)
     }
 
+    private suspend fun processClusterUpdate(clusters: List<NewsCluster>, country: String) {
+        when {
+            hasCountryChanged(country) -> handleCountryChanged(country)
+            !isInitialLoadHandled -> handleInitialLoad(clusters, country)
+            else -> handleCacheUpdate(clusters, country)
+        }
+    }
 
+    private fun hasCountryChanged(newCountry: String): Boolean =
+        selectedCountry != null && selectedCountry != newCountry
 
-// ── Handlers ──────────────────────────────────────────────────────────────────
-
-    private fun isCountryChanged(newCountry: String): Boolean =
-        lastKnownCountry != null && lastKnownCountry != newCountry
-
-    private fun onCountryChanged(newCountry: String) {
-        lastKnownCountry = newCountry
-        isFeedLoaded = false
+    private fun handleCountryChanged(newCountry: String) {
+        selectedCountry = newCountry
+        isInitialLoadHandled = false
         _state.update { NewsFeedState.Loading }
-        loadFeed()
+        requestFeedRefresh()
     }
 
-    private suspend fun onFirstLoad(clusters: List<NewsCluster>, country: String) {
-        lastKnownCountry = country
-        isFeedLoaded = true
-        showCacheIfAvailable(clusters, country)
-        loadFeed()
+    private suspend fun handleInitialLoad(clusters: List<NewsCluster>, country: String) {
+        selectedCountry = country
+        isInitialLoadHandled = true
+
+        showCachedClustersIfPresent(clusters, country)
+        requestFeedRefresh()
     }
 
-    private suspend fun onCacheUpdated(clusters: List<NewsCluster>, country: String) {
+    private suspend fun handleCacheUpdate(clusters: List<NewsCluster>, country: String) {
         if (_state.value.isOffline) return
-        showCacheIfAvailable(clusters, country)
+        showCachedClustersIfPresent(clusters, country)
     }
 
-// ── State helpers ─────────────────────────────────────────────────────────────
-
-    private suspend fun showCacheIfAvailable(clusters: List<NewsCluster>, country: String) {
+    private suspend fun showCachedClustersIfPresent(clusters: List<NewsCluster>, country: String) {
         if (clusters.isEmpty()) return
+
         _state.update {
             NewsFeedReducer.onClustersLoaded(
                 clusters = clusters,
@@ -119,39 +122,40 @@ class NewsFeedViewModel(
         }
     }
 
-// ── Network ───────────────────────────────────────────────────────────────────
-
-    private fun loadFeed() {
+    private fun requestFeedRefresh() {
         viewModelScope.launch {
-            handleNetworkResult(refreshFeed())
+            handleRefreshResult(refreshFeed())
         }
     }
 
-    private fun handleNetworkResult(result: AppResult<Int>) {
+    private suspend fun handleRefreshResult(result: AppResult<Int>) {
         when (result) {
-            is AppResult.Success -> {
-                if (result.data == 0) {
-                    viewModelScope.launch {
-                        val (country, language) = getCurrentLocale()
-                        val clusters = _state.value.contentOrNull?.clusters ?: emptyList()
-                        if (clusters.isEmpty()) {
-                            _state.update { NewsFeedReducer.onEmpty(country, language) }
-                        }
-                    }
-                }
-            }
-            is AppResult.Failure -> {
-                val currentState = _state.value
-                val (newState, message) = NewsFeedReducer.onNetworkError(
-                    state = currentState,
-                    error = result.error,
-                    cachedClusters = currentState.contentOrNull?.clusters ?: emptyList(),
-                    lastCachedAt = currentState.contentOrNull?.lastCachedAt,
-                )
-                _state.update { newState }
-                emitSideEffect(NewsFeedSideEffect.ShowError(message))
-            }
+            is AppResult.Success -> handleRefreshSuccess(result.data)
+            is AppResult.Failure -> handleRefreshFailure(result)
         }
+    }
+
+    private suspend fun handleRefreshSuccess(updatedItemsCount: Int) {
+        if (updatedItemsCount != 0) return
+
+        val (country, language) = getCurrentLocale()
+        val currentClusters = _state.value.contentOrNull?.clusters.orEmpty()
+
+        if (currentClusters.isEmpty()) {
+            _state.update { NewsFeedReducer.onEmpty(country, language) }
+        }
+    }
+
+    private fun handleRefreshFailure(result: AppResult.Failure<Int>) {
+        val currentState = _state.value
+        val (newState, message) = NewsFeedReducer.onNetworkError(
+            state = currentState,
+            error = result.error,
+            cachedClusters = currentState.contentOrNull?.clusters.orEmpty(),
+            lastCachedAt = currentState.contentOrNull?.lastCachedAt,
+        )
+        _state.update { newState }
+        emitSideEffect(NewsFeedSideEffect.ShowError(message))
     }
 
     private fun emitSideEffect(effect: NewsFeedSideEffect) {
