@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface NewsFeedRepository {
 
-    fun getClustersFlow(): Flow<List<NewsCluster>>
+    fun observeFeedClusters(): Flow<List<NewsCluster>>
 
-    fun getReadArticleIdsFlow(): Flow<List<Long>>
+    fun observeReadArticleIds(): Flow<List<Long>>
 
-    suspend fun refreshTopNews(
+    suspend fun refreshFeed(
         country: String,
         language: String,
     ): AppResult<Int>

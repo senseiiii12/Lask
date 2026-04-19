@@ -17,13 +17,13 @@ class NewsFeedRepositoryImpl(
     private val local: NewsFeedLocalDataSource,
 ) : NewsFeedRepository {
 
-    override fun getClustersFlow(): Flow<List<NewsCluster>> =
+    override fun observeFeedClusters(): Flow<List<NewsCluster>> =
         local.observeFeedClusters()
 
-    override fun getReadArticleIdsFlow() =
+    override fun observeReadArticleIds() =
         local.observeReadArticleIds()
 
-    override suspend fun refreshTopNews(
+    override suspend fun refreshFeed(
         country: String,
         language: String,
     ): AppResult<Int> = safeApiCall {
@@ -33,7 +33,7 @@ class NewsFeedRepositoryImpl(
             response.topNews.toEntities(FEED_TOP)
         }
 
-        local.replaceTopNewsFeed(articles = articles, feedCache = feedCache)
+        local.replaceFeedCache(articles = articles, feedCache = feedCache)
         response.topNews.size
     }
 

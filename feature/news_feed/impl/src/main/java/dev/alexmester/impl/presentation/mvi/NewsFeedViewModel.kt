@@ -2,7 +2,11 @@ package dev.alexmester.impl.presentation.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.alexmester.impl.domain.interactor.NewsFeedInteractor
+import dev.alexmester.impl.domain.usecase.GetCurrentLocaleUseCase
+import dev.alexmester.impl.domain.usecase.ObserveFeedClustersUseCase
+import dev.alexmester.impl.domain.usecase.GetLastCachedAtUseCase
+import dev.alexmester.impl.domain.usecase.ObserveReadArticleIdsUseCase
+import dev.alexmester.impl.domain.usecase.RefreshFeedUseCase
 import dev.alexmester.models.news.NewsCluster
 import dev.alexmester.models.result.AppResult
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedIntent
@@ -25,7 +29,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class NewsFeedViewModel(
-    private val interactor: NewsFeedInteractor,
+    private val observeFeedClusters: ObserveFeedClustersUseCase,
+    private val refreshFeed: RefreshFeedUseCase,
+    private val observeReadArticleIds: ObserveReadArticleIdsUseCase,
+    private val getCurrentLocale: GetCurrentLocaleUseCase,
+    private val getLastCachedAt: GetLastCachedAtUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<NewsFeedState>(NewsFeedState.Loading)
@@ -34,8 +42,7 @@ class NewsFeedViewModel(
     private val _sideEffects = Channel<NewsFeedSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
-    val readArticleIds: StateFlow<Set<Long>> = interactor
-        .getReadArticleIdsFlow()
+    val readArticleIds: StateFlow<Set<Long>> = observeReadArticleIds()
         .map { it.toSet() }
         .stateIn(
             scope = viewModelScope,
@@ -47,22 +54,22 @@ class NewsFeedViewModel(
     private var isFeedLoaded = false
 
     init {
-        observeClustersWithPrefs()
+        observeClusters()
     }
 
     fun handleIntent(intent: NewsFeedIntent) {
         _state.update { NewsFeedReducer.reduce(it, intent) }
 
         when (intent) {
-            is NewsFeedIntent.Refresh -> refresh()
+            is NewsFeedIntent.Refresh -> loadFeed()
             is NewsFeedIntent.ArticleClick -> emitSideEffect(
                 NewsFeedSideEffect.NavigateToArticle(intent.articleId, intent.articleUrl)
             )
         }
     }
 
-    private fun observeClustersWithPrefs() {
-        interactor.getClustersWithPrefsFlow()
+    private fun observeClusters() {
+        observeFeedClusters()
             .onEach { (clusters, prefs) ->
                 when {
                     isCountryChanged(prefs.defaultCountry) -> onCountryChanged(prefs.defaultCountry)
@@ -103,11 +110,10 @@ class NewsFeedViewModel(
 
     private suspend fun showCacheIfAvailable(clusters: List<NewsCluster>, country: String) {
         if (clusters.isEmpty()) return
-        val lastCachedAt = interactor.getLastCachedAt()
         _state.update {
             NewsFeedReducer.onClustersLoaded(
                 clusters = clusters,
-                lastCachedAt = lastCachedAt,
+                lastCachedAt = getLastCachedAt(),
                 country = country,
             )
         }
@@ -117,13 +123,7 @@ class NewsFeedViewModel(
 
     private fun loadFeed() {
         viewModelScope.launch {
-            handleNetworkResult(interactor.refresh())
-        }
-    }
-
-    private fun refresh() {
-        viewModelScope.launch {
-            handleNetworkResult(interactor.refresh())
+            handleNetworkResult(refreshFeed())
         }
     }
 
@@ -132,7 +132,7 @@ class NewsFeedViewModel(
             is AppResult.Success -> {
                 if (result.data == 0) {
                     viewModelScope.launch {
-                        val (country, language) = interactor.getCurrentLocale()
+                        val (country, language) = getCurrentLocale()
                         val clusters = _state.value.contentOrNull?.clusters ?: emptyList()
                         if (clusters.isEmpty()) {
                             _state.update { NewsFeedReducer.onEmpty(country, language) }

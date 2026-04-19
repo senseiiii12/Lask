@@ -50,7 +50,7 @@ class NewsFeedLocalDataSource(
      *
      * Всё в одной транзакции — UI никогда не увидит пустую ленту.
      */
-    suspend fun replaceTopNewsFeed(
+    suspend fun replaceFeedCache(
         articles: List<ArticleEntity>,
         feedCache: List<FeedCacheEntity>,
     ) = withContext(ioDispatcher) {
