@@ -52,7 +52,6 @@ fun ProfileScreen(
     )
 }
 
-
 @Composable
 internal fun ProfileScreenContent(
     state: ProfileState,

@@ -1,9 +1,7 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
-import dev.alexmester.error.NetworkErrorUiMapper
 import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.news.NewsCluster
-import dev.alexmester.ui.uitext.UiText
 
 object NewsFeedReducer {
 
@@ -40,8 +38,7 @@ object NewsFeedReducer {
         error: NetworkError,
         cachedClusters: List<NewsCluster>,
         lastCachedAt: Long?,
-    ): Pair<NewsFeedState, UiText> {
-        val message = NetworkErrorUiMapper.toUiText(error)
+    ): NewsFeedState {
 
         val newState = when {
             error is NetworkError.NoInternet && cachedClusters.isNotEmpty() ->
@@ -55,11 +52,11 @@ object NewsFeedReducer {
                 state.copy(contentState = ContentState.Idle)
 
             else -> NewsFeedState.Error(
-                message = message,
+                errorType = error,
                 isRefreshing = false,
             )
         }
 
-        return newState to message
+        return newState
     }
 }

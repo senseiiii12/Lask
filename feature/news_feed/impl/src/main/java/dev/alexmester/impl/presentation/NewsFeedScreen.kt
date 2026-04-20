@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -24,12 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.alexmester.error.NetworkErrorUiMapper
 import dev.alexmester.impl.presentation.components.NewsFeedEmptyScreen
 import dev.alexmester.impl.presentation.components.NewsFeedList
 import dev.alexmester.impl.presentation.components.NewsFeedTopBar
 import dev.alexmester.impl.presentation.mvi.NewsFeedViewModel
 import dev.alexmester.newsfeed.impl.presentation.components.NewsFeedOfflineBanner
-import dev.alexmester.ui.components.error_screen.LaskErrorScreen
+import dev.alexmester.ui.components.notification_screen.LaskNotificationScreen
 import dev.alexmester.ui.components.pull_to_refresh_box.LaskPullToRefreshBox
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
@@ -52,10 +52,13 @@ fun NewsFeedScreen(
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 is NewsFeedSideEffect.ShowError -> {
-                    snackbarHostState.showLaskSnackbar(
-                        message = effect.message.asString(context),
-                        isError = true,
-                    )
+                    if (state.isContent){
+                        val messageError = NetworkErrorUiMapper.toUiText(effect.message).asString(context)
+                        snackbarHostState.showLaskSnackbar(
+                            message = messageError,
+                            isError = true,
+                        )
+                    }
                 }
                 is NewsFeedSideEffect.NavigateToArticle -> {
                     onArticleClick(effect.articleId, effect.articleUrl)
@@ -118,9 +121,9 @@ internal fun NewsFeedScreenContent(
                     }
                 }
                 is NewsFeedState.Error -> {
-                    LaskErrorScreen(
+                    LaskNotificationScreen(
                         modifier = Modifier,
-                        errorMessage = currentState.message.asString(),
+                        errorType = currentState.errorType,
                         isRetrying = currentState.isRefreshing,
                         onRetry = { onIntent(NewsFeedIntent.Refresh) }
                     )

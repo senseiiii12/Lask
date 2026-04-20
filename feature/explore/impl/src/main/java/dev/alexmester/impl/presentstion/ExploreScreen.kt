@@ -2,21 +2,14 @@ package dev.alexmester.impl.presentstion
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.filled.ExploreOff
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -27,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alexmester.impl.presentstion.components.ExploreList
@@ -37,12 +29,12 @@ import dev.alexmester.impl.presentstion.mvi.ExploreSideEffect
 import dev.alexmester.impl.presentstion.mvi.ExploreState
 import dev.alexmester.impl.presentstion.mvi.ExploreViewModel
 import dev.alexmester.ui.R
-import dev.alexmester.ui.components.error_screen.LaskErrorScreen
+import dev.alexmester.ui.components.notification_screen.LaskNotificationScreen
+import dev.alexmester.ui.components.notification_screen.LayoutVariants
 import dev.alexmester.ui.components.pull_to_refresh_box.LaskPullToRefreshBox
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -112,19 +104,18 @@ private fun ExploreScreenContent(
                 }
 
                 is ExploreState.Error -> {
-                    LaskErrorScreen(
-                        errorMessage = state.message.asString(),
+                    LaskNotificationScreen(
+                        errorType = state.errorType,
                         isRetrying = state.isRefreshing,
                         onRetry = { onIntent(ExploreIntent.Refresh) },
                     )
                 }
 
                 is ExploreState.EmptyInterests -> {
-                    LaskErrorScreen(
-                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
-                        errorMessage = stringResource(R.string.interests_empty_message),
-                        isRetrying = state.isRefreshing,
-                        onRetry = { onIntent(ExploreIntent.Refresh) },
+                    LaskNotificationScreen(
+                        imageWarning = Icons.Default.ExploreOff,
+                        textWarning = stringResource(R.string.interests_empty_message),
+                        layoutVariants = LayoutVariants.WARNING,
                     )
                 }
 

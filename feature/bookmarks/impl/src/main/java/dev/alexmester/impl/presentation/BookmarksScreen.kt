@@ -4,6 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +29,8 @@ import dev.alexmester.impl.presentation.mvi.BookmarksState
 import dev.alexmester.impl.presentation.mvi.BookmarksViewModel
 import dev.alexmester.impl.presentation.mvi.contentOrNull
 import dev.alexmester.ui.R
+import dev.alexmester.ui.components.notification_screen.LaskNotificationScreen
+import dev.alexmester.ui.components.notification_screen.LayoutVariants
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
@@ -82,14 +87,12 @@ internal fun BookmarksScreenContent(
                 }
 
                 is BookmarksState.Empty -> {
-                    Text(
-                        text = stringResource(R.string.bookmarks_empty),
-                        style = MaterialTheme.LaskTypography.body1,
-                        color = MaterialTheme.LaskColors.textSecondary,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(horizontal = 32.dp),
+                    LaskNotificationScreen(
+                        modifier = Modifier,
+                        imageWarning = Icons.Default.Bookmarks,
+                        textWarning = stringResource(R.string.bookmarks_empty),
+                        layoutVariants = LayoutVariants.WARNING,
+                        showRetry = false
                     )
                 }
 

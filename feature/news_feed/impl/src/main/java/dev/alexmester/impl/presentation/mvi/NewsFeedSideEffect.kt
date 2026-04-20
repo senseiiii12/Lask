@@ -1,6 +1,7 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
-import dev.alexmester.ui.uitext.UiText
+import dev.alexmester.models.error.NetworkError
+
 
 sealed class NewsFeedSideEffect {
 
@@ -9,5 +10,5 @@ sealed class NewsFeedSideEffect {
         val articleUrl: String,
     ) : NewsFeedSideEffect()
 
-    data class ShowError(val message: UiText) : NewsFeedSideEffect()
+    data class ShowError(val message: NetworkError) : NewsFeedSideEffect()
 }

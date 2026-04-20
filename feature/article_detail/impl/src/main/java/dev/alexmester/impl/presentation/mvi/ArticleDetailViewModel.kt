@@ -15,8 +15,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private const val CLAP_ANIMATION_RESET_MS = 600L
-
 class ArticleDetailViewModel(
     private val interactor: ArticleDetailInteractor,
     private val articleId: Long,
@@ -112,8 +110,6 @@ class ArticleDetailViewModel(
         viewModelScope.launch {
             interactor.addClap(articleId)
             _state.update { it.contentOrNull?.copy(isClapAnimating = true) ?: it }
-//            delay(CLAP_ANIMATION_RESET_MS)
-//            _state.update { it.contentOrNull?.copy(isClapAnimating = false) ?: it }
         }
     }
 

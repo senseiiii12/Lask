@@ -7,9 +7,11 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -32,6 +34,7 @@ internal fun ProfileEditField(
             color = MaterialTheme.LaskColors.textPrimary
         ),
         enabled = isEdit,
+        cursorBrush = SolidColor(MaterialTheme.LaskColors.brand_blue),
     ) { innerTextField ->
         OutlinedTextFieldDefaults.DecorationBox(
             value = editName,
@@ -59,7 +62,6 @@ internal fun ProfileEditField(
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.LaskColors.brand_blue,
                         unfocusedBorderColor = MaterialTheme.LaskColors.brand_blue,
-                        cursorColor = MaterialTheme.LaskColors.brand_blue
                     )
                 )
             }

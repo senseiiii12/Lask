@@ -1,13 +1,13 @@
 package dev.alexmester.impl.presentstion.mvi
 
+import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.news.NewsArticle
-import dev.alexmester.ui.uitext.UiText
 
 sealed interface ExploreState {
     data object Loading : ExploreState
 
     data class Error(
-        val message: UiText,
+        val errorType: NetworkError,
         val isRefreshing: Boolean = false
     ) : ExploreState
 

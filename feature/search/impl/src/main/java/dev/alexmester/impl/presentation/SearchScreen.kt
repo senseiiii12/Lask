@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +52,8 @@ import dev.alexmester.impl.presentation.mvi.SearchViewModel
 import dev.alexmester.ui.components.buttons.LaskTextButton
 import dev.alexmester.ui.components.input_field.LaskTextField
 import dev.alexmester.ui.components.list_card.LaskArticleCard
+import dev.alexmester.ui.components.notification_screen.LaskNotificationScreen
+import dev.alexmester.ui.components.notification_screen.LayoutVariants
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -171,26 +175,18 @@ internal fun SearchScreenContent(
                 }
 
                 state.error != null -> {
-                    Text(
-                        text = state.error.asString(),
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(32.dp),
-                        style = MaterialTheme.LaskTypography.body1,
-                        color = MaterialTheme.LaskColors.error,
-                        textAlign = TextAlign.Center,
+                    LaskNotificationScreen(
+                        errorType = state.error,
+                        showRetry = false,
                     )
                 }
 
                 state.hasSearched && state.results.isEmpty() -> {
-                    Text(
-                        text = "No results found for \"${state.query}\"",
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(32.dp),
-                        style = MaterialTheme.LaskTypography.body1,
-                        color = MaterialTheme.LaskColors.textSecondary,
-                        textAlign = TextAlign.Center,
+                    LaskNotificationScreen(
+                        imageWarning = Icons.Default.SearchOff,
+                        textWarning = "No results found for \"${state.query}\"",
+                        layoutVariants = LayoutVariants.WARNING,
+                        showRetry = false,
                     )
                 }
 
@@ -244,15 +240,14 @@ internal fun SearchScreenContent(
 
 
                 !state.hasSearched && state.query.isEmpty() -> {
-                    Text(
-                        text = "Search news by keyword",
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(32.dp),
-                        style = MaterialTheme.LaskTypography.body1,
-                        color = MaterialTheme.LaskColors.textSecondary,
-                        textAlign = TextAlign.Center,
+                    LaskNotificationScreen(
+                        imageWarning = Icons.Default.Search,
+                        textWarning = "Search news by keyword",
+                        layoutVariants = LayoutVariants.WARNING,
+                        showRetry = false,
+
                     )
+
                 }
             }
         }

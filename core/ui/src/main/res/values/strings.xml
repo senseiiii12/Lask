@@ -4,8 +4,8 @@
     <!-- common error -->
     <string name="error_no_internet">No internet connection</string>
     <string name="error_payment_required">Daily quota exceeded</string>
-    <string name="error_rate_limit">Request limit exceeded. Try again later</string>
-    <string name="error_unknown">Failed to load news</string>
+    <string name="error_rate_limit">Request limit exceeded.\nTry again later</string>
+    <string name="error_unknown">Unknown error</string>
     <string name="error_article_not_found">Article not found</string>
     <string name="error_retry">Retry</string>
 

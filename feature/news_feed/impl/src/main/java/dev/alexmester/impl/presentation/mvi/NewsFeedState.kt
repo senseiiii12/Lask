@@ -1,12 +1,12 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
+import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.news.NewsCluster
-import dev.alexmester.ui.uitext.UiText
 
 sealed interface NewsFeedState {
     data object Loading : NewsFeedState
     data class Error(
-        val message: UiText,
+        val errorType: NetworkError,
         val isRefreshing: Boolean = false,
         ) : NewsFeedState
     data class Content(
@@ -31,6 +31,9 @@ sealed interface ContentState {
 
 val NewsFeedState.contentOrNull: NewsFeedState.Content?
     get() = this as? NewsFeedState.Content
+
+val NewsFeedState.isContent: Boolean
+    get() = this is NewsFeedState.Content
 
 val NewsFeedState.isLoading: Boolean
     get() = this is NewsFeedState.Loading

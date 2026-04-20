@@ -168,7 +168,7 @@ class ExploreViewModel(
                     current.copy(isRefreshing = false)
                 }
 
-                else -> ExploreState.Error(message = message)
+                else -> ExploreState.Error(errorType = error)
             }
         }
         emitSideEffect(ExploreSideEffect.ShowError(message))

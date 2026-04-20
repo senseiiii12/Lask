@@ -97,7 +97,7 @@ class SearchViewModel(
                     it.copy(
                         isLoading = false,
                         hasSearched = true,
-                        error = NetworkErrorUiMapper.toUiText(result.error),
+                        error = result.error,
                     )
                 }
             }

@@ -1,6 +1,7 @@
 package dev.alexmester.impl.presentation.mvi
 
 import dev.alexmester.impl.domain.model.SearchFilters
+import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.uitext.UiText
 
@@ -11,6 +12,6 @@ data class SearchState(
     val isLoading: Boolean = false,
     val isLoadingMore: Boolean = false,
     val endReached: Boolean = false,
-    val error: UiText? = null,
+    val error: NetworkError? = null,
     val hasSearched: Boolean = false,
 )

@@ -37,7 +37,7 @@ internal fun NewsFeedOfflineBanner(
         textAlign = TextAlign.Center,
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.LaskColors.warning)
+            .background(MaterialTheme.LaskColors.error)
             .padding(8.dp),
     )
 }

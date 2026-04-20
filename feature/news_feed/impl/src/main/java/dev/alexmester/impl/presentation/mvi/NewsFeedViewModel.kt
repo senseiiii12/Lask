@@ -7,6 +7,7 @@ import dev.alexmester.impl.domain.usecase.GetLastCachedAtUseCase
 import dev.alexmester.impl.domain.usecase.ObserveFeedClustersUseCase
 import dev.alexmester.impl.domain.usecase.ObserveReadArticleIdsUseCase
 import dev.alexmester.impl.domain.usecase.RefreshFeedUseCase
+import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.news.NewsCluster
 import dev.alexmester.models.result.AppResult
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedIntent
@@ -59,7 +60,6 @@ class NewsFeedViewModel(
 
     fun handleIntent(intent: NewsFeedIntent) {
         _state.update { NewsFeedReducer.reduce(it, intent) }
-
         when (intent) {
             is NewsFeedIntent.Refresh -> requestFeedRefresh()
             is NewsFeedIntent.ArticleClick -> emitSideEffect(
@@ -131,7 +131,7 @@ class NewsFeedViewModel(
     private suspend fun handleRefreshResult(result: AppResult<Int>) {
         when (result) {
             is AppResult.Success -> handleRefreshSuccess(result.data)
-            is AppResult.Failure -> handleRefreshFailure(result)
+            is AppResult.Failure -> handleRefreshFailure(result.error)
         }
     }
 
@@ -146,16 +146,16 @@ class NewsFeedViewModel(
         }
     }
 
-    private fun handleRefreshFailure(result: AppResult.Failure<Int>) {
+    private fun handleRefreshFailure(error: NetworkError) {
         val currentState = _state.value
-        val (newState, message) = NewsFeedReducer.onNetworkError(
+        val newState = NewsFeedReducer.onNetworkError(
             state = currentState,
-            error = result.error,
+            error = error,
             cachedClusters = currentState.contentOrNull?.clusters.orEmpty(),
             lastCachedAt = currentState.contentOrNull?.lastCachedAt,
         )
         _state.update { newState }
-        emitSideEffect(NewsFeedSideEffect.ShowError(message))
+        emitSideEffect(NewsFeedSideEffect.ShowError(error))
     }
 
     private fun emitSideEffect(effect: NewsFeedSideEffect) {
