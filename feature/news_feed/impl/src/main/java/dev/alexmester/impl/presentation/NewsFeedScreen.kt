@@ -30,6 +30,7 @@ import dev.alexmester.impl.presentation.components.NewsFeedTopBar
 import dev.alexmester.impl.presentation.mvi.NewsFeedViewModel
 import dev.alexmester.newsfeed.impl.presentation.components.NewsFeedOfflineBanner
 import dev.alexmester.ui.components.notification_screen.LaskNotificationScreen
+import dev.alexmester.ui.components.notification_screen.NotificationType
 import dev.alexmester.ui.components.pull_to_refresh_box.LaskPullToRefreshBox
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
@@ -123,7 +124,8 @@ internal fun NewsFeedScreenContent(
                 is NewsFeedState.Error -> {
                     LaskNotificationScreen(
                         modifier = Modifier,
-                        errorType = currentState.errorType,
+                        type = NotificationType.Error(currentState.errorType),
+                        showRetry = true,
                         isRetrying = currentState.isRefreshing,
                         onRetry = { onIntent(NewsFeedIntent.Refresh) }
                     )

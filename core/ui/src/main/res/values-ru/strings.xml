@@ -9,6 +9,12 @@
     <string name="error_article_not_found">Статья не найдена</string>
     <string name="error_retry">Повторить</string>
 
+    <!-- common warning -->
+    <string name="warning_no_articles">Статей пока нет</string>
+    <string name="warning_empty_bookmarks">Избранных статей нет</string>
+    <string name="warning_no_resutl_for_query">Результаты не найдены для %1$s</string>
+    <string name="warning_search_news">Поиск новостей по ключевым словам</string>
+
     <!-- bottombar tabs -->
     <string name="tab_top_news">Тренды</string>
     <string name="tab_explore">Поиск</string>
@@ -18,7 +24,6 @@
     <!-- Bookmark-->
     <string name="bookmark_add">Добавлено в закладки</string>
     <string name="bookmark_removed">Удалено из закладок</string>
-    <string name="bookmarks_empty">Нет Закладок</string>
     <string name="bookmarks_cancel">Отменить</string>
     <string name="bookmarks_done">Ок</string>
 

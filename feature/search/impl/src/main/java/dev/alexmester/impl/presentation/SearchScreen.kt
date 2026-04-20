@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,29 +32,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.alexmester.impl.domain.model.SearchFilters
 import dev.alexmester.impl.presentation.components.FilterOverlay
-import dev.alexmester.impl.presentation.components.filter_picker.CategoryPickerScreen
-import dev.alexmester.impl.presentation.components.filter_picker.DateRangePickerScreen
 import dev.alexmester.impl.presentation.components.SearchFilterRow
-import dev.alexmester.impl.presentation.components.filter_picker.SortDirectionPickerScreen
-import dev.alexmester.impl.presentation.components.filter_picker.CountryPickerScreen
-import dev.alexmester.impl.presentation.components.filter_picker.LanguagePickerScreen
 import dev.alexmester.impl.presentation.mvi.FilterType
 import dev.alexmester.impl.presentation.mvi.SearchIntent
 import dev.alexmester.impl.presentation.mvi.SearchSideEffect
 import dev.alexmester.impl.presentation.mvi.SearchState
 import dev.alexmester.impl.presentation.mvi.SearchViewModel
+import dev.alexmester.ui.R
 import dev.alexmester.ui.components.buttons.LaskTextButton
 import dev.alexmester.ui.components.input_field.LaskTextField
 import dev.alexmester.ui.components.list_card.LaskArticleCard
 import dev.alexmester.ui.components.notification_screen.LaskNotificationScreen
-import dev.alexmester.ui.components.notification_screen.LayoutVariants
+import dev.alexmester.ui.components.notification_screen.NotificationType
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.ui.desing_system.LaskTypography
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import org.koin.compose.viewmodel.koinViewModel
@@ -124,7 +117,7 @@ internal fun SearchScreenContent(
             LaskTextField(
                 modifier = Modifier.weight(1f),
                 text = state.query,
-                placeholderText = "Search news...",
+                placeholderText = stringResource(R.string.search_placeholder),
                 leadingIcon = Icons.Outlined.Search,
                 onValueChange = { onIntent(SearchIntent.QueryChanged(it)) },
                 onClearClick = { onIntent(SearchIntent.ClearQuery) },
@@ -136,13 +129,12 @@ internal fun SearchScreenContent(
             )
             LaskTextButton(
                 modifier = Modifier.padding(start = 8.dp),
-                text = "Cancel",
+                text = stringResource(R.string.search_back),
                 textColor = MaterialTheme.LaskColors.brand_blue,
                 onClick = { onIntent(SearchIntent.Cancel) },
             )
         }
 
-        // Filter chips
         SearchFilterRow(
             filters = state.filters,
             onFilterClick = { filterType ->
@@ -176,17 +168,16 @@ internal fun SearchScreenContent(
 
                 state.error != null -> {
                     LaskNotificationScreen(
-                        errorType = state.error,
-                        showRetry = false,
+                        type = NotificationType.Error(state.error),
                     )
                 }
 
                 state.hasSearched && state.results.isEmpty() -> {
                     LaskNotificationScreen(
-                        imageWarning = Icons.Default.SearchOff,
-                        textWarning = "No results found for \"${state.query}\"",
-                        layoutVariants = LayoutVariants.WARNING,
-                        showRetry = false,
+                        type = NotificationType.Warning(
+                            text = stringResource(R.string.warning_no_resutl_for_query,"\"${state.query}\""),
+                            image = Icons.Default.SearchOff
+                        ),
                     )
                 }
 
@@ -238,16 +229,13 @@ internal fun SearchScreenContent(
                     }
                 }
 
-
                 !state.hasSearched && state.query.isEmpty() -> {
                     LaskNotificationScreen(
-                        imageWarning = Icons.Default.Search,
-                        textWarning = "Search news by keyword",
-                        layoutVariants = LayoutVariants.WARNING,
-                        showRetry = false,
-
+                        type = NotificationType.Warning(
+                            text = stringResource(R.string.warning_search_news),
+                            image = Icons.Default.Search
+                        ),
                     )
-
                 }
             }
         }

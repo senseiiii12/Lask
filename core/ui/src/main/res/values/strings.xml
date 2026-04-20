@@ -9,6 +9,12 @@
     <string name="error_article_not_found">Article not found</string>
     <string name="error_retry">Retry</string>
 
+    <!-- common warning -->
+    <string name="warning_no_articles">No articles yet</string>
+    <string name="warning_empty_bookmarks">Empty bookmarks</string>
+    <string name="warning_no_resutl_for_query">No results found for %1$s</string>
+    <string name="warning_search_news">Search news by keyword</string>
+
     <!-- bottombar tabs -->
     <string name="tab_top_news">Trends</string>
     <string name="tab_explore">Explore</string>
@@ -18,7 +24,6 @@
     <!-- Bookmark-->
     <string name="bookmark_add">Added to bookmarks</string>
     <string name="bookmark_removed">Removed from bookmarks</string>
-    <string name="bookmarks_empty">Empty bookmarks</string>
     <string name="bookmarks_cancel">Cancel</string>
     <string name="bookmarks_done">Done</string>
 
@@ -74,6 +79,8 @@
     <string name="search_language">Language</string>
     <string name="search_date_period">Date period</string>
     <string name="search_sort">Sort</string>
+    <string name="search_back">Back</string>
+    <string name="search_placeholder">Search news…</string>
 
 
 

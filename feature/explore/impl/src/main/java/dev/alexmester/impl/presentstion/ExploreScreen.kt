@@ -30,7 +30,7 @@ import dev.alexmester.impl.presentstion.mvi.ExploreState
 import dev.alexmester.impl.presentstion.mvi.ExploreViewModel
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.notification_screen.LaskNotificationScreen
-import dev.alexmester.ui.components.notification_screen.LayoutVariants
+import dev.alexmester.ui.components.notification_screen.NotificationType
 import dev.alexmester.ui.components.pull_to_refresh_box.LaskPullToRefreshBox
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
@@ -105,7 +105,8 @@ private fun ExploreScreenContent(
 
                 is ExploreState.Error -> {
                     LaskNotificationScreen(
-                        errorType = state.errorType,
+                        type = NotificationType.Error(state.errorType),
+                        showRetry = true,
                         isRetrying = state.isRefreshing,
                         onRetry = { onIntent(ExploreIntent.Refresh) },
                     )
@@ -113,9 +114,13 @@ private fun ExploreScreenContent(
 
                 is ExploreState.EmptyInterests -> {
                     LaskNotificationScreen(
-                        imageWarning = Icons.Default.ExploreOff,
-                        textWarning = stringResource(R.string.interests_empty_message),
-                        layoutVariants = LayoutVariants.WARNING,
+                        type = NotificationType.Warning(
+                            text = stringResource(R.string.interests_empty_message),
+                            image = Icons.Default.ExploreOff
+                        ),
+                        showRetry = true,
+                        isRetrying = state.isRefreshing,
+                        onRetry = { onIntent(ExploreIntent.Refresh) },
                     )
                 }
 

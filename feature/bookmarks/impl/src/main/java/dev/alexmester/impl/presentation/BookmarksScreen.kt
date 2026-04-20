@@ -5,21 +5,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alexmester.impl.presentation.components.BookmarksList
 import dev.alexmester.impl.presentation.components.BookmarksTopBar
@@ -30,9 +25,8 @@ import dev.alexmester.impl.presentation.mvi.BookmarksViewModel
 import dev.alexmester.impl.presentation.mvi.contentOrNull
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.notification_screen.LaskNotificationScreen
-import dev.alexmester.ui.components.notification_screen.LayoutVariants
+import dev.alexmester.ui.components.notification_screen.NotificationType
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -89,10 +83,10 @@ internal fun BookmarksScreenContent(
                 is BookmarksState.Empty -> {
                     LaskNotificationScreen(
                         modifier = Modifier,
-                        imageWarning = Icons.Default.Bookmarks,
-                        textWarning = stringResource(R.string.bookmarks_empty),
-                        layoutVariants = LayoutVariants.WARNING,
-                        showRetry = false
+                        type = NotificationType.Warning(
+                            text = stringResource(R.string.warning_empty_bookmarks),
+                            image = Icons.Default.Bookmarks
+                        )
                     )
                 }
 
