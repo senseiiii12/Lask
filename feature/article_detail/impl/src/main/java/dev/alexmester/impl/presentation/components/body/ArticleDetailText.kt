@@ -30,7 +30,8 @@ internal fun ArticleDetailText(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    lineCount = 8,
+                    lineCount = 20,
+                    lineHeight = 28.dp
                 )
             }
             is TranslationState.Translated -> {

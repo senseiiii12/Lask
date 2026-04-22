@@ -5,7 +5,6 @@ sealed class SystemIntent {
     data object NavigateToLanguage : SystemIntent()
     data object NavigateToCountry : SystemIntent()
     data object NavigateToAutoTranslateLanguage : SystemIntent()
-    data object DisableAutoTranslate : SystemIntent()
     data object Back : SystemIntent()
 }
 

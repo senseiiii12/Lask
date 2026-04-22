@@ -38,28 +38,28 @@ class ArticleDetailViewModel(
 
     fun handleIntent(intent: ArticleDetailIntent) {
         when (intent) {
-            ArticleDetailIntent.Back ->
+            is ArticleDetailIntent.Back ->
                 emitSideEffect(ArticleDetailSideEffect.NavigateBack)
 
-            ArticleDetailIntent.Clap -> onClap()
+            is ArticleDetailIntent.Clap -> onClap()
 
-            ArticleDetailIntent.ToggleBookmark -> onToggleBookmark()
+            is ArticleDetailIntent.ToggleBookmark -> onToggleBookmark()
 
-            ArticleDetailIntent.Share ->
+            is ArticleDetailIntent.Share ->
                 emitSideEffect(ArticleDetailSideEffect.ShareUrl(articleUrl))
 
-            ArticleDetailIntent.TimeThresholdReached -> {
+            is ArticleDetailIntent.TimeThresholdReached -> {
                 isTimeThresholdReached = true
                 tryMarkAsRead()
             }
 
-            ArticleDetailIntent.ScrollThresholdReached -> {
+            is ArticleDetailIntent.ScrollThresholdReached -> {
                 isScrollThresholdReached = true
                 tryMarkAsRead()
             }
-            ArticleDetailIntent.Translate -> onTranslate()
+            is ArticleDetailIntent.Translate -> onTranslate()
 
-            ArticleDetailIntent.RevertTranslation -> onRevertTranslation()
+            is ArticleDetailIntent.RevertTranslation -> onRevertTranslation()
         }
     }
 
@@ -94,7 +94,7 @@ class ArticleDetailViewModel(
 
     private fun onTranslate() {
         val content = _state.value.contentOrNull ?: return
-        val targetLang = content.autoTranslateLanguage ?: return
+        val targetLang = content.autoTranslateLanguage
 
         _state.update { it.contentOrNull?.copy(translationState = TranslationState.Loading) ?: it }
 

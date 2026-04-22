@@ -70,6 +70,7 @@
     <!-- System -->
     <string name="system_theme">Тема</string>
     <string name="system_locale_country">Страна новости</string>
-    <string name="system_locale_language">Язык новости</string>
+    <string name="system_locale_language">Язык новостей</string>
+    <string name="system_locale_translate">Перевод новостей</string>
 
 </resources>

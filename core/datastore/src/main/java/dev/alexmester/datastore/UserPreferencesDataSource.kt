@@ -20,10 +20,12 @@ class UserPreferencesDataSource(
     companion object {
         private val KEY_DEFAULT_COUNTRY = stringPreferencesKey("default_country")
         private val KEY_DEFAULT_LANGUAGE = stringPreferencesKey("default_language")
+        private val KEY_AUTO_TRANSLATE_LANGUAGE = stringPreferencesKey("auto_translate_language")
         private val KEY_IS_DARK_THEME = booleanPreferencesKey("is_dark_theme")
         private val KEY_IS_THEME_SET = booleanPreferencesKey("is_theme_set")
         private val KEY_ONBOARDING_DONE = booleanPreferencesKey("onboarding_completed")
         private val KEY_LOCALE_MANUALLY_SET = booleanPreferencesKey("locale_manually_set")
+        private val KEY_AUTO_TRANSLATE_MANUALLY_SET = booleanPreferencesKey("auto_translate_manually_set")
         private val KEY_PROFILE_NAME = stringPreferencesKey("profile_name")
         private val KEY_AVATAR_URI = stringPreferencesKey("avatar_uri")
         private val KEY_STREAK_COUNT = intPreferencesKey("streak_count")
@@ -31,7 +33,6 @@ class UserPreferencesDataSource(
         private val KEY_CURRENT_XP = floatPreferencesKey("current_xp")
         private val KEY_CURRENT_LEVEL = intPreferencesKey("current_level")
         private val KEY_INTERESTS = stringPreferencesKey("interests")
-        private val KEY_AUTO_TRANSLATE_LANGUAGE = stringPreferencesKey("auto_translate_language")
 
         private const val DELIMITER = "|||"
     }
@@ -54,7 +55,9 @@ class UserPreferencesDataSource(
                 ?.split(DELIMITER)
                 ?.filter { it.isNotBlank() }
                 ?: emptyList(),
-            autoTranslateLanguage = prefs[KEY_AUTO_TRANSLATE_LANGUAGE],
+            autoTranslateLanguage = prefs[KEY_AUTO_TRANSLATE_LANGUAGE]
+                ?: SupportedLocales.FALLBACK_LANGUAGE,
+            isAutoTranslateManuallySet = prefs[KEY_AUTO_TRANSLATE_MANUALLY_SET] ?: false,
         )
     }
 
@@ -67,6 +70,9 @@ class UserPreferencesDataSource(
             prefs[KEY_DEFAULT_COUNTRY] = country
             prefs[KEY_DEFAULT_LANGUAGE] = language
             prefs[KEY_LOCALE_MANUALLY_SET] = false
+            if (prefs[KEY_AUTO_TRANSLATE_MANUALLY_SET] != true) {
+                prefs[KEY_AUTO_TRANSLATE_LANGUAGE] = language
+            }
         }
     }
 
@@ -75,6 +81,13 @@ class UserPreferencesDataSource(
             prefs[KEY_DEFAULT_COUNTRY] = country
             prefs[KEY_DEFAULT_LANGUAGE] = language
             prefs[KEY_LOCALE_MANUALLY_SET] = true
+        }
+    }
+
+    suspend fun updateAutoTranslateLanguage(languageCode: String) {
+        dataStore.edit { prefs ->
+            prefs[KEY_AUTO_TRANSLATE_LANGUAGE] = languageCode
+            prefs[KEY_AUTO_TRANSLATE_MANUALLY_SET] = true
         }
     }
 

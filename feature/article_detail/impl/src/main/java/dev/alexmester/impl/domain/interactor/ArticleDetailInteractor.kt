@@ -50,6 +50,6 @@ class ArticleDetailInteractor(
         }
     }
 
-    suspend fun getAutoTranslateLanguage(): String? =
+    suspend fun getAutoTranslateLanguage(): String =
         repository.getAutoTranslateLanguage()
 }

@@ -36,15 +36,10 @@ class SystemViewModel(
                 emitSideEffect(SystemSideEffect.NavigateToLocalePicker(LocalePickerType.LANGUAGE))
             is SystemIntent.NavigateToCountry ->
                 emitSideEffect(SystemSideEffect.NavigateToLocalePicker(LocalePickerType.COUNTRY))
-            is SystemIntent.Back ->
-                emitSideEffect(SystemSideEffect.NavigateBack)
             is SystemIntent.NavigateToAutoTranslateLanguage ->
                 emitSideEffect(SystemSideEffect.NavigateToAutoTranslatePicker)
-            is SystemIntent.DisableAutoTranslate -> {
-                viewModelScope.launch {
-                    preferencesDataSource.updateAutoTranslateLanguage(null)
-                }
-            }
+            is SystemIntent.Back ->
+                emitSideEffect(SystemSideEffect.NavigateBack)
         }
     }
 
@@ -75,17 +70,6 @@ class SystemViewModel(
                 AppTheme.DARK   -> true
             }
             preferencesDataSource.updateTheme(isDark)
-        }
-    }
-
-    fun applyLocaleOverride(countryOverride: String?, languageOverride: String?) {
-        if (countryOverride == null && languageOverride == null) return
-        viewModelScope.launch {
-            val prefs = preferencesDataSource.userPreferences.first()
-            preferencesDataSource.updateLocaleManually(
-                country = countryOverride ?: prefs.defaultCountry,
-                language = languageOverride ?: prefs.defaultLanguage,
-            )
         }
     }
 

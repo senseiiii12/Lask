@@ -37,8 +37,7 @@ internal fun ArticleDetailBottomBar(
     hazeState: HazeState,
     modifier: Modifier = Modifier,
 ) {
-    val isTranslateEnabled = autoTranslateLanguage != null &&
-            autoTranslateLanguage != articleLanguage &&
+    val isTranslateEnabled = autoTranslateLanguage != articleLanguage &&
             translationState !is TranslationState.Loading
 
     val isTranslated = translationState is TranslationState.Translated

@@ -8,6 +8,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.alexmester.ui.desing_system.LaskColors
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Rect
 
 @Composable
 fun ShimmerTextBlock(
@@ -50,7 +54,7 @@ fun ShimmerTextBlock(
         end = Offset(shimmerX + 600f, 0f),
     )
 
-    androidx.compose.foundation.layout.Column(modifier = modifier) {
+    Column(modifier = modifier) {
         repeat(lineCount) { index ->
             val widthFraction = if (index == lineCount - 1) 0.6f else 1f
             Box(
@@ -58,7 +62,10 @@ fun ShimmerTextBlock(
                     .fillMaxWidth(widthFraction)
                     .height(lineHeight)
                     .padding(bottom = lineSpacing)
-                    .background(shimmerBrush, RoundedCornerShape(4.dp))
+                    .clip( RoundedCornerShape(4.dp))
+                    .drawBehind{
+                        drawRect(shimmerBrush)
+                    }
             )
         }
     }

@@ -150,12 +150,11 @@ class LocalePickerViewModel(
                 }
 
                 LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> {
-                    val currentCode = prefs.autoTranslateLanguage ?: ""
                     _state.update {
                         it.copy(
                             items = BuildLocale.buildLanguageItems(),
-                            currentCode = currentCode,
-                            selectedCode = currentCode,
+                            currentCode = prefs.autoTranslateLanguage,
+                            selectedCode = prefs.autoTranslateLanguage,
                             otherLocaleCode = "",
                         )
                     }

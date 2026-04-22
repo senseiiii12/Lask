@@ -115,23 +115,10 @@ internal fun SystemScreenContent(
                 onClick = { onIntent(SystemIntent.NavigateToCountry) },
             )
             SettingsValueRow(
-                label = "Auto Translate",
+                label = stringResource(R.string.system_locale_translate),
                 value = state.autoTranslateDisplayName,
-                onClick = {
-                    if (state.autoTranslateLanguage != null) {
-                        onIntent(SystemIntent.NavigateToAutoTranslateLanguage)
-                    } else {
-                        onIntent(SystemIntent.NavigateToAutoTranslateLanguage)
-                    }
-                },
+                onClick = { onIntent(SystemIntent.NavigateToAutoTranslateLanguage) },
             )
-            if (state.autoTranslateLanguage != null) {
-                LaskTextButton(
-                    text = "Turn off auto-translate",
-                    textColor = MaterialTheme.LaskColors.error,
-                    onClick = { onIntent(SystemIntent.DisableAutoTranslate) },
-                )
-            }
         }
     }
 }

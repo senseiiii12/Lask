@@ -52,6 +52,6 @@ class ArticleDetailRepositoryImpl(
         return response.translations.translatedText
     }
 
-    override suspend fun getAutoTranslateLanguage(): String? =
+    override suspend fun getAutoTranslateLanguage(): String =
         preferencesDataSource.userPreferences.first().autoTranslateLanguage
 }

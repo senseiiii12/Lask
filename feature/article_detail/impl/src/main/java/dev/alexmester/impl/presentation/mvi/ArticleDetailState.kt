@@ -1,5 +1,6 @@
 package dev.alexmester.impl.presentation.mvi
 
+import dev.alexmester.models.locale.SupportedLocales
 import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.uitext.UiText
 
@@ -14,7 +15,7 @@ sealed interface ArticleDetailState {
         val translationState: TranslationState = TranslationState.Idle,
         val translatedTitle: String? = null,
         val translatedText: String? = null,
-        val autoTranslateLanguage: String? = null,
+        val autoTranslateLanguage: String = SupportedLocales.FALLBACK_LANGUAGE,
     ) : ArticleDetailState
 }
 

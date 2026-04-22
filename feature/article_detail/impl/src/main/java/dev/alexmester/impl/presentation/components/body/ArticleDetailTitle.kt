@@ -32,8 +32,8 @@ internal fun ArticleDetailTitle(
         if (isLoading) {
             ShimmerTextBlock(
                 modifier = Modifier.fillMaxWidth(),
-                lineCount = 2,
-                lineHeight = 22.dp ,
+                lineCount = 4,
+                lineHeight = 28.dp ,
             )
         } else {
             Text(

@@ -27,5 +27,5 @@ interface ArticleDetailRepository {
         sourceLanguage: String? = null,
     ): String
 
-    suspend fun getAutoTranslateLanguage(): String?
+    suspend fun getAutoTranslateLanguage(): String
 }

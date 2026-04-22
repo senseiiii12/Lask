@@ -6,7 +6,7 @@ data class SystemState(
     val theme: AppTheme = AppTheme.SYSTEM,
     val languageCode: String = "en",
     val countryCode: String = "us",
-    val autoTranslateLanguage: String? = null,
+    val autoTranslateLanguage: String = "en",
 ) {
 
     val autoTranslateDisplayName: String
