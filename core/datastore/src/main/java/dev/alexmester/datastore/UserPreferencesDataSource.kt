@@ -24,7 +24,6 @@ class UserPreferencesDataSource(
         private val KEY_IS_THEME_SET = booleanPreferencesKey("is_theme_set")
         private val KEY_ONBOARDING_DONE = booleanPreferencesKey("onboarding_completed")
         private val KEY_LOCALE_MANUALLY_SET = booleanPreferencesKey("locale_manually_set")
-        // Profile
         private val KEY_PROFILE_NAME = stringPreferencesKey("profile_name")
         private val KEY_AVATAR_URI = stringPreferencesKey("avatar_uri")
         private val KEY_STREAK_COUNT = intPreferencesKey("streak_count")
@@ -32,6 +31,7 @@ class UserPreferencesDataSource(
         private val KEY_CURRENT_XP = floatPreferencesKey("current_xp")
         private val KEY_CURRENT_LEVEL = intPreferencesKey("current_level")
         private val KEY_INTERESTS = stringPreferencesKey("interests")
+        private val KEY_AUTO_TRANSLATE_LANGUAGE = stringPreferencesKey("auto_translate_language")
 
         private const val DELIMITER = "|||"
     }
@@ -54,6 +54,7 @@ class UserPreferencesDataSource(
                 ?.split(DELIMITER)
                 ?.filter { it.isNotBlank() }
                 ?: emptyList(),
+            autoTranslateLanguage = prefs[KEY_AUTO_TRANSLATE_LANGUAGE],
         )
     }
 
@@ -158,7 +159,6 @@ class UserPreferencesDataSource(
             var xp = (prefs[KEY_CURRENT_XP] ?: 0f) + xpDelta
             var level = prefs[KEY_CURRENT_LEVEL] ?: 1
 
-            // Повышаем уровень пока хватает XP
             while (true) {
                 val needed = xpForLevel(level)
                 if (xp >= needed) {
@@ -169,6 +169,13 @@ class UserPreferencesDataSource(
 
             prefs[KEY_CURRENT_XP] = xp
             prefs[KEY_CURRENT_LEVEL] = level
+        }
+    }
+
+    suspend fun updateAutoTranslateLanguage(languageCode: String?) {
+        dataStore.edit { prefs ->
+            if (languageCode == null) prefs.remove(KEY_AUTO_TRANSLATE_LANGUAGE)
+            else prefs[KEY_AUTO_TRANSLATE_LANGUAGE] = languageCode
         }
     }
 

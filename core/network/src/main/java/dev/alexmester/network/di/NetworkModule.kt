@@ -2,6 +2,7 @@ package dev.alexmester.network.di
 
 import dev.alexmester.network.BuildConfig
 import dev.alexmester.network.plugin.ApiKeyPlugin
+import dev.alexmester.network.translate.TranslateApiService
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
@@ -66,5 +67,12 @@ val networkModule = module {
                 maxRetries = 3
             }
         }
+    }
+
+    single {
+        TranslateApiService(
+            client = get(),
+            apiKey = BuildConfig.TRANSLATE_PLUS_API_KEY,
+        )
     }
 }

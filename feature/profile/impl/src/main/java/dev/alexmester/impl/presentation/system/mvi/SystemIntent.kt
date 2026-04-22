@@ -4,6 +4,8 @@ sealed class SystemIntent {
     data class SetTheme(val theme: AppTheme) : SystemIntent()
     data object NavigateToLanguage : SystemIntent()
     data object NavigateToCountry : SystemIntent()
+    data object NavigateToAutoTranslateLanguage : SystemIntent()
+    data object DisableAutoTranslate : SystemIntent()
     data object Back : SystemIntent()
 }
 

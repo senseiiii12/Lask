@@ -7,4 +7,6 @@ sealed class ArticleDetailIntent {
     data object Share : ArticleDetailIntent()
     data object TimeThresholdReached : ArticleDetailIntent()
     data object ScrollThresholdReached : ArticleDetailIntent()
+    data object Translate : ArticleDetailIntent()
+    data object RevertTranslation : ArticleDetailIntent()
 }

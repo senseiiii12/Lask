@@ -1,19 +1,22 @@
 package dev.alexmester.impl.presentation.system.mvi
 
+import dev.alexmester.utils.BuildLocale
+
 data class SystemState(
     val theme: AppTheme = AppTheme.SYSTEM,
     val languageCode: String = "en",
     val countryCode: String = "us",
+    val autoTranslateLanguage: String? = null,
 ) {
-    /** Полное название языка через системный Locale */
-    val languageDisplayName: String
-        get() = java.util.Locale(languageCode)
-            .getDisplayLanguage(java.util.Locale.ENGLISH)
-            .replaceFirstChar { it.uppercase() }
 
-    /** Полное название страны через системный Locale */
+    val autoTranslateDisplayName: String
+        get() = autoTranslateLanguage?.let {
+            BuildLocale.languageCodeToFullLanguageName(it)
+        } ?: "Off"
+
+    val languageDisplayName: String
+        get() = BuildLocale.languageCodeToFullLanguageName(languageCode)
+
     val countryDisplayName: String
-        get() = java.util.Locale("", countryCode.uppercase())
-            .getDisplayCountry(java.util.Locale.ENGLISH)
-            .replaceFirstChar { it.uppercase() }
+        get() = BuildLocale.countryCodeToFullCountryName(countryCode)
 }

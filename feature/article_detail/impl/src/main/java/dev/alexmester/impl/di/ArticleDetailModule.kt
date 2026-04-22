@@ -21,7 +21,11 @@ val articleDetailModule = module {
     }
 
     single<ArticleDetailRepository> {
-        ArticleDetailRepositoryImpl(local = get())
+        ArticleDetailRepositoryImpl(
+            local = get(),
+            translateApiService = get(),
+            preferencesDataSource = get()
+        )
     }
 
     factory {

@@ -9,6 +9,7 @@ import dev.alexmester.api.navigation.ArticleDetailApi
 import dev.alexmester.api.navigation.ArticleListRoute
 import dev.alexmester.api.navigation.InterestsRoute
 import dev.alexmester.api.navigation.LocalePickerRoute
+import dev.alexmester.api.navigation.LocalePickerType
 import dev.alexmester.api.navigation.ProfileApi
 import dev.alexmester.api.navigation.ProfileRoute
 import dev.alexmester.api.navigation.SystemRoute
@@ -81,6 +82,9 @@ class ProfileImpl(
                 onBack = { navController.navigateUp() },
                 onNavigateToLocalePicker = { type ->
                     navController.navigate(LocalePickerRoute(type))
+                },
+                onNavigateToAutoTranslatePicker = {
+                    navController.navigate(LocalePickerRoute(LocalePickerType.AUTO_TRANSLATE_LANGUAGE))
                 },
             )
         }

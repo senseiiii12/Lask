@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class ArticleDetailViewModel(
     private val interactor: ArticleDetailInteractor,
@@ -56,6 +57,9 @@ class ArticleDetailViewModel(
                 isScrollThresholdReached = true
                 tryMarkAsRead()
             }
+            ArticleDetailIntent.Translate -> onTranslate()
+
+            ArticleDetailIntent.RevertTranslation -> onRevertTranslation()
         }
     }
 
@@ -74,15 +78,66 @@ class ArticleDetailViewModel(
 
             val isBookmarked = interactor.isBookmarked(articleId)
             val clapCount = interactor.getClapCount(articleId)
+            val autoTranslateLang = interactor.getAutoTranslateLanguage()
 
             _state.value = ArticleDetailState.Content(
                 article = article,
                 isBookmarked = isBookmarked,
                 clapCount = clapCount,
+                autoTranslateLanguage = autoTranslateLang,
             )
 
             observeBookmark()
             observeClapCount()
+        }
+    }
+
+    private fun onTranslate() {
+        val content = _state.value.contentOrNull ?: return
+        val targetLang = content.autoTranslateLanguage ?: return
+
+        _state.update { it.contentOrNull?.copy(translationState = TranslationState.Loading) ?: it }
+
+        viewModelScope.launch {
+            val article = content.article
+            val bodyText = article.text ?: article.summary ?: ""
+            val sourceLang = article.language
+
+            try {
+                val (translatedTitle, translatedBody) = interactor.translateTexts(
+                    title = article.title,
+                    bodyText = bodyText,
+                    targetLanguage = targetLang,
+                    sourceLanguage = sourceLang,
+                )
+                _state.update {
+                    it.contentOrNull?.copy(
+                        translationState = TranslationState.Translated,
+                        translatedTitle = translatedTitle,
+                        translatedText = translatedBody,
+                    ) ?: it
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _state.update {
+                    it.contentOrNull?.copy(
+                        translationState = TranslationState.Error(
+                            UiText.StringResource(R.string.error_translation_failed)
+                        )
+                    ) ?: it
+                }
+            }
+        }
+    }
+
+    private fun onRevertTranslation() {
+        _state.update {
+            it.contentOrNull?.copy(
+                translationState = TranslationState.Idle,
+                translatedTitle = null,
+                translatedText = null,
+            ) ?: it
         }
     }
 

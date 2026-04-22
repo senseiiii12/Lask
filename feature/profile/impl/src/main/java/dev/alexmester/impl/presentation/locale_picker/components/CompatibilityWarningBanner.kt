@@ -89,8 +89,8 @@ private fun WarningBannerContent(
 
     val selectedName: String
     val currentName: String
-    val suggestedSelfName: String   // что предлагаем вместо текущего выбора
-    val suggestedOtherName: String  // что предлагаем для второго параметра
+    val suggestedSelfName: String
+    val suggestedOtherName: String
 
     when (type) {
         LocalePickerType.LANGUAGE -> {
@@ -116,6 +116,12 @@ private fun WarningBannerContent(
             suggestedOtherName = Locale(warning.suggestedLanguage).getDisplayLanguage(Locale.ENGLISH)
                 .replaceFirstChar { it.uppercase() }
         }
+        LocalePickerType.AUTO_TRANSLATE_LANGUAGE ->{
+            selectedName = ""
+            currentName = ""
+            suggestedSelfName = ""
+            suggestedOtherName = ""
+        }
     }
 
     val descriptionText = when (type) {
@@ -123,16 +129,20 @@ private fun WarningBannerContent(
             "Язык «$selectedName» не используется в стране «$currentName» — лента скорее всего будет пустой."
         LocalePickerType.COUNTRY ->
             "В стране «$selectedName» не используют язык «$currentName» — лента скорее всего будет пустой."
+
+        LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> ""
     }
 
     val adaptSelfLabel = when (type) {
         LocalePickerType.LANGUAGE -> "Язык → $suggestedSelfName"
         LocalePickerType.COUNTRY  -> "Страна → $suggestedSelfName"
+        LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> ""
     }
 
     val adaptOtherLabel = when (type) {
         LocalePickerType.LANGUAGE -> "Страна → $suggestedOtherName"
         LocalePickerType.COUNTRY  -> "Язык → $suggestedOtherName"
+        LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> ""
     }
 
     Surface(

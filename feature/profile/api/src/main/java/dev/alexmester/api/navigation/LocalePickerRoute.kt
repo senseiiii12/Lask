@@ -10,4 +10,5 @@ data class LocalePickerRoute(
 enum class LocalePickerType {
     COUNTRY,
     LANGUAGE,
+    AUTO_TRANSLATE_LANGUAGE,
 }

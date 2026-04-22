@@ -18,6 +18,7 @@ data class LocalePickerState(
         get() = when (type) {
             LocalePickerType.COUNTRY  -> UiText.StringResource(R.string.system_locale_country)
             LocalePickerType.LANGUAGE -> UiText.StringResource(R.string.system_locale_language)
+            LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> UiText.StringResource(R.string.system_locale_translate)
         }
 
     val isApplyEnabled: Boolean

@@ -115,6 +115,9 @@ internal fun ArticleDetailScreenContent(
                     isBookmarked = content.isBookmarked,
                     clapCount = content.clapCount,
                     isClapAnimating = content.isClapAnimating,
+                    translationState = content.translationState,
+                    autoTranslateLanguage = content.autoTranslateLanguage,
+                    articleLanguage = content.article.language,
                     hazeState = hazeState,
                     onIntent = onIntent,
                 )
@@ -148,6 +151,9 @@ internal fun ArticleDetailScreenContent(
                     ArticleDetailContent(
                         article = state.article,
                         bottomPadding = paddingValues.calculateBottomPadding(),
+                        translatedTitle = state.translatedTitle,
+                        translatedText = state.translatedText,
+                        translationState = state.translationState,
                         onScrollThresholdReached = {
                             onIntent(ArticleDetailIntent.ScrollThresholdReached)
                         },

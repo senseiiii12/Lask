@@ -2,7 +2,9 @@ package dev.alexmester.impl.domain.interactor
 
 import dev.alexmester.impl.domain.repository.ArticleDetailRepository
 import dev.alexmester.models.news.NewsArticle
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.supervisorScope
 
 class ArticleDetailInteractor(
     private val repository: ArticleDetailRepository,
@@ -30,4 +32,24 @@ class ArticleDetailInteractor(
 
     suspend fun markAsRead(articleId: Long) =
         repository.markAsRead(articleId)
+
+    suspend fun translateTexts(
+        title: String,
+        bodyText: String,
+        targetLanguage: String,
+        sourceLanguage: String?,
+    ): Pair<String, String> {
+        return supervisorScope {
+            val translatedTitle = async {
+                repository.translateText(title, targetLanguage, sourceLanguage)
+            }
+            val translatedBody = async {
+                repository.translateText(bodyText, targetLanguage, sourceLanguage)
+            }
+            translatedTitle.await() to translatedBody.await()
+        }
+    }
+
+    suspend fun getAutoTranslateLanguage(): String? =
+        repository.getAutoTranslateLanguage()
 }

@@ -42,6 +42,10 @@ class LocalePickerViewModel(
     }
 
     private fun onSelectItem(code: String) {
+        if (type == LocalePickerType.AUTO_TRANSLATE_LANGUAGE) {
+            _state.update { it.copy(selectedCode = code, compatibilityWarning = null) }
+            return
+        }
         val current = _state.value
         val warning = when (type) {
             LocalePickerType.LANGUAGE -> checkCompatibility(
@@ -52,6 +56,7 @@ class LocalePickerViewModel(
                 language = current.otherLocaleCode,
                 country = code,
             )
+            LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> null
         }
         _state.update { it.copy(selectedCode = code, compatibilityWarning = warning) }
     }
@@ -106,6 +111,10 @@ class LocalePickerViewModel(
                         emitSideEffect(LocalePickerSideEffect.NavigateBack)
                     }
                 }
+
+                LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> {
+                    _state.update { it.copy(compatibilityWarning = null) }
+                }
             }
         }
     }
@@ -113,25 +122,44 @@ class LocalePickerViewModel(
     private fun loadItems() {
         viewModelScope.launch {
             val prefs = preferencesDataSource.userPreferences.first()
-            val currentCode = when (type) {
-                LocalePickerType.COUNTRY  -> prefs.defaultCountry
-                LocalePickerType.LANGUAGE -> prefs.defaultLanguage
-            }
-            val otherCode = when (type) {
-                LocalePickerType.COUNTRY  -> prefs.defaultLanguage
-                LocalePickerType.LANGUAGE -> prefs.defaultCountry
-            }
-            val items = when (type) {
-                LocalePickerType.COUNTRY  -> BuildLocale.buildCountryItems()
-                LocalePickerType.LANGUAGE -> BuildLocale.buildLanguageItems()
-            }
-            _state.update {
-                it.copy(
-                    items = items,
-                    currentCode = currentCode,
-                    selectedCode = currentCode,
-                    otherLocaleCode = otherCode,
-                )
+            when (type) {
+                LocalePickerType.COUNTRY -> {
+                    val currentCode = prefs.defaultCountry
+                    val otherCode = prefs.defaultLanguage
+                    _state.update {
+                        it.copy(
+                            items = BuildLocale.buildCountryItems(),
+                            currentCode = currentCode,
+                            selectedCode = currentCode,
+                            otherLocaleCode = otherCode,
+                        )
+                    }
+                }
+
+                LocalePickerType.LANGUAGE -> {
+                    val currentCode = prefs.defaultLanguage
+                    val otherCode = prefs.defaultCountry
+                    _state.update {
+                        it.copy(
+                            items = BuildLocale.buildLanguageItems(),
+                            currentCode = currentCode,
+                            selectedCode = currentCode,
+                            otherLocaleCode = otherCode,
+                        )
+                    }
+                }
+
+                LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> {
+                    val currentCode = prefs.autoTranslateLanguage ?: ""
+                    _state.update {
+                        it.copy(
+                            items = BuildLocale.buildLanguageItems(),
+                            currentCode = currentCode,
+                            selectedCode = currentCode,
+                            otherLocaleCode = "",
+                        )
+                    }
+                }
             }
         }
     }
@@ -157,6 +185,8 @@ class LocalePickerViewModel(
                 country = prefs.defaultCountry,
                 language = code,
             )
+            LocalePickerType.AUTO_TRANSLATE_LANGUAGE ->
+                preferencesDataSource.updateAutoTranslateLanguage(code)
         }
     }
 

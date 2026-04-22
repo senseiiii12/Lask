@@ -23,6 +23,11 @@ android {
             ?: System.getenv("NEWS_API_KEY")
             ?: ""
         buildConfigField("String", "NEWS_API_KEY", "\"$newsApiKey\"")
+
+        val translateApiKey = localProperties.getProperty("TRANSLATE_PLUS_API_KEY")
+            ?: System.getenv("TRANSLATE_PLUS_API_KEY")
+            ?: ""
+        buildConfigField("String", "TRANSLATE_PLUS_API_KEY", "\"$translateApiKey\"")
     }
 }
 

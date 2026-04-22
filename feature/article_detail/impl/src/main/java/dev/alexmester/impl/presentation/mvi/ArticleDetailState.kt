@@ -11,7 +11,18 @@ sealed interface ArticleDetailState {
         val isBookmarked: Boolean = false,
         val clapCount: Int = 0,
         val isClapAnimating: Boolean = false,
+        val translationState: TranslationState = TranslationState.Idle,
+        val translatedTitle: String? = null,
+        val translatedText: String? = null,
+        val autoTranslateLanguage: String? = null,
     ) : ArticleDetailState
+}
+
+sealed interface TranslationState {
+    data object Idle : TranslationState
+    data object Loading : TranslationState
+    data object Translated : TranslationState
+    data class Error(val message: UiText) : TranslationState
 }
 
 val ArticleDetailState.contentOrNull: ArticleDetailState.Content?

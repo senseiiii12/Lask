@@ -9,12 +9,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.alexmester.impl.presentation.mvi.TranslationState
 import dev.alexmester.models.news.NewsArticle
 
 @Composable
 internal fun ArticleDetailBody(
     article: NewsArticle,
     bottomPadding: Dp,
+    translatedTitle: String?,
+    translatedText: String?,
+    translationState: TranslationState,
 ) {
     Column(
         modifier = Modifier
@@ -25,6 +29,8 @@ internal fun ArticleDetailBody(
         ArticleDetailTitle(
             title = article.title,
             articleId = article.id,
+            translatedTitle = translatedTitle,
+            translationState = translationState,
         )
         Spacer(modifier = Modifier.height(16.dp))
         ArticleDetailAuthorRow(
@@ -36,6 +42,8 @@ internal fun ArticleDetailBody(
         ArticleDetailText(
             text = article.text,
             summary = article.summary,
+            translatedText = translatedText,
+            translationState = translationState,
         )
         article.video?.let { videoUrl ->
             Spacer(modifier = Modifier.height(24.dp))

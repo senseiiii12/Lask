@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.Dp
 import dev.alexmester.impl.presentation.components.body.ArticleDetailBody
 import dev.alexmester.impl.presentation.components.common.rememberScrollThreshold
 import dev.alexmester.impl.presentation.components.header.ArticleDetailHeaderImage
+import dev.alexmester.impl.presentation.mvi.TranslationState
 import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.desing_system.LaskColors
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -25,6 +26,9 @@ import kotlinx.coroutines.flow.filter
 internal fun ArticleDetailContent(
     article: NewsArticle,
     bottomPadding: Dp,
+    translatedTitle: String?,
+    translatedText: String?,
+    translationState: TranslationState,
     onScrollThresholdReached: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -51,6 +55,9 @@ internal fun ArticleDetailContent(
             ArticleDetailBody(
                 article = article,
                 bottomPadding = bottomPadding,
+                translatedTitle = translatedTitle,
+                translatedText = translatedText,
+                translationState = translationState,
             )
         }
     }

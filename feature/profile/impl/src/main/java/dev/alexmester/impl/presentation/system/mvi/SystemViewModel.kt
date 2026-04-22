@@ -38,6 +38,13 @@ class SystemViewModel(
                 emitSideEffect(SystemSideEffect.NavigateToLocalePicker(LocalePickerType.COUNTRY))
             is SystemIntent.Back ->
                 emitSideEffect(SystemSideEffect.NavigateBack)
+            is SystemIntent.NavigateToAutoTranslateLanguage ->
+                emitSideEffect(SystemSideEffect.NavigateToAutoTranslatePicker)
+            is SystemIntent.DisableAutoTranslate -> {
+                viewModelScope.launch {
+                    preferencesDataSource.updateAutoTranslateLanguage(null)
+                }
+            }
         }
     }
 
@@ -53,6 +60,7 @@ class SystemViewModel(
                         },
                         languageCode = prefs.defaultLanguage,
                         countryCode = prefs.defaultCountry,
+                        autoTranslateLanguage = prefs.autoTranslateLanguage,
                     )
                 }
             }

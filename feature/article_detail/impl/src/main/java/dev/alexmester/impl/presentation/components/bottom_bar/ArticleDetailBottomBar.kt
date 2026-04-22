@@ -14,11 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import dev.alexmester.impl.presentation.mvi.ArticleDetailIntent
+import dev.alexmester.impl.presentation.mvi.TranslationState
 import dev.alexmester.ui.components.buttons.BookmarkButtonStyle
 import dev.alexmester.ui.components.buttons.LaskBackButton
 import dev.alexmester.ui.components.buttons.LaskBookmarkButton
 import dev.alexmester.ui.components.buttons.LaskClapButton
 import dev.alexmester.ui.components.buttons.LaskShareButton
+import dev.alexmester.ui.components.buttons.LaskTranslateButton
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
@@ -28,10 +30,19 @@ internal fun ArticleDetailBottomBar(
     isBookmarked: Boolean,
     clapCount: Int,
     isClapAnimating: Boolean,
+    translationState: TranslationState,
+    autoTranslateLanguage: String?,
+    articleLanguage: String?,
     onIntent: (ArticleDetailIntent) -> Unit,
     hazeState: HazeState,
     modifier: Modifier = Modifier,
 ) {
+    val isTranslateEnabled = autoTranslateLanguage != null &&
+            autoTranslateLanguage != articleLanguage &&
+            translationState !is TranslationState.Loading
+
+    val isTranslated = translationState is TranslationState.Translated
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -54,6 +65,14 @@ internal fun ArticleDetailBottomBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            LaskTranslateButton(
+                isTranslated = isTranslated,
+                isEnabled = isTranslateEnabled,
+                onClick = {
+                    if (isTranslated) onIntent(ArticleDetailIntent.RevertTranslation)
+                    else onIntent(ArticleDetailIntent.Translate)
+                },
+            )
             LaskClapButton(
                 count = clapCount,
                 isAnimating = isClapAnimating,

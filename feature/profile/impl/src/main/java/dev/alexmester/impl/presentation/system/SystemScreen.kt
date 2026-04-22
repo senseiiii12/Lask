@@ -30,6 +30,7 @@ import dev.alexmester.impl.presentation.system.mvi.SystemSideEffect
 import dev.alexmester.impl.presentation.system.mvi.SystemState
 import dev.alexmester.impl.presentation.system.mvi.SystemViewModel
 import dev.alexmester.ui.R
+import dev.alexmester.ui.components.buttons.LaskTextButton
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
@@ -38,6 +39,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SystemScreen(
     onBack: () -> Unit,
     onNavigateToLocalePicker: (LocalePickerType) -> Unit,
+    onNavigateToAutoTranslatePicker: () -> Unit,
     viewModel: SystemViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -48,6 +50,8 @@ fun SystemScreen(
                 is SystemSideEffect.NavigateBack -> onBack()
                 is SystemSideEffect.NavigateToLocalePicker ->
                     onNavigateToLocalePicker(effect.type)
+                is SystemSideEffect.NavigateToAutoTranslatePicker ->
+                    onNavigateToAutoTranslatePicker()
             }
         }
     }
@@ -110,6 +114,24 @@ internal fun SystemScreenContent(
                 value = state.countryDisplayName,
                 onClick = { onIntent(SystemIntent.NavigateToCountry) },
             )
+            SettingsValueRow(
+                label = "Auto Translate",
+                value = state.autoTranslateDisplayName,
+                onClick = {
+                    if (state.autoTranslateLanguage != null) {
+                        onIntent(SystemIntent.NavigateToAutoTranslateLanguage)
+                    } else {
+                        onIntent(SystemIntent.NavigateToAutoTranslateLanguage)
+                    }
+                },
+            )
+            if (state.autoTranslateLanguage != null) {
+                LaskTextButton(
+                    text = "Turn off auto-translate",
+                    textColor = MaterialTheme.LaskColors.error,
+                    onClick = { onIntent(SystemIntent.DisableAutoTranslate) },
+                )
+            }
         }
     }
 }
