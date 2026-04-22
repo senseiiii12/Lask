@@ -1,6 +1,7 @@
 package dev.alexmester.impl.domain.repository
 
 import dev.alexmester.models.news.NewsArticle
+import dev.alexmester.models.result.AppResult
 import kotlinx.coroutines.flow.Flow
 
 interface ArticleDetailRepository {
@@ -25,7 +26,7 @@ interface ArticleDetailRepository {
         text: String,
         targetLanguage: String,
         sourceLanguage: String? = null,
-    ): String
+    ): AppResult<String>
 
     suspend fun getAutoTranslateLanguage(): String
 }

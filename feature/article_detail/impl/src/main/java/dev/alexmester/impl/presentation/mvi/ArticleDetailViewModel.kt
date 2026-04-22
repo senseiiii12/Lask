@@ -3,6 +3,8 @@ package dev.alexmester.impl.presentation.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.impl.domain.interactor.ArticleDetailInteractor
+import dev.alexmester.models.result.onFailure
+import dev.alexmester.models.result.onSuccess
 import dev.alexmester.ui.R
 import dev.alexmester.ui.uitext.UiText
 import kotlinx.coroutines.channels.Channel
@@ -14,7 +16,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.coroutines.cancellation.CancellationException
 
 class ArticleDetailViewModel(
     private val interactor: ArticleDetailInteractor,
@@ -57,6 +58,7 @@ class ArticleDetailViewModel(
                 isScrollThresholdReached = true
                 tryMarkAsRead()
             }
+
             is ArticleDetailIntent.Translate -> onTranslate()
 
             is ArticleDetailIntent.RevertTranslation -> onRevertTranslation()
@@ -103,13 +105,13 @@ class ArticleDetailViewModel(
             val bodyText = article.text ?: article.summary ?: ""
             val sourceLang = article.language
 
-            try {
-                val (translatedTitle, translatedBody) = interactor.translateTexts(
-                    title = article.title,
-                    bodyText = bodyText,
-                    targetLanguage = targetLang,
-                    sourceLanguage = sourceLang,
-                )
+            interactor.translateTexts(
+                title = article.title,
+                bodyText = bodyText,
+                targetLanguage = targetLang,
+                sourceLanguage = sourceLang,
+            )
+            .onSuccess { (translatedTitle, translatedBody) ->
                 _state.update {
                     it.contentOrNull?.copy(
                         translationState = TranslationState.Translated,
@@ -117,16 +119,14 @@ class ArticleDetailViewModel(
                         translatedText = translatedBody,
                     ) ?: it
                 }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
+            }
+            .onFailure { errorType ->
                 _state.update {
                     it.contentOrNull?.copy(
-                        translationState = TranslationState.Error(
-                            UiText.StringResource(R.string.error_translation_failed)
-                        )
+                        translationState = TranslationState.Idle
                     ) ?: it
                 }
+                emitSideEffect(ArticleDetailSideEffect.ShowTranslatedMessage(errorType = errorType))
             }
         }
     }
@@ -171,7 +171,7 @@ class ArticleDetailViewModel(
     private fun onToggleBookmark() {
         viewModelScope.launch {
             val nowBookmarked = interactor.toggleBookmark(articleId)
-            emitSideEffect(ArticleDetailSideEffect.ShowSnackbar(nowBookmarked))
+            emitSideEffect(ArticleDetailSideEffect.ShawBookmarkActionMessage(nowBookmarked))
         }
     }
 

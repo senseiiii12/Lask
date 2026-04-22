@@ -23,7 +23,6 @@ sealed interface TranslationState {
     data object Idle : TranslationState
     data object Loading : TranslationState
     data object Translated : TranslationState
-    data class Error(val message: UiText) : TranslationState
 }
 
 val ArticleDetailState.contentOrNull: ArticleDetailState.Content?

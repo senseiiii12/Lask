@@ -1,7 +1,9 @@
 package dev.alexmester.impl.domain.interactor
 
 import dev.alexmester.impl.domain.repository.ArticleDetailRepository
+import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.news.NewsArticle
+import dev.alexmester.models.result.AppResult
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.supervisorScope
@@ -38,17 +40,26 @@ class ArticleDetailInteractor(
         bodyText: String,
         targetLanguage: String,
         sourceLanguage: String?,
-    ): Pair<String, String> {
-        return supervisorScope {
+    ): AppResult<Pair<String, String>> = supervisorScope {
             val translatedTitle = async {
                 repository.translateText(title, targetLanguage, sourceLanguage)
             }
             val translatedBody = async {
                 repository.translateText(bodyText, targetLanguage, sourceLanguage)
             }
-            translatedTitle.await() to translatedBody.await()
+            val titleResult = translatedTitle.await()
+            val bodyResult = translatedBody.await()
+
+            when {
+                titleResult is AppResult.Failure -> titleResult
+                bodyResult is AppResult.Failure -> bodyResult
+                titleResult is AppResult.Success && bodyResult is AppResult.Success -> {
+                    AppResult.Success(titleResult.data to bodyResult.data)
+                }
+                else -> AppResult.Failure(NetworkError.Unknown())
+            }
         }
-    }
+
 
     suspend fun getAutoTranslateLanguage(): String =
         repository.getAutoTranslateLanguage()

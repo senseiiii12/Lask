@@ -185,12 +185,6 @@ class UserPreferencesDataSource(
         }
     }
 
-    suspend fun updateAutoTranslateLanguage(languageCode: String?) {
-        dataStore.edit { prefs ->
-            if (languageCode == null) prefs.remove(KEY_AUTO_TRANSLATE_LANGUAGE)
-            else prefs[KEY_AUTO_TRANSLATE_LANGUAGE] = languageCode
-        }
-    }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 

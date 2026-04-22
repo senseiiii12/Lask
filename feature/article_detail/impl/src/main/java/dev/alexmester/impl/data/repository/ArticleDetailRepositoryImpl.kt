@@ -5,6 +5,8 @@ import dev.alexmester.impl.data.local.ArticleDetailLocalDataSource
 import dev.alexmester.impl.data.mappers.toDomain
 import dev.alexmester.impl.domain.repository.ArticleDetailRepository
 import dev.alexmester.models.news.NewsArticle
+import dev.alexmester.models.result.AppResult
+import dev.alexmester.network.ext.safeApiCall
 import dev.alexmester.network.translate.TranslateApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -43,13 +45,13 @@ class ArticleDetailRepositoryImpl(
         text: String,
         targetLanguage: String,
         sourceLanguage: String?,
-    ): String {
+    ): AppResult<String> = safeApiCall {
         val response = translateApiService.translate(
             text = text,
             targetLanguage = targetLanguage,
             sourceLanguage = sourceLanguage,
         )
-        return response.translations.translatedText
+        response.translations.translatedText
     }
 
     override suspend fun getAutoTranslateLanguage(): String =

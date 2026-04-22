@@ -6,11 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BookmarkAdded
-import androidx.compose.material.icons.filled.BookmarkRemove
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,12 +15,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.snackbar.snackswipe.SnackSwipeBox
-import com.snackbar.snackswipe.SnackSwipeController
-import com.snackbar.snackswipe.showSnackSwipe
+import dev.alexmester.error.NetworkErrorUiMapper
 import dev.alexmester.impl.presentation.components.ArticleDetailContent
 import dev.alexmester.impl.presentation.components.bottom_bar.ArticleDetailBottomBar
 import dev.alexmester.impl.presentation.mvi.ArticleDetailIntent
@@ -35,6 +29,7 @@ import dev.alexmester.impl.presentation.mvi.contentOrNull
 import dev.alexmester.impl.presentation.mvi.isContent
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.snackbar.showBookmarkSnackbar
+import dev.alexmester.ui.components.snackbar.showErrorSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import dev.alexmester.ui.uitext.UiText
@@ -56,7 +51,8 @@ fun ArticleDetailScreen(
     ),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val backgroundColorSnack = MaterialTheme.LaskColors.brand_blue10
+    val backgroundColorSnackDefault = MaterialTheme.LaskColors.brand_blue10
+    val backgroundColorSnackError = MaterialTheme.LaskColors.error
     val context = LocalContext.current
 
     LaunchedEffect(state.isContent) {
@@ -72,12 +68,18 @@ fun ArticleDetailScreen(
             viewModel.sideEffects.collect { effect ->
                 when (effect) {
                     is ArticleDetailSideEffect.NavigateBack -> onBack()
-                    is ArticleDetailSideEffect.ShowSnackbar -> {
+                    is ArticleDetailSideEffect.ShawBookmarkActionMessage -> {
                         snackSwipeController.showBookmarkSnackbar(
                             isBookmarked = effect.isBookmarked,
-                            backgroundColor = backgroundColorSnack,
+                            backgroundColor = backgroundColorSnackDefault,
                             addedText = UiText.StringResource(R.string.bookmark_add).asString(context),
                             removedText = UiText.StringResource(R.string.bookmark_removed).asString(context),
+                        )
+                    }
+                    is ArticleDetailSideEffect.ShowTranslatedMessage -> {
+                        snackSwipeController.showErrorSnackbar(
+                            backgroundColor = backgroundColorSnackError,
+                            text = NetworkErrorUiMapper.toUiText(effect.errorType).asString(context)
                         )
                     }
                     is ArticleDetailSideEffect.ShareUrl -> {
