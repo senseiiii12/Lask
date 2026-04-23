@@ -1,4 +1,4 @@
-package dev.alexmester.utils
+package dev.alexmester.utils.locale
 
 
 val LANGUAGE_TO_COUNTRIES: Map<String, List<String>> = mapOf(

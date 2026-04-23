@@ -14,7 +14,7 @@ import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import dev.alexmester.ui.uitext.UiText
-import dev.alexmester.utils.DateFormatter
+import dev.alexmester.utils.locale.DateFormatter
 
 @Composable
 internal fun NewsFeedOfflineBanner(

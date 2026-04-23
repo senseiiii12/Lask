@@ -1,10 +1,9 @@
-package dev.alexmester.datastore.util
+package dev.alexmester.utils.locale
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.Log
 import dev.alexmester.datastore.UserPreferencesDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
@@ -19,7 +18,6 @@ class LocaleChangeObserver(
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Intent.ACTION_LOCALE_CHANGED) {
-                Log.d("LocaleObserver", "System locale changed")
                 scope.launch {
                     val prefs = preferencesDataSource.userPreferences.first()
                     if (!prefs.isLocaleManuallySet) {
@@ -35,12 +33,10 @@ class LocaleChangeObserver(
 
     fun register() {
         context.registerReceiver(receiver, IntentFilter(Intent.ACTION_LOCALE_CHANGED))
-        Log.d("LocaleObserver", "Registered")
     }
 
     fun unregister() {
         context.unregisterReceiver(receiver)
-        Log.d("LocaleObserver", "Unregistered")
     }
 
     fun checkAndUpdate() {
@@ -54,7 +50,6 @@ class LocaleChangeObserver(
             if (prefs.defaultCountry != currentCountry ||
                 prefs.defaultLanguage != currentLanguage
             ) {
-                Log.d("LocaleObserver", "Locale mismatch detected on resume, updating...")
                 preferencesDataSource.initLocaleFromDevice(
                     country = currentCountry,
                     language = currentLanguage,

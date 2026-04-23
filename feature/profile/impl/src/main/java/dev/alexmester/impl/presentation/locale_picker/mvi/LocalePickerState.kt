@@ -4,7 +4,7 @@ import dev.alexmester.api.navigation.LocalePickerType
 import dev.alexmester.models.locale.LocaleItem
 import dev.alexmester.ui.R
 import dev.alexmester.ui.uitext.UiText
-import dev.alexmester.utils.CompatibilityWarning
+import dev.alexmester.utils.locale.CompatibilityWarning
 
 data class LocalePickerState(
     val type: LocalePickerType,

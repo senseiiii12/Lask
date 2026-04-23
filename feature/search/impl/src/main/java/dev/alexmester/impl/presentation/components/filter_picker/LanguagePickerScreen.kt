@@ -1,6 +1,5 @@
 package dev.alexmester.impl.presentation.components.filter_picker
 
-import dev.alexmester.impl.presentation.components.FilterPickerTopBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,11 +14,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.alexmester.impl.presentation.components.FilterPickerTopBar
 import dev.alexmester.models.locale.LocaleItem
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.locale.LaskLocaleRowItem
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.utils.BuildLocale
+import dev.alexmester.utils.locale.BuildLocale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

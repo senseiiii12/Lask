@@ -7,10 +7,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import dev.alexmester.datastore.util.LocaleChangeObserver
 import dev.alexmester.lask.splash_screen.SplashState
 import dev.alexmester.lask.splash_screen.SplashViewModel
 import dev.alexmester.ui.desing_system.LaskPalette
+import dev.alexmester.utils.locale.LocaleChangeObserver
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

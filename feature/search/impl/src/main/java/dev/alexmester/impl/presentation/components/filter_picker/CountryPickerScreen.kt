@@ -19,7 +19,7 @@ import dev.alexmester.models.locale.LocaleItem
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.locale.LaskLocaleRowItem
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.utils.BuildLocale
+import dev.alexmester.utils.locale.BuildLocale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

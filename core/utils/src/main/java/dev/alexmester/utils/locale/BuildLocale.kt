@@ -1,9 +1,7 @@
-package dev.alexmester.utils
+package dev.alexmester.utils.locale
 
 import dev.alexmester.models.locale.LocaleItem
-import dev.alexmester.models.locale.LanguageFlagMap
 import dev.alexmester.models.locale.SupportedLocales
-import dev.alexmester.ui.components.locale.countryCodeToFlagEmoji
 import java.util.Locale
 
 object BuildLocale {
@@ -19,11 +17,9 @@ object BuildLocale {
     fun buildCountryItems(): List<LocaleItem> =
         SupportedLocales.SUPPORTED_COUNTRIES
             .map { code ->
-                val locale = Locale("", code.uppercase())
                 LocaleItem(
                     code = code,
-                    displayName = locale.getDisplayCountry(Locale.ENGLISH)
-                        .replaceFirstChar { it.uppercase() },
+                    displayName = countryCodeToFullCountryName(code),
                     flag = countryCodeToFlagEmoji(code),
                 )
             }
@@ -34,10 +30,8 @@ object BuildLocale {
             .map { code ->
                 LocaleItem(
                     code = code,
-                    displayName = Locale(code)
-                        .getDisplayLanguage(Locale.ENGLISH)
-                        .replaceFirstChar { it.uppercase() },
-                    flag = countryCodeToFlagEmoji(LanguageFlagMap.flagCountryFor(code)),
+                    displayName = languageCodeToFullLanguageName(code),
+                    flag = languageCodeToFlagEmoji(code),
                 )
             }
             .sortedBy { it.displayName }

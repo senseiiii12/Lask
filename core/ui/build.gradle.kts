@@ -10,6 +10,8 @@ android {
 
 dependencies{
     implementation(project(":core:models"))
+    implementation(project(":core:utils"))
+
     api("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
     api("dev.chrisbanes.haze:haze:1.7.2")
     api("dev.chrisbanes.haze:haze-materials:1.7.2")

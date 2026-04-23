@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -28,6 +30,8 @@ import dev.alexmester.impl.presentation.mvi.ArticleDetailViewModel
 import dev.alexmester.impl.presentation.mvi.contentOrNull
 import dev.alexmester.impl.presentation.mvi.isContent
 import dev.alexmester.ui.R
+import dev.alexmester.ui.components.notification_screen.LaskNotificationScreen
+import dev.alexmester.ui.components.notification_screen.NotificationType
 import dev.alexmester.ui.components.snackbar.showBookmarkSnackbar
 import dev.alexmester.ui.components.snackbar.showErrorSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
@@ -76,7 +80,7 @@ fun ArticleDetailScreen(
                             removedText = UiText.StringResource(R.string.bookmark_removed).asString(context),
                         )
                     }
-                    is ArticleDetailSideEffect.ShowTranslatedMessage -> {
+                    is ArticleDetailSideEffect.ShowError -> {
                         snackSwipeController.showErrorSnackbar(
                             backgroundColor = backgroundColorSnackError,
                             text = NetworkErrorUiMapper.toUiText(effect.errorType).asString(context)
@@ -112,14 +116,9 @@ internal fun ArticleDetailScreenContent(
         containerColor = MaterialTheme.LaskColors.backgroundPrimary,
         contentWindowInsets = WindowInsets(top = 0),
         bottomBar = {
-            state.contentOrNull?.let { content ->
+            state.contentOrNull?.let { contentState ->
                 ArticleDetailBottomBar(
-                    isBookmarked = content.isBookmarked,
-                    clapCount = content.clapCount,
-                    isClapAnimating = content.isClapAnimating,
-                    translationState = content.translationState,
-                    autoTranslateLanguage = content.autoTranslateLanguage,
-                    articleLanguage = content.article.language,
+                    contentState = contentState,
                     hazeState = hazeState,
                     onIntent = onIntent,
                 )
@@ -141,11 +140,11 @@ internal fun ArticleDetailScreenContent(
                 }
 
                 is ArticleDetailState.Error -> {
-                    Text(
-                        text = state.message.asString(),
-                        modifier = Modifier.align(Alignment.Center),
-                        style = MaterialTheme.LaskTypography.body1,
-                        color = MaterialTheme.LaskColors.error,
+                    LaskNotificationScreen(
+                        type = NotificationType.Warning(
+                            text = state.message.asString(),
+                            image = Icons.Default.Article
+                        ),
                     )
                 }
 

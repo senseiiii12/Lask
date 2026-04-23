@@ -126,7 +126,7 @@ class ArticleDetailViewModel(
                         translationState = TranslationState.Idle
                     ) ?: it
                 }
-                emitSideEffect(ArticleDetailSideEffect.ShowTranslatedMessage(errorType = errorType))
+                emitSideEffect(ArticleDetailSideEffect.ShowError(errorType = errorType))
             }
         }
     }

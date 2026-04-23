@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedState
 import dev.alexmester.newsfeed.impl.presentation.feed.contentOrNull
 import dev.alexmester.ui.R
-import dev.alexmester.ui.components.locale.countryCodeToFlagEmoji
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
+import dev.alexmester.utils.locale.countryCodeToFlagEmoji
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

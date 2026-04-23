@@ -9,9 +9,9 @@ import androidx.compose.ui.unit.dp
 import dev.alexmester.impl.domain.model.SearchFilters
 import dev.alexmester.impl.presentation.mvi.FilterType
 import dev.alexmester.ui.components.buttons.LaskChipButton
-import dev.alexmester.ui.components.locale.countryCodeToFlagEmoji
-import dev.alexmester.ui.components.locale.languageCodeToFlagEmoji
-import dev.alexmester.utils.BuildLocale
+import dev.alexmester.utils.locale.BuildLocale
+import dev.alexmester.utils.locale.countryCodeToFlagEmoji
+import dev.alexmester.utils.locale.languageCodeToFlagEmoji
 
 @Composable
 internal fun SearchFilterRow(

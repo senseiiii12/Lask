@@ -23,7 +23,7 @@ import dev.alexmester.ui.components.sentiment.LaskSentimentGauge
 import dev.alexmester.ui.components.sentiment.SentimentText
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.utils.DateFormatter
+import dev.alexmester.utils.locale.DateFormatter
 
 @Composable
 internal fun ArticleDetailAuthorRow(

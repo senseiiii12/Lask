@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import dev.alexmester.api.navigation.LocalePickerType
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.utils.CompatibilityWarning
+import dev.alexmester.utils.locale.CompatibilityWarning
 import java.util.Locale
 
 @Composable

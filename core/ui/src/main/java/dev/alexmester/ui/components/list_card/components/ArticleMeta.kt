@@ -10,12 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.alexmester.models.news.NewsArticle
-import dev.alexmester.ui.components.locale.countryCodeToFlagEmoji
 import dev.alexmester.ui.components.sentiment.LaskSentimentDot
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.utils.BuildLocale
-import dev.alexmester.utils.DateFormatter
+import dev.alexmester.utils.locale.DateFormatter
+import dev.alexmester.utils.locale.BuildLocale
+import dev.alexmester.utils.locale.countryCodeToFlagEmoji
 
 @Composable
 internal fun ArticleMeta(article: NewsArticle) {

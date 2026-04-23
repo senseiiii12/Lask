@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.api.navigation.LocalePickerType
 import dev.alexmester.datastore.UserPreferencesDataSource
-import dev.alexmester.utils.BuildLocale
-import dev.alexmester.utils.checkCompatibility
+import dev.alexmester.utils.locale.BuildLocale
+import dev.alexmester.utils.locale.checkCompatibility
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

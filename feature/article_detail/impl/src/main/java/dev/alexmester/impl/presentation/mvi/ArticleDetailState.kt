@@ -30,3 +30,11 @@ val ArticleDetailState.contentOrNull: ArticleDetailState.Content?
 
 val ArticleDetailState.isContent: Boolean
     get() = this is ArticleDetailState.Content
+
+val ArticleDetailState.IsTranslated: Boolean
+    get() = this is ArticleDetailState.Content
+            && this.translationState is TranslationState.Translated
+
+val ArticleDetailState.IsTranslateLoading: Boolean
+    get() = this is ArticleDetailState.Content
+            && this.translationState is TranslationState.Loading

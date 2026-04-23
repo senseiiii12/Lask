@@ -1,4 +1,4 @@
-package dev.alexmester.utils
+package dev.alexmester.utils.locale
 
 import java.time.Instant
 import java.time.LocalDateTime

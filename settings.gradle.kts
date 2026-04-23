@@ -54,3 +54,4 @@ include(":feature:search:api")
 include(":feature:search:impl")
 
 include(":macrobenchmark")
+include(":core:utils")

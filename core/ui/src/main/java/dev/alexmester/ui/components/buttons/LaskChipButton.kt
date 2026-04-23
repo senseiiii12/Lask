@@ -27,7 +27,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.alexmester.ui.R
-import dev.alexmester.ui.components.locale.countryCodeToFlagEmoji
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskPalette
 import dev.alexmester.ui.desing_system.LaskTheme
@@ -146,7 +145,7 @@ private fun LaskChipButtonPreviewSeleceted1() {
         LaskChipButton(
             modifier = Modifier,
             text = "United State",
-            leadingLocaleIcon = countryCodeToFlagEmoji("us"),
+            leadingLocaleIcon = "USA",
             leadingIcon = null,
             isSelected = true,
             onClick = { },

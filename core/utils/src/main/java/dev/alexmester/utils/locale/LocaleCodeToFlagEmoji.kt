@@ -1,4 +1,4 @@
-package dev.alexmester.ui.components.locale
+package dev.alexmester.utils.locale
 
 import dev.alexmester.models.locale.LanguageFlagMap
 

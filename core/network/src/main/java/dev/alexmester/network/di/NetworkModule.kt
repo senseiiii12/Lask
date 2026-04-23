@@ -1,16 +1,14 @@
 package dev.alexmester.network.di
 
 import dev.alexmester.network.BuildConfig
-import dev.alexmester.network.plugin.ApiKeyPlugin
-import dev.alexmester.network.plugin.BearerAuthPlugin
+import dev.alexmester.network.plugin.ApiKeyWorldNewsPlugin
+import dev.alexmester.network.plugin.ApiKeyTranslatePlugin
 import dev.alexmester.network.translate.TranslateApiService
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpRequestRetry
-import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.ANDROID
 import io.ktor.client.plugins.logging.LogLevel
@@ -70,7 +68,7 @@ val networkModule = module {
                 headers.append("Accept", "application/json")
             }
 
-            install(ApiKeyPlugin) {
+            install(ApiKeyWorldNewsPlugin) {
                 apiKey = BuildConfig.NEWS_API_KEY
             }
         }
@@ -84,8 +82,8 @@ val networkModule = module {
                 headers.append("Accept", "application/json")
             }
 
-            install(BearerAuthPlugin) {
-                token = BuildConfig.TRANSLATE_PLUS_API_KEY
+            install(ApiKeyTranslatePlugin) {
+                apiKey = BuildConfig.TRANSLATE_PLUS_API_KEY
             }
         }
     }

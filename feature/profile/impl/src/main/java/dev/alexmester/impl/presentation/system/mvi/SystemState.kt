@@ -1,6 +1,6 @@
 package dev.alexmester.impl.presentation.system.mvi
 
-import dev.alexmester.utils.BuildLocale
+import dev.alexmester.utils.locale.BuildLocale
 
 data class SystemState(
     val theme: AppTheme = AppTheme.SYSTEM,

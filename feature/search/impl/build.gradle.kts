@@ -20,4 +20,5 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:ui"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:utils"))
 }

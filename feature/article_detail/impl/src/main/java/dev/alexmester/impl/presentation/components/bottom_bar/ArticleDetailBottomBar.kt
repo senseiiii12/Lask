@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import dev.alexmester.impl.presentation.mvi.ArticleDetailIntent
-import dev.alexmester.impl.presentation.mvi.TranslationState
+import dev.alexmester.impl.presentation.mvi.ArticleDetailState
+import dev.alexmester.impl.presentation.mvi.IsTranslateLoading
+import dev.alexmester.impl.presentation.mvi.IsTranslated
 import dev.alexmester.ui.components.buttons.BookmarkButtonStyle
 import dev.alexmester.ui.components.buttons.LaskBackButton
 import dev.alexmester.ui.components.buttons.LaskBookmarkButton
@@ -27,20 +29,13 @@ import dev.chrisbanes.haze.hazeEffect
 
 @Composable
 internal fun ArticleDetailBottomBar(
-    isBookmarked: Boolean,
-    clapCount: Int,
-    isClapAnimating: Boolean,
-    translationState: TranslationState,
-    autoTranslateLanguage: String?,
-    articleLanguage: String?,
+    contentState: ArticleDetailState.Content,
     onIntent: (ArticleDetailIntent) -> Unit,
     hazeState: HazeState,
     modifier: Modifier = Modifier,
 ) {
-    val isTranslateEnabled = autoTranslateLanguage != articleLanguage &&
-            translationState !is TranslationState.Loading
-
-    val isTranslated = translationState is TranslationState.Translated
+    val isTranslateEnabled = contentState.autoTranslateLanguage != contentState.article.language &&
+            !contentState.IsTranslateLoading
 
     Row(
         modifier = modifier
@@ -64,23 +59,23 @@ internal fun ArticleDetailBottomBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LaskTranslateButton(
-                isTranslated = isTranslated,
-                isEnabled = isTranslateEnabled,
-                onClick = {
-                    if (isTranslated) onIntent(ArticleDetailIntent.RevertTranslation)
-                    else onIntent(ArticleDetailIntent.Translate)
-                },
-            )
             LaskClapButton(
-                count = clapCount,
-                isAnimating = isClapAnimating,
+                count = contentState.clapCount,
+                isAnimating = contentState.isClapAnimating,
                 onClick = { onIntent(ArticleDetailIntent.Clap) },
             )
             LaskBookmarkButton(
-                isBookmarked = isBookmarked,
+                isBookmarked = contentState.isBookmarked,
                 onClick = { onIntent(ArticleDetailIntent.ToggleBookmark) },
                 style = BookmarkButtonStyle.IconBottomBar,
+            )
+            LaskTranslateButton(
+                isTranslated = contentState.IsTranslated,
+                isEnabled = isTranslateEnabled,
+                onClick = {
+                    if (contentState.IsTranslated) onIntent(ArticleDetailIntent.RevertTranslation)
+                    else onIntent(ArticleDetailIntent.Translate)
+                },
             )
             LaskShareButton(
                 onClick = { onIntent(ArticleDetailIntent.Share) }

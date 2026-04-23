@@ -1,4 +1,4 @@
-package dev.alexmester.datastore.util
+package dev.alexmester.utils.locale
 
 import android.content.Context
 import dev.alexmester.models.locale.SupportedLocales
