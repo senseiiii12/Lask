@@ -52,6 +52,7 @@ class NewsFeedViewModel(
         )
 
     private var selectedCountry: String? = null
+    private var selectedLanguage: String? = null
     private var isInitialLoadHandled = false
 
     init {
@@ -74,43 +75,43 @@ class NewsFeedViewModel(
                 processClusterUpdate(
                     clusters = clusters,
                     country = prefs.defaultCountry,
+                    language = prefs.defaultLanguage
                 )
             }
             .launchIn(viewModelScope)
     }
 
-    private suspend fun processClusterUpdate(clusters: List<NewsCluster>, country: String) {
+    private suspend fun processClusterUpdate(clusters: List<NewsCluster>, country: String, language: String) {
         when {
-            hasCountryChanged(country) -> handleCountryChanged(country)
-            !isInitialLoadHandled -> handleInitialLoad(clusters, country)
-            else -> handleCacheUpdate(clusters, country)
+            isLocaleChanged(country,language) ->
+                handleLocaleChanged(country,language)
+            !isInitialLoadHandled -> initLoad(clusters, country,language)
+            else -> showCache(clusters, country)
         }
     }
 
-    private fun hasCountryChanged(newCountry: String): Boolean =
-        selectedCountry != null && selectedCountry != newCountry
+    private fun isLocaleChanged(newCountry: String, newLanguage: String): Boolean =
+        (selectedCountry != null && selectedCountry != newCountry) ||
+                (selectedLanguage != null &&  selectedLanguage != newLanguage)
 
-    private fun handleCountryChanged(newCountry: String) {
+    private fun handleLocaleChanged(newCountry: String, newLanguage: String) {
         selectedCountry = newCountry
+        selectedLanguage = newLanguage
         isInitialLoadHandled = false
         _state.update { NewsFeedState.Loading }
         requestFeedRefresh()
     }
 
-    private suspend fun handleInitialLoad(clusters: List<NewsCluster>, country: String) {
+    private suspend fun initLoad(clusters: List<NewsCluster>, country: String, language: String) {
         selectedCountry = country
+        selectedLanguage = language
         isInitialLoadHandled = true
-
-        showCachedClustersIfPresent(clusters, country)
+        showCache(clusters, country)
         requestFeedRefresh()
     }
 
-    private suspend fun handleCacheUpdate(clusters: List<NewsCluster>, country: String) {
+    private suspend fun showCache(clusters: List<NewsCluster>, country: String) {
         if (_state.value.isOffline) return
-        showCachedClustersIfPresent(clusters, country)
-    }
-
-    private suspend fun showCachedClustersIfPresent(clusters: List<NewsCluster>, country: String) {
         if (clusters.isEmpty()) return
 
         _state.update {

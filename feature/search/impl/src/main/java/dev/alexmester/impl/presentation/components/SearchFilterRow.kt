@@ -9,9 +9,9 @@ import androidx.compose.ui.unit.dp
 import dev.alexmester.impl.domain.model.SearchFilters
 import dev.alexmester.impl.presentation.mvi.FilterType
 import dev.alexmester.ui.components.buttons.LaskChipButton
-import dev.alexmester.utils.locale.BuildLocale
-import dev.alexmester.utils.locale.countryCodeToFlagEmoji
-import dev.alexmester.utils.locale.languageCodeToFlagEmoji
+import dev.alexmester.utils.locale.LocaleUtils
+import dev.alexmester.utils.locale.LocaleUtils.countryCodeToFlagEmoji
+import dev.alexmester.utils.locale.LocaleUtils.languageCodeToFlagEmoji
 
 @Composable
 internal fun SearchFilterRow(
@@ -36,7 +36,7 @@ internal fun SearchFilterRow(
         item {
             LaskChipButton(
                 text = if (filters.country != null)
-                    BuildLocale.countryCodeToFullCountryName(filters.country)
+                    LocaleUtils.countryCodeToFullCountryName(filters.country)
                 else "Country",
                 leadingLocaleIcon = filters.country?.let { countryCodeToFlagEmoji(it) },
                 isSelected = filters.country != null,
@@ -47,7 +47,7 @@ internal fun SearchFilterRow(
         item {
             LaskChipButton(
                 text = if (filters.language != null)
-                    BuildLocale.languageCodeToFullLanguageName(filters.language)
+                    LocaleUtils.languageCodeToFullLanguageName(filters.language)
                 else "Language",
                 leadingLocaleIcon = filters.language?.let { languageCodeToFlagEmoji(it) },
                 isSelected = filters.language != null,

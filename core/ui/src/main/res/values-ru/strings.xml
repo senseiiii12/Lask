@@ -7,6 +7,7 @@
     <string name="error_rate_limit">Превышен лимит запросов. Попробуйте позже</string>
     <string name="error_unknown">Ошибка загрузки новостей</string>
     <string name="error_article_not_found">Статья не найдена</string>
+    <string name="error_news_empty">Новостей пока нет</string>
     <string name="error_retry">Повторить</string>
     <string name="error_translation_failed">Перевод не удался, попробуйте еще раз.</string>
     <string name="error_translation_text_too_long">Текст слишком длинный для перевода</string>
@@ -90,5 +91,6 @@
     <string name="locale_description_country">В стране «%1$s» не используют язык «%2$s» — лента скорее всего будет пустой.</string>
     <string name="locale_adapt_language">Язык → %1$s</string>
     <string name="locale_adapt_country">Страна → %1$s</string>
+    <string name="locale_incompatible_empty_message">Для %1$s на языке «%2$s» новости ещё не сформированы или недоступны за сегодня.\n\nПотяните вниз, чтобы попробовать снова, или измените страну и язык в настройках.</string>
 
 </resources>

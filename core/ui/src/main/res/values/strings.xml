@@ -7,6 +7,7 @@
     <string name="error_rate_limit">Request limit exceeded.\nTry again later</string>
     <string name="error_unknown">Unknown error</string>
     <string name="error_article_not_found">Article not found</string>
+    <string name="error_news_empty">There is no news yet</string>
     <string name="error_retry">Retry</string>
     <string name="error_translation_failed">Translation failed. Please try again.</string>
     <string name="error_translation_text_too_long">Text is too long to translate</string>
@@ -90,6 +91,8 @@
     <string name="locale_description_country">The language “%2$s” is not used in the country “%1$s” — the feed will most likely be empty.</string>
     <string name="locale_adapt_language">Language → %1$s</string>
     <string name="locale_adapt_country">Country → %1$s</string>
+    <string name="locale_incompatible_empty_message">For %1$s in the language "%2$s", news has not yet been generated or is unavailable for today.\n\nPull down to try again,or change the country and language in the settings.</string>
+
 
 
 

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.api.navigation.LocalePickerType
 import dev.alexmester.datastore.UserPreferencesDataSource
-import dev.alexmester.utils.locale.BuildLocale
+import dev.alexmester.utils.locale.LocaleUtils
 import dev.alexmester.utils.locale.checkCompatibility
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -128,7 +128,7 @@ class LocalePickerViewModel(
                     val otherCode = prefs.defaultLanguage
                     _state.update {
                         it.copy(
-                            items = BuildLocale.buildCountryItems(),
+                            items = LocaleUtils.buildCountryItems(),
                             currentCode = currentCode,
                             selectedCode = currentCode,
                             otherLocaleCode = otherCode,
@@ -141,7 +141,7 @@ class LocalePickerViewModel(
                     val otherCode = prefs.defaultCountry
                     _state.update {
                         it.copy(
-                            items = BuildLocale.buildLanguageItems(),
+                            items = LocaleUtils.buildLanguageItems(),
                             currentCode = currentCode,
                             selectedCode = currentCode,
                             otherLocaleCode = otherCode,
@@ -152,7 +152,7 @@ class LocalePickerViewModel(
                 LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> {
                     _state.update {
                         it.copy(
-                            items = BuildLocale.buildLanguageItems(),
+                            items = LocaleUtils.buildLanguageItems(),
                             currentCode = prefs.autoTranslateLanguage,
                             selectedCode = prefs.autoTranslateLanguage,
                             otherLocaleCode = "",

@@ -19,7 +19,7 @@ import dev.alexmester.models.locale.LocaleItem
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.locale.LaskLocaleRowItem
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.utils.locale.BuildLocale
+import dev.alexmester.utils.locale.LocaleUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,7 +28,7 @@ internal fun CountryPickerScreen(
     onSelect: (String?) -> Unit,
     onBack: () -> Unit,
 ) {
-    val items = remember { BuildLocale.buildCountryItems() }
+    val items = remember { LocaleUtils.buildCountryItems() }
 
     Scaffold(
         topBar = {

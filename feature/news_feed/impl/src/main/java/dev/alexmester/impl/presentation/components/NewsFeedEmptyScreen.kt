@@ -10,12 +10,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.utils.locale.countryCodeToFlagEmoji
-import java.util.Locale
+import dev.alexmester.utils.locale.LocaleUtils.countryCodeToFlagEmoji
+import dev.alexmester.utils.locale.LocaleUtils.countryCodeToFullCountryName
+import dev.alexmester.utils.locale.LocaleUtils.languageCodeToFullLanguageName
 
 @Composable
 internal fun NewsFeedEmptyScreen(
@@ -24,9 +27,8 @@ internal fun NewsFeedEmptyScreen(
     modifier: Modifier = Modifier,
 ) {
     val countryFlag = countryCodeToFlagEmoji(country)
-    val countryName = Locale("", country.uppercase()).displayCountry
-    val languageName = Locale(language).getDisplayLanguage(Locale.ENGLISH)
-        .replaceFirstChar { it.uppercase() }
+    val countryName = countryCodeToFullCountryName(country)
+    val languageName = languageCodeToFullLanguageName(language)
 
     Column(
         modifier = modifier.padding(32.dp),
@@ -39,16 +41,17 @@ internal fun NewsFeedEmptyScreen(
         )
         Spacer(Modifier.height(16.dp))
         Text(
-            text = "Новостей пока нет",
+            text = stringResource(R.string.error_news_empty),
             style = MaterialTheme.LaskTypography.h4,
             color = MaterialTheme.LaskColors.textPrimary,
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "Для $countryName на языке «$languageName» новости ещё не сформированы " +
-                    "или недоступны за сегодня.\n\nПотяните вниз, чтобы попробовать снова, " +
-                    "или измените страну и язык в настройках.",
+            text = stringResource(
+                R.string.locale_incompatible_empty_message,
+                countryName,languageName
+            ),
             style = MaterialTheme.LaskTypography.body2,
             color = MaterialTheme.LaskColors.textSecondary,
             textAlign = TextAlign.Center,

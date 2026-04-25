@@ -1,6 +1,6 @@
 package dev.alexmester.impl.presentation.system.mvi
 
-import dev.alexmester.utils.locale.BuildLocale
+import dev.alexmester.utils.locale.LocaleUtils
 
 data class SystemState(
     val theme: AppTheme = AppTheme.SYSTEM,
@@ -11,12 +11,12 @@ data class SystemState(
 
     val autoTranslateDisplayName: String
         get() = autoTranslateLanguage?.let {
-            BuildLocale.languageCodeToFullLanguageName(it)
+            LocaleUtils.languageCodeToFullLanguageName(it)
         } ?: "Off"
 
     val languageDisplayName: String
-        get() = BuildLocale.languageCodeToFullLanguageName(languageCode)
+        get() = LocaleUtils.languageCodeToFullLanguageName(languageCode)
 
     val countryDisplayName: String
-        get() = BuildLocale.countryCodeToFullCountryName(countryCode)
+        get() = LocaleUtils.countryCodeToFullCountryName(countryCode)
 }

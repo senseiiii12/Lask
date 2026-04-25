@@ -40,7 +40,7 @@ import dev.alexmester.api.navigation.LocalePickerType
 import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.utils.locale.BuildLocale
+import dev.alexmester.utils.locale.LocaleUtils
 import dev.alexmester.utils.locale.CompatibilityWarning
 
 @Composable
@@ -96,16 +96,16 @@ private fun WarningBannerContent(
 
     when (type) {
         LocalePickerType.LANGUAGE -> {
-            selectedName = BuildLocale.languageCodeToFullLanguageName(selectedCode)
-            currentName = BuildLocale.countryCodeToFullCountryName(currentCode)
-            suggestedSelfName = BuildLocale.languageCodeToFullLanguageName(warning.suggestedLanguage)
-            suggestedOtherName = BuildLocale.countryCodeToFullCountryName(warning.suggestedCountry)
+            selectedName = LocaleUtils.languageCodeToFullLanguageName(selectedCode)
+            currentName = LocaleUtils.countryCodeToFullCountryName(currentCode)
+            suggestedSelfName = LocaleUtils.languageCodeToFullLanguageName(warning.suggestedLanguage)
+            suggestedOtherName = LocaleUtils.countryCodeToFullCountryName(warning.suggestedCountry)
         }
         LocalePickerType.COUNTRY -> {
-            selectedName = BuildLocale.countryCodeToFullCountryName(selectedCode)
-            currentName = BuildLocale.languageCodeToFullLanguageName(currentCode)
-            suggestedSelfName = BuildLocale.countryCodeToFullCountryName(warning.suggestedCountry)
-            suggestedOtherName = BuildLocale.languageCodeToFullLanguageName(warning.suggestedLanguage)
+            selectedName = LocaleUtils.countryCodeToFullCountryName(selectedCode)
+            currentName = LocaleUtils.languageCodeToFullLanguageName(currentCode)
+            suggestedSelfName = LocaleUtils.countryCodeToFullCountryName(warning.suggestedCountry)
+            suggestedOtherName = LocaleUtils.languageCodeToFullLanguageName(warning.suggestedLanguage)
         }
         LocalePickerType.AUTO_TRANSLATE_LANGUAGE ->{
             selectedName = ""

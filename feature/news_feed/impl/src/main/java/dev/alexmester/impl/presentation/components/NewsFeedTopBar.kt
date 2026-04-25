@@ -19,7 +19,7 @@ import dev.alexmester.newsfeed.impl.presentation.feed.contentOrNull
 import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.utils.locale.countryCodeToFlagEmoji
+import dev.alexmester.utils.locale.LocaleUtils.countryCodeToFlagEmoji
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

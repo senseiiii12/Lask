@@ -14,8 +14,8 @@ import dev.alexmester.ui.components.sentiment.LaskSentimentDot
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import dev.alexmester.utils.date.DateUtils
-import dev.alexmester.utils.locale.BuildLocale
-import dev.alexmester.utils.locale.countryCodeToFlagEmoji
+import dev.alexmester.utils.locale.LocaleUtils
+import dev.alexmester.utils.locale.LocaleUtils.countryCodeToFlagEmoji
 
 @Composable
 internal fun ArticleMeta(article: NewsArticle) {
@@ -30,7 +30,7 @@ internal fun ArticleMeta(article: NewsArticle) {
                     style = MaterialTheme.LaskTypography.footnote
                 )
                 Text(
-                    text = BuildLocale.countryCodeToFullCountryName(countryCode),
+                    text = LocaleUtils.countryCodeToFullCountryName(countryCode),
                     style = MaterialTheme.LaskTypography.footnote,
                     color = MaterialTheme.LaskColors.textSecondary,
                     maxLines = 1,
