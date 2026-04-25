@@ -33,13 +33,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.alexmester.api.navigation.LocalePickerType
+import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
+import dev.alexmester.utils.locale.BuildLocale
 import dev.alexmester.utils.locale.CompatibilityWarning
-import java.util.Locale
 
 @Composable
 internal fun CompatibilityWarningBanner(
@@ -94,27 +96,16 @@ private fun WarningBannerContent(
 
     when (type) {
         LocalePickerType.LANGUAGE -> {
-            selectedName = Locale(selectedCode).getDisplayLanguage(Locale.ENGLISH)
-                .replaceFirstChar { it.uppercase() }
-            currentName = Locale("", currentCode.uppercase()).getDisplayCountry(Locale.ENGLISH)
-                .replaceFirstChar { it.uppercase() }
-            suggestedSelfName = Locale(warning.suggestedLanguage).getDisplayLanguage(Locale.ENGLISH)
-                .replaceFirstChar { it.uppercase() }
-            suggestedOtherName = Locale("", warning.suggestedCountry.uppercase())
-                .getDisplayCountry(Locale.ENGLISH)
-                .replaceFirstChar { it.uppercase() }
+            selectedName = BuildLocale.languageCodeToFullLanguageName(selectedCode)
+            currentName = BuildLocale.countryCodeToFullCountryName(currentCode)
+            suggestedSelfName = BuildLocale.languageCodeToFullLanguageName(warning.suggestedLanguage)
+            suggestedOtherName = BuildLocale.countryCodeToFullCountryName(warning.suggestedCountry)
         }
         LocalePickerType.COUNTRY -> {
-            // Пользователь выбирает страну → pending = новая страна, other = текущий язык
-            selectedName = Locale("", selectedCode.uppercase()).getDisplayCountry(Locale.ENGLISH)
-                .replaceFirstChar { it.uppercase() }
-            currentName = Locale(currentCode).getDisplayLanguage(Locale.ENGLISH)
-                .replaceFirstChar { it.uppercase() }
-            suggestedSelfName = Locale("", warning.suggestedCountry.uppercase())
-                .getDisplayCountry(Locale.ENGLISH)
-                .replaceFirstChar { it.uppercase() }
-            suggestedOtherName = Locale(warning.suggestedLanguage).getDisplayLanguage(Locale.ENGLISH)
-                .replaceFirstChar { it.uppercase() }
+            selectedName = BuildLocale.countryCodeToFullCountryName(selectedCode)
+            currentName = BuildLocale.languageCodeToFullLanguageName(currentCode)
+            suggestedSelfName = BuildLocale.countryCodeToFullCountryName(warning.suggestedCountry)
+            suggestedOtherName = BuildLocale.languageCodeToFullLanguageName(warning.suggestedLanguage)
         }
         LocalePickerType.AUTO_TRANSLATE_LANGUAGE ->{
             selectedName = ""
@@ -125,23 +116,33 @@ private fun WarningBannerContent(
     }
 
     val descriptionText = when (type) {
-        LocalePickerType.LANGUAGE ->
-            "Язык «$selectedName» не используется в стране «$currentName» — лента скорее всего будет пустой."
+        LocalePickerType.LANGUAGE -> stringResource(
+                R.string.locale_description_language,
+                selectedName,
+                currentName
+            )
         LocalePickerType.COUNTRY ->
-            "В стране «$selectedName» не используют язык «$currentName» — лента скорее всего будет пустой."
-
+            stringResource(
+                R.string.locale_description_country,
+                selectedName,
+                currentName
+            )
         LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> ""
     }
 
     val adaptSelfLabel = when (type) {
-        LocalePickerType.LANGUAGE -> "Язык → $suggestedSelfName"
-        LocalePickerType.COUNTRY  -> "Страна → $suggestedSelfName"
+        LocalePickerType.LANGUAGE ->
+            stringResource(R.string.locale_adapt_language, suggestedSelfName)
+        LocalePickerType.COUNTRY ->
+            stringResource(R.string.locale_adapt_country, suggestedSelfName)
         LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> ""
     }
 
     val adaptOtherLabel = when (type) {
-        LocalePickerType.LANGUAGE -> "Страна → $suggestedOtherName"
-        LocalePickerType.COUNTRY  -> "Язык → $suggestedOtherName"
+        LocalePickerType.LANGUAGE ->
+            stringResource(R.string.locale_adapt_country, suggestedOtherName)
+        LocalePickerType.COUNTRY ->
+            stringResource(R.string.locale_adapt_language, suggestedOtherName)
         LocalePickerType.AUTO_TRANSLATE_LANGUAGE -> ""
     }
 
@@ -165,7 +166,7 @@ private fun WarningBannerContent(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "Несовместимые язык и страна",
+                    text = stringResource(R.string.locale_incompatible),
                     style = MaterialTheme.LaskTypography.body2SemiBold,
                     color = MaterialTheme.LaskColors.textPrimary,
                     modifier = Modifier.weight(1f),
@@ -176,7 +177,7 @@ private fun WarningBannerContent(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Закрыть",
+                        contentDescription = null,
                         tint = MaterialTheme.LaskColors.textSecondary,
                         modifier = Modifier.size(16.dp),
                     )

@@ -1,4 +1,4 @@
-package dev.alexmester.ui.uitext
+package dev.alexmester.utils.common
 
 import android.content.Context
 import androidx.annotation.StringRes

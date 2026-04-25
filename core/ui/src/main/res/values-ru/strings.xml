@@ -8,6 +8,8 @@
     <string name="error_unknown">Ошибка загрузки новостей</string>
     <string name="error_article_not_found">Статья не найдена</string>
     <string name="error_retry">Повторить</string>
+    <string name="error_translation_failed">Перевод не удался, попробуйте еще раз.</string>
+    <string name="error_translation_text_too_long">Текст слишком длинный для перевода</string>
 
     <!-- common warning -->
     <string name="warning_no_articles">Статей пока нет</string>
@@ -63,14 +65,30 @@
     <!-- Interests -->
     <string name="interests_empty_message">Добавьте свои интересы в\nПрофиль → Интересы</string>
     <string name="interests_just_for_you">Для Тебя</string>
-    <string name="interests_text_field_placeholder">Напишите ваши интересы</string>
+    <string name="interests_text_field_placeholder">Напишите интересы</string>
     <string name="interests_add">Добавить</string>
     <string name="interests_you_interests">Ваши интересы</string>
 
     <!-- System -->
     <string name="system_theme">Тема</string>
-    <string name="system_locale_country">Страна новости</string>
+    <string name="system_locale_country">Страна новостей</string>
     <string name="system_locale_language">Язык новостей</string>
     <string name="system_locale_translate">Перевод новостей</string>
+
+    <!-- Search -->
+    <string name="search_category">Категория</string>
+    <string name="search_country">Страна</string>
+    <string name="search_language">Язык</string>
+    <string name="search_date_period">Дата</string>
+    <string name="search_sort">Сортировка</string>
+    <string name="search_back">Назад</string>
+    <string name="search_placeholder">Поиск…</string>
+
+    <!-- Locale-->
+    <string name="locale_incompatible">Несовместимость языка и страны</string>
+    <string name="locale_description_language">Язык «%1$s» не используется в стране «%2$s» — лента скорее всего будет пустой.</string>
+    <string name="locale_description_country">В стране «%1$s» не используют язык «%2$s» — лента скорее всего будет пустой.</string>
+    <string name="locale_adapt_language">Язык → %1$s</string>
+    <string name="locale_adapt_country">Страна → %1$s</string>
 
 </resources>

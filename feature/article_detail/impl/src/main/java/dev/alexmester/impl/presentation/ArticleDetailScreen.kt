@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Article
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,8 +34,7 @@ import dev.alexmester.ui.components.notification_screen.NotificationType
 import dev.alexmester.ui.components.snackbar.showBookmarkSnackbar
 import dev.alexmester.ui.components.snackbar.showErrorSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.ui.uitext.UiText
+import dev.alexmester.utils.common.UiText
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay

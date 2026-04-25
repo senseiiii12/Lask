@@ -35,19 +35,30 @@ class ArticleDetailRepositoryImpl(
     override suspend fun getClapCount(id: Long): Int =
         local.getClapCount(id)
 
-    override suspend fun addClap(articleId: Long) =
+    override suspend fun addClap(articleId: Long){
         local.addClap(articleId)
+        preferencesDataSource.addXp(XP_PER_CLAP)
+    }
 
-    override suspend fun markAsRead(articleId: Long) =
+    override suspend fun markAsRead(articleId: Long) {
         local.markAsRead(articleId)
+        preferencesDataSource.addXp(XP_PER_READ)
+    }
 
     override suspend fun translateText(
         text: String,
         targetLanguage: String,
         sourceLanguage: String?,
     ): AppResult<String> = safeApiCall {
+        val truncated = if (text.length > MAX_TRANSLATE_CHARS) {
+            text.take(MAX_TRANSLATE_CHARS)
+                .substringBeforeLast(
+                    delimiter = '.',
+                    missingDelimiterValue = text.take(MAX_TRANSLATE_CHARS)
+                ) + "..."
+        } else text
         val response = translateApiService.translate(
-            text = text,
+            text = truncated ,
             targetLanguage = targetLanguage,
             sourceLanguage = sourceLanguage,
         )
@@ -56,4 +67,10 @@ class ArticleDetailRepositoryImpl(
 
     override suspend fun getAutoTranslateLanguage(): String =
         preferencesDataSource.userPreferences.first().autoTranslateLanguage
+
+    private companion object {
+        private const val MAX_TRANSLATE_CHARS = 5_000
+        private const val XP_PER_READ = 25f
+        private const val XP_PER_CLAP = 10f
+    }
 }

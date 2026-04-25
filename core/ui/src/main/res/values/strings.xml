@@ -9,6 +9,7 @@
     <string name="error_article_not_found">Article not found</string>
     <string name="error_retry">Retry</string>
     <string name="error_translation_failed">Translation failed. Please try again.</string>
+    <string name="error_translation_text_too_long">Text is too long to translate</string>
 
     <!-- common warning -->
     <string name="warning_no_articles">No articles yet</string>
@@ -68,7 +69,6 @@
     <string name="interests_add">Add</string>
     <string name="interests_you_interests">You Interests</string>
 
-
     <!-- System -->
     <string name="system_theme">Theme</string>
     <string name="system_locale_country">Article Country</string>
@@ -84,8 +84,12 @@
     <string name="search_back">Back</string>
     <string name="search_placeholder">Search news…</string>
 
-
-    <string name="revert_translation_cd">Show original</string>
+    <!-- Locale-->
+    <string name="locale_incompatible">Incompatible language and country</string>
+    <string name="locale_description_language">The language “%1$s” is not used in the country “%2$s” — the feed will most likely be empty.</string>
+    <string name="locale_description_country">The language “%2$s” is not used in the country “%1$s” — the feed will most likely be empty.</string>
+    <string name="locale_adapt_language">Language → %1$s</string>
+    <string name="locale_adapt_country">Country → %1$s</string>
 
 
 

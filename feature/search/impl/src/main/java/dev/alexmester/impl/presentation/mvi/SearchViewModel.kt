@@ -2,7 +2,6 @@ package dev.alexmester.impl.presentation.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.alexmester.error.NetworkErrorUiMapper
 import dev.alexmester.impl.domain.interactor.SearchInteractor
 import dev.alexmester.impl.domain.model.SearchFilters
 import dev.alexmester.models.result.AppResult

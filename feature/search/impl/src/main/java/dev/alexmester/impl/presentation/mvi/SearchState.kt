@@ -3,7 +3,7 @@ package dev.alexmester.impl.presentation.mvi
 import dev.alexmester.impl.domain.model.SearchFilters
 import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.news.NewsArticle
-import dev.alexmester.ui.uitext.UiText
+import dev.alexmester.utils.common.UiText
 
 data class SearchState(
     val query: String = "",

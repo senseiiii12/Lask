@@ -2,7 +2,7 @@ package dev.alexmester.impl.presentation.mvi
 
 import dev.alexmester.models.locale.SupportedLocales
 import dev.alexmester.models.news.NewsArticle
-import dev.alexmester.ui.uitext.UiText
+import dev.alexmester.utils.common.UiText
 
 sealed interface ArticleDetailState {
     data object Loading : ArticleDetailState

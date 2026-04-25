@@ -8,19 +8,24 @@ import androidx.compose.ui.res.vectorResource
 import dev.alexmester.models.error.NetworkError
 import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.ui.uitext.UiText
+import dev.alexmester.utils.common.UiText
 
 data class NotificationUi(
     val image: ImageVector,
     val text: String,
     val tint: Color
 )
+
 object NetworkErrorUiMapper {
 
     fun toUiText(error: NetworkError): UiText = when (error) {
         is NetworkError.NoInternet -> UiText.StringResource(R.string.error_no_internet)
         is NetworkError.PaymentRequired -> UiText.StringResource(R.string.error_payment_required)
         is NetworkError.RateLimit -> UiText.StringResource(R.string.error_rate_limit)
+        is NetworkError.HttpError -> when (error.code) {
+            422 -> UiText.StringResource(R.string.error_translation_text_too_long)
+            else -> UiText.StringResource(R.string.error_translation_failed)
+        }
         else -> UiText.StringResource(R.string.error_unknown)
     }
 
