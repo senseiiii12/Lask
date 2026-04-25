@@ -1,6 +1,6 @@
 package dev.alexmester.impl.presentstion.mvi
 
-import dev.alexmester.utils.common.UiText
+import dev.alexmester.ui.uitext.UiText
 
 sealed interface ExploreSideEffect {
     data class ShowError(val message: UiText) : ExploreSideEffect

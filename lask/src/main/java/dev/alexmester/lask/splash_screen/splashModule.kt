@@ -1,7 +1,7 @@
 package dev.alexmester.lask.splash_screen
 
-import dev.alexmester.utils.locale.DeviceLocaleProvider
-import dev.alexmester.utils.locale.LocaleChangeObserver
+import dev.alexmester.platform.locale.DeviceLocaleProvider
+import dev.alexmester.platform.locale.LocaleChangeObserver
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel

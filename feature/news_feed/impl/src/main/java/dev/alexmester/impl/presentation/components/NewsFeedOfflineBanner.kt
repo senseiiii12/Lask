@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.utils.common.UiText
-import dev.alexmester.utils.locale.DateFormatter
+import dev.alexmester.ui.uitext.UiText
+import dev.alexmester.utils.date.DateUtils
 
 @Composable
 internal fun NewsFeedOfflineBanner(
@@ -23,7 +23,7 @@ internal fun NewsFeedOfflineBanner(
 ) {
     val timeText: UiText = remember(lastCachedAt) {
         if (lastCachedAt != null) {
-            val formatted = DateFormatter.formatCachedAtDate(lastCachedAt)
+            val formatted = DateUtils.formatCachedAtDate(lastCachedAt)
             UiText.StringResource(R.string.offline_banner_with_time, arrayOf(formatted))
         } else {
             UiText.StringResource(R.string.offline_banner)

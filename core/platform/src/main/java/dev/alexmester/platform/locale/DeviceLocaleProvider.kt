@@ -1,4 +1,4 @@
-package dev.alexmester.utils.locale
+package dev.alexmester.platform.locale
 
 import android.content.Context
 import dev.alexmester.models.locale.SupportedLocales

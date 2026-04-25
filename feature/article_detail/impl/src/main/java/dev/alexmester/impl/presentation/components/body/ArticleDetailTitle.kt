@@ -11,7 +11,7 @@ import dev.alexmester.impl.presentation.mvi.TranslationState
 import dev.alexmester.ui.components.shimmer.ShimmerTextBlock
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.ui.transition.sharedElementIfAvailable
+import dev.alexmester.ui.shared_transition.sharedElementIfAvailable
 
 @Composable
 internal fun ArticleDetailTitle(

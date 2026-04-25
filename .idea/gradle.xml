@@ -29,6 +29,7 @@
             <option value="$PROJECT_DIR$/core/models" />
             <option value="$PROJECT_DIR$/core/navigation" />
             <option value="$PROJECT_DIR$/core/network" />
+            <option value="$PROJECT_DIR$/core/platform" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/core/utils" />
             <option value="$PROJECT_DIR$/feature" />

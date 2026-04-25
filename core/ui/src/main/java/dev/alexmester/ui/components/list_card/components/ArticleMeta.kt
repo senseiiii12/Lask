@@ -13,7 +13,7 @@ import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.components.sentiment.LaskSentimentDot
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.utils.locale.DateFormatter
+import dev.alexmester.utils.date.DateUtils
 import dev.alexmester.utils.locale.BuildLocale
 import dev.alexmester.utils.locale.countryCodeToFlagEmoji
 
@@ -54,7 +54,7 @@ internal fun ArticleMeta(article: NewsArticle) {
         ) {
             article.sentiment?.let { LaskSentimentDot(it) }
             Text(
-                text = DateFormatter.formatPublishDate(article.publishDate),
+                text = DateUtils.formatPublishDate(article.publishDate),
                 style = MaterialTheme.LaskTypography.footnote,
                 color = MaterialTheme.LaskColors.textSecondary,
             )

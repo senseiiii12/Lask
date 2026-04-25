@@ -34,7 +34,7 @@ import dev.alexmester.ui.components.notification_screen.NotificationType
 import dev.alexmester.ui.components.snackbar.showBookmarkSnackbar
 import dev.alexmester.ui.components.snackbar.showErrorSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.utils.common.UiText
+import dev.alexmester.ui.uitext.UiText
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay

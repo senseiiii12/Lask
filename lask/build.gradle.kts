@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":core:datastore"))
     implementation(project(":core:models"))
     implementation(project(":core:utils"))
+    implementation(project(":core:platform"))
 
     implementation(project(":feature:news_feed:impl"))
     implementation(project(":feature:explore:impl"))

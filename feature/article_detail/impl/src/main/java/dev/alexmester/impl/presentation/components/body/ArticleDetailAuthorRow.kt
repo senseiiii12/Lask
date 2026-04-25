@@ -23,7 +23,7 @@ import dev.alexmester.ui.components.sentiment.LaskSentimentGauge
 import dev.alexmester.ui.components.sentiment.SentimentText
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.utils.locale.DateFormatter
+import dev.alexmester.utils.date.DateUtils
 
 @Composable
 internal fun ArticleDetailAuthorRow(
@@ -75,7 +75,7 @@ internal fun ArticleDetailAuthorRow(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = DateFormatter.formatPublishDate(publishDate),
+                    text = DateUtils.formatPublishDate(publishDate),
                     style = MaterialTheme.LaskTypography.footnote,
                     color = MaterialTheme.LaskColors.textSecondary,
                     overflow = TextOverflow.Ellipsis

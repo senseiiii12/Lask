@@ -55,3 +55,4 @@ include(":feature:search:impl")
 
 include(":macrobenchmark")
 include(":core:utils")
+include(":core:platform")

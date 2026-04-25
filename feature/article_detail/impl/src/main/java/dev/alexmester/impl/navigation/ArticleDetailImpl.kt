@@ -8,7 +8,7 @@ import androidx.navigation.toRoute
 import dev.alexmester.api.navigation.ArticleDetailApi
 import dev.alexmester.api.navigation.ArticleDetailRoute
 import dev.alexmester.impl.presentation.ArticleDetailScreen
-import dev.alexmester.ui.transition.SharedTransitionLocals
+import dev.alexmester.ui.shared_transition.SharedTransitionLocals
 
 
 class ArticleDetailImpl : ArticleDetailApi {

@@ -25,7 +25,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.ui.transition.sharedElementIfAvailable
+import dev.alexmester.ui.shared_transition.sharedElementIfAvailable
 
 @Composable
 internal fun ArticleDetailHeaderImage(

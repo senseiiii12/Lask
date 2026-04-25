@@ -3,7 +3,7 @@ package dev.alexmester.lask.splash_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.datastore.UserPreferencesDataSource
-import dev.alexmester.utils.locale.DeviceLocaleProvider
+import dev.alexmester.platform.locale.DeviceLocaleProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

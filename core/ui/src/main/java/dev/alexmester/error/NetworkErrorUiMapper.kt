@@ -8,7 +8,7 @@ import androidx.compose.ui.res.vectorResource
 import dev.alexmester.models.error.NetworkError
 import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.utils.common.UiText
+import dev.alexmester.ui.uitext.UiText
 
 data class NotificationUi(
     val image: ImageVector,

@@ -6,7 +6,7 @@ import dev.alexmester.impl.domain.interactor.ArticleDetailInteractor
 import dev.alexmester.models.result.onFailure
 import dev.alexmester.models.result.onSuccess
 import dev.alexmester.ui.R
-import dev.alexmester.utils.common.UiText
+import dev.alexmester.ui.uitext.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

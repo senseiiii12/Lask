@@ -3,40 +3,34 @@ package dev.alexmester.datastore
 import android.net.Uri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.floatPreferencesKey
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.alexmester.datastore.model.UserPreferences
+import dev.alexmester.datastore.model.UserPreferencesKeys.ANONIM
+import dev.alexmester.datastore.model.UserPreferencesKeys.DELIMITER
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_AUTO_TRANSLATE_LANGUAGE
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_AUTO_TRANSLATE_MANUALLY_SET
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_AVATAR_URI
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_CURRENT_LEVEL
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_CURRENT_XP
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_DEFAULT_COUNTRY
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_DEFAULT_LANGUAGE
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_INTERESTS
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_IS_DARK_THEME
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_IS_THEME_SET
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_LAST_STREAK_DATE
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_LOCALE_MANUALLY_SET
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_ONBOARDING_DONE
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_PROFILE_NAME
+import dev.alexmester.datastore.model.UserPreferencesKeys.KEY_STREAK_COUNT
 import dev.alexmester.models.locale.SupportedLocales
+import dev.alexmester.utils.date.DateUtils.isYesterday
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+
 
 class UserPreferencesDataSource(
     private val dataStore: DataStore<Preferences>,
 ) {
-
-    companion object {
-        private val KEY_DEFAULT_COUNTRY = stringPreferencesKey("default_country")
-        private val KEY_DEFAULT_LANGUAGE = stringPreferencesKey("default_language")
-        private val KEY_AUTO_TRANSLATE_LANGUAGE = stringPreferencesKey("auto_translate_language")
-        private val KEY_IS_DARK_THEME = booleanPreferencesKey("is_dark_theme")
-        private val KEY_IS_THEME_SET = booleanPreferencesKey("is_theme_set")
-        private val KEY_ONBOARDING_DONE = booleanPreferencesKey("onboarding_completed")
-        private val KEY_LOCALE_MANUALLY_SET = booleanPreferencesKey("locale_manually_set")
-        private val KEY_AUTO_TRANSLATE_MANUALLY_SET = booleanPreferencesKey("auto_translate_manually_set")
-        private val KEY_PROFILE_NAME = stringPreferencesKey("profile_name")
-        private val KEY_AVATAR_URI = stringPreferencesKey("avatar_uri")
-        private val KEY_STREAK_COUNT = intPreferencesKey("streak_count")
-        private val KEY_LAST_STREAK_DATE = stringPreferencesKey("last_streak_date")
-        private val KEY_CURRENT_XP = floatPreferencesKey("current_xp")
-        private val KEY_CURRENT_LEVEL = intPreferencesKey("current_level")
-        private val KEY_INTERESTS = stringPreferencesKey("interests")
-
-        private const val DELIMITER = "|||"
-    }
-
 
     val userPreferences: Flow<UserPreferences> = dataStore.data.map { prefs ->
         UserPreferences(
@@ -45,7 +39,7 @@ class UserPreferencesDataSource(
             isDarkTheme = if (prefs[KEY_IS_THEME_SET] == true) prefs[KEY_IS_DARK_THEME] else null,
             isOnboardingCompleted = prefs[KEY_ONBOARDING_DONE] ?: false,
             isLocaleManuallySet = prefs[KEY_LOCALE_MANUALLY_SET] ?: false,
-            profileName = prefs[KEY_PROFILE_NAME] ?: "Anonim",
+            profileName = prefs[KEY_PROFILE_NAME] ?: ANONIM,
             avatarUri = prefs[KEY_AVATAR_URI],
             streakCount = prefs[KEY_STREAK_COUNT] ?: 0,
             lastStreakDate = prefs[KEY_LAST_STREAK_DATE],
@@ -91,9 +85,7 @@ class UserPreferencesDataSource(
         }
     }
 
-    /**
-     * [isDark] null — сбросить на системную тему.
-     */
+
     suspend fun updateTheme(isDark: Boolean?) {
         dataStore.edit { prefs ->
             if (isDark == null) {
@@ -108,7 +100,7 @@ class UserPreferencesDataSource(
     // ── Profile ───────────────────────────────────────────────────────────────
 
     suspend fun updateProfileName(name: String) {
-        dataStore.edit { it[KEY_PROFILE_NAME] = name.trim().ifEmpty { "Anonim" } }
+        dataStore.edit { it[KEY_PROFILE_NAME] = name.trim().ifEmpty { ANONIM } }
     }
 
     suspend fun updateAvatarUri(uri: Uri?) {
@@ -118,10 +110,6 @@ class UserPreferencesDataSource(
         }
     }
 
-    /**
-     * Вызывается при каждом открытии приложения.
-     * today — ISO date string "yyyy-MM-dd"
-     */
     suspend fun updateStreak(today: String) {
         dataStore.edit { prefs ->
             val last = prefs[KEY_LAST_STREAK_DATE]
@@ -129,9 +117,9 @@ class UserPreferencesDataSource(
 
             val newStreak = when {
                 last == null -> 1
-                last == today -> current           // уже заходили сегодня
+                last == today -> current
                 isYesterday(last, today) -> current + 1
-                else -> 1                          // пропустили день
+                else -> 1
             }
 
             prefs[KEY_STREAK_COUNT] = newStreak
@@ -163,10 +151,6 @@ class UserPreferencesDataSource(
         }
     }
 
-    /**
-     * Добавляем XP и при необходимости повышаем уровень.
-     * XP_for_level_N = 10 * N^1.8
-     */
     suspend fun addXp(xpDelta: Float) {
         dataStore.edit { prefs ->
             var xp = (prefs[KEY_CURRENT_XP] ?: 0f) + xpDelta
@@ -191,17 +175,4 @@ class UserPreferencesDataSource(
     private fun xpForLevel(level: Int): Float =
         (10.0 * Math.pow(level.toDouble(), 1.8)).toFloat()
 
-    /**
-     * Проверяем что lastDate — вчерашний день относительно today.
-     * Формат: "yyyy-MM-dd"
-     */
-    private fun isYesterday(lastDate: String, today: String): Boolean {
-        return try {
-            val last = java.time.LocalDate.parse(lastDate)
-            val todayDate = java.time.LocalDate.parse(today)
-            last.plusDays(1) == todayDate
-        } catch (e: Exception) {
-            false
-        }
-    }
 }

@@ -10,7 +10,7 @@ import dev.alexmester.api.navigation.ExploreApi
 import dev.alexmester.api.navigation.ExploreRoute
 import dev.alexmester.api.navigation.SearchApi
 import dev.alexmester.impl.presentstion.ExploreScreen
-import dev.alexmester.ui.transition.SharedTransitionLocals
+import dev.alexmester.ui.shared_transition.SharedTransitionLocals
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 class ExploreImpl(

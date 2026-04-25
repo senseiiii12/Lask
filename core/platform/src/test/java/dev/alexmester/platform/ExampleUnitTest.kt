@@ -1,4 +1,4 @@
-package dev.alexmester.datastore
+package dev.alexmester.platform
 
 import org.junit.Test
 

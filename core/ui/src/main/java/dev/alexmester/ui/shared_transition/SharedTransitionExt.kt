@@ -1,4 +1,4 @@
-package dev.alexmester.ui.transition
+package dev.alexmester.ui.shared_transition
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.runtime.Composable

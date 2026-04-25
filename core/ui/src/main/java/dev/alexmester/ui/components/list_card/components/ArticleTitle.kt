@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.ui.transition.sharedElementIfAvailable
+import dev.alexmester.ui.shared_transition.sharedElementIfAvailable
 
 @Composable
 internal fun ArticleTitle(article: NewsArticle) {

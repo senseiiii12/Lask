@@ -28,7 +28,7 @@ import dev.alexmester.ui.R
 import dev.alexmester.ui.components.list_card.rememberLaskArticleCardPainter
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
-import dev.alexmester.ui.transition.sharedElementIfAvailable
+import dev.alexmester.ui.shared_transition.sharedElementIfAvailable
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable

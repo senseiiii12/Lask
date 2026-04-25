@@ -18,7 +18,7 @@ import dev.alexmester.impl.presentation.interests.InterestsScreen
 import dev.alexmester.impl.presentation.locale_picker.LocalePickerScreen
 import dev.alexmester.impl.presentation.profile.ProfileScreen
 import dev.alexmester.impl.presentation.system.SystemScreen
-import dev.alexmester.ui.transition.SharedTransitionLocals
+import dev.alexmester.ui.shared_transition.SharedTransitionLocals
 
 class ProfileImpl(
     private val articleDetailApi: ArticleDetailApi,

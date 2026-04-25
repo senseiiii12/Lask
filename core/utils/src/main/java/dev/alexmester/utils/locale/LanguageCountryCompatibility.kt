@@ -1,6 +1,5 @@
 package dev.alexmester.utils.locale
 
-
 val LANGUAGE_TO_COUNTRIES: Map<String, List<String>> = mapOf(
     "en" to listOf("us", "gb", "au", "ca", "nz", "ie", "za", "in", "sg", "ph"),
     "de" to listOf("de", "at", "ch"),
