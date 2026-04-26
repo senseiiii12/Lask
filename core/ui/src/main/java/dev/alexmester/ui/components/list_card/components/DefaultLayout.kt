@@ -1,7 +1,10 @@
 package dev.alexmester.ui.components.list_card.components
 
+import android.R.attr.layout
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,10 +22,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.LookaheadScope
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.components.buttons.BookmarkButtonStyle
 import dev.alexmester.ui.components.buttons.LaskBookmarkButton
+import kotlin.math.roundToInt
 
 @Composable
 internal fun DefaultLayout(
@@ -34,19 +41,13 @@ internal fun DefaultLayout(
     onBookmarkToggle: () -> Unit,
     onClick: () -> Unit,
 ) {
-    val buttonWidth by animateDpAsState(
-        targetValue = if (selectionMode) 40.dp else 0.dp,
-        label = "bookmark_width"
-    )
-
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp)
-            .height(IntrinsicSize.Min)
-            .animateContentSize(),
+            .height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -72,17 +73,16 @@ internal fun DefaultLayout(
 
         Box(
             modifier = Modifier
-                .width(buttonWidth)
+                .animateContentSize()
+                .width(if (selectionMode) 40.dp else 0.dp)
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            if (buttonWidth > 0.dp) {
-                LaskBookmarkButton(
-                    isBookmarked = isKept,
-                    onClick = onBookmarkToggle,
-                    style = BookmarkButtonStyle.Standalone,
-                )
-            }
+            LaskBookmarkButton(
+                isBookmarked = isKept,
+                onClick = onBookmarkToggle,
+                style = BookmarkButtonStyle.Standalone,
+            )
         }
     }
 }

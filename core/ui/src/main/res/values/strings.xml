@@ -93,7 +93,12 @@
     <string name="locale_adapt_country">Country → %1$s</string>
     <string name="locale_incompatible_empty_message">For %1$s in the language "%2$s", news has not yet been generated or is unavailable for today.\n\nPull down to try again,or change the country and language in the settings.</string>
 
-
+    <!-- Levels-->
+    <string name="level_1">Beginner</string>
+    <string name="level_2">Intermediate</string>
+    <string name="level_3">Advanced</string>
+    <string name="level_4">Pro</string>
+    <string name="level_5">Bookworm</string>
 
 
 

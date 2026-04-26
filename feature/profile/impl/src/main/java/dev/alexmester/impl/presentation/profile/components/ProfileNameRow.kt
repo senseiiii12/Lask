@@ -1,6 +1,7 @@
 package dev.alexmester.impl.presentation.profile.components
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -98,7 +100,7 @@ internal fun ProfileNameRow(
                 tint = Color.Unspecified
             )
             Text(
-                text = levelData.title,
+                text = stringResource(levelData.title) ,
                 style = MaterialTheme.LaskTypography.body1,
                 color = MaterialTheme.LaskColors.brand_blue,
                 overflow = TextOverflow.Ellipsis,
@@ -146,13 +148,13 @@ internal fun ButtonsInEditMode(
 
 enum class Levels(
     @param:DrawableRes val iconRes: Int,
-    val title: String
+    @param:StringRes val title: Int,
 ) {
-    LEVEL_1(R.drawable.ic_level_1, "Beginner"),
-    LEVEL_2(R.drawable.ic_level_2, "Intermediate"),
-    LEVEL_3(R.drawable.ic_level_3, "Advanced"),
-    LEVEL_4(R.drawable.ic_level_4, "Pro"),
-    LEVEL_5(R.drawable.ic_level_5, "Bookworm"),
+    LEVEL_1(R.drawable.ic_level_1, R.string.level_1),
+    LEVEL_2(R.drawable.ic_level_2, R.string.level_2),
+    LEVEL_3(R.drawable.ic_level_3, R.string.level_3),
+    LEVEL_4(R.drawable.ic_level_4, R.string.level_4),
+    LEVEL_5(R.drawable.ic_level_5, R.string.level_5),
 }
 
 @Preview(showBackground = true)
