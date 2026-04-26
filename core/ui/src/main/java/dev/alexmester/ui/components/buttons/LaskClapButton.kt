@@ -13,7 +13,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -28,18 +30,19 @@ import dev.alexmester.ui.desing_system.LaskTypography
 @Composable
 fun LaskClapButton(
     count: Int,
-    isAnimating: Boolean,
     onClick: () -> Unit,
 ) {
+    val isAnimateClap by remember {
+        derivedStateOf { count > 0 }
+    }
     val scale by animateFloatAsState(
-        targetValue = if (isAnimating) 1.25f else 1f,
+        targetValue = if (isAnimateClap) 1.25f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
         label = "clapScale",
     )
-    val icon = if (isAnimating) R.drawable.ic_clap_filled else R.drawable.ic_clap_outline
-
+    val icon = if (isAnimateClap) R.drawable.ic_clap_filled else R.drawable.ic_clap_outline
     val tint by animateColorAsState(
-        targetValue = if (count > 0) LaskPalette.Brand_Blue
+        targetValue = if (isAnimateClap) LaskPalette.Brand_Blue
         else MaterialTheme.LaskColors.textPrimary,
         label = "clapColor",
     )
@@ -62,7 +65,7 @@ fun LaskClapButton(
                     },
             )
         }
-        if (count > 0) {
+        if (isAnimateClap) {
             Text(
                 text = count.toString(),
                 style = MaterialTheme.LaskTypography.button1,

@@ -61,7 +61,6 @@ internal fun ArticleDetailBottomBar(
         ) {
             LaskClapButton(
                 count = contentState.clapCount,
-                isAnimating = contentState.isClapAnimating,
                 onClick = { onIntent(ArticleDetailIntent.Clap) },
             )
             LaskBookmarkButton(

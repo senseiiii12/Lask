@@ -11,7 +11,6 @@ sealed interface ArticleDetailState {
         val article: NewsArticle,
         val isBookmarked: Boolean = false,
         val clapCount: Int = 0,
-        val isClapAnimating: Boolean = false,
         val translationState: TranslationState = TranslationState.Idle,
         val translatedTitle: String? = null,
         val translatedText: String? = null,
