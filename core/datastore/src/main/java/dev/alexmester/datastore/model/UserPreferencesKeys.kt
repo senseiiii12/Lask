@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
 internal object UserPreferencesKeys {
-
     val KEY_DEFAULT_COUNTRY = stringPreferencesKey("default_country")
     val KEY_DEFAULT_LANGUAGE = stringPreferencesKey("default_language")
     val KEY_AUTO_TRANSLATE_LANGUAGE = stringPreferencesKey("auto_translate_language")
@@ -22,7 +21,4 @@ internal object UserPreferencesKeys {
     val KEY_CURRENT_XP = floatPreferencesKey("current_xp")
     val KEY_CURRENT_LEVEL = intPreferencesKey("current_level")
     val KEY_INTERESTS = stringPreferencesKey("interests")
-
-    const val DELIMITER = "|||"
-    const val ANONIM = "Anonim"
 }

@@ -1,6 +1,7 @@
 package dev.alexmester.datastore.model
 
 import dev.alexmester.models.locale.SupportedLocales
+import dev.alexmester.utils.constants.LaskConstants.ANONIM
 
 data class UserPreferences(
     val defaultCountry: String = SupportedLocales.FALLBACK_COUNTRY,
@@ -10,7 +11,7 @@ data class UserPreferences(
     val isOnboardingCompleted: Boolean = false,
     val isLocaleManuallySet: Boolean = false,
     val isAutoTranslateManuallySet: Boolean = false,
-    val profileName: String = "Anonim",
+    val profileName: String = ANONIM,
     val avatarUri: String? = null,
     val streakCount: Int = 0,
     val lastStreakDate: String? = null,
