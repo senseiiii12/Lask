@@ -33,7 +33,7 @@ class StreakRepositoryTest {
                 }
             }
         )
-        preferencesDataSource = UserPreferencesDataSource(dataStore)
+        preferencesDataSource = UserPreferencesDataSourceImpl(dataStore)
     }
 
     /**

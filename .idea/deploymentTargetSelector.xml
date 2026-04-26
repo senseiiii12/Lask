@@ -2,9 +2,6 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-      <SelectionState runConfigName="BaselineProfileGenerator">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="lask">
         <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2026-04-21T14:37:00.768927900Z">
