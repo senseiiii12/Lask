@@ -1,6 +1,6 @@
 package dev.alexmester.impl.data.repository
 
-import dev.alexmester.database.entity.FeedCacheEntity.Companion.FEED_EXPLORE
+import dev.alexmester.database.entity.FeedCacheEntity.Companion.EXPLORE_FEED
 import dev.alexmester.impl.data.local.ExploreLocalDataSource
 import dev.alexmester.impl.data.mapper.toEntities
 import dev.alexmester.impl.data.remote.ExploreApiService
@@ -34,7 +34,7 @@ class ExploreRepositoryImpl(
         )
 
         val (articles, cache) = withContext(Dispatchers.Default) {
-            response.news.toEntities(feedType = FEED_EXPLORE, positionStart = 0)
+            response.news.toEntities(feedType = EXPLORE_FEED, positionStart = 0)
         }
         local.replaceFeed(articles = articles, feedCache = cache)
         response.news.size
@@ -54,7 +54,7 @@ class ExploreRepositoryImpl(
         )
 
         val (articles, cache) = withContext(Dispatchers.Default) {
-            response.news.toEntities(feedType = FEED_EXPLORE, positionStart = offset)
+            response.news.toEntities(feedType = EXPLORE_FEED, positionStart = offset)
         }
         local.appendFeed(articles = articles, feedCache = cache)
         response.news.size

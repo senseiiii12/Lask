@@ -7,7 +7,7 @@ import dev.alexmester.database.dao.ArticleUserStateDao
 import dev.alexmester.database.dao.FeedCacheDao
 import dev.alexmester.database.entity.ArticleEntity
 import dev.alexmester.database.entity.FeedCacheEntity
-import dev.alexmester.database.entity.FeedCacheEntity.Companion.FEED_EXPLORE
+import dev.alexmester.database.entity.FeedCacheEntity.Companion.EXPLORE_FEED
 import dev.alexmester.impl.data.mapper.toDomain
 import dev.alexmester.models.news.NewsArticle
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,13 +25,13 @@ class ExploreLocalDataSource(
 ) {
 
     fun observeFeedArticles(): Flow<List<NewsArticle>> =
-        feedCacheDao.observeFeedWithState(FEED_EXPLORE)
+        feedCacheDao.observeFeedWithState(EXPLORE_FEED)
             .map { rows -> rows.sortedBy { it.position }.map { it.toDomain() } }
 
     fun observeReadArticleIds(): Flow<List<Long>> = userStateDao.observeReadArticleIds()
 
     suspend fun getLastCachedAt(): Long? = withContext(ioDispatcher) {
-        feedCacheDao.getLastCachedAt(FEED_EXPLORE)
+        feedCacheDao.getLastCachedAt(EXPLORE_FEED)
     }
 
     suspend fun replaceFeed(
@@ -39,7 +39,7 @@ class ExploreLocalDataSource(
         feedCache: List<FeedCacheEntity>,
     ) = withContext(ioDispatcher) {
         db.withTransaction {
-            feedCacheDao.clearFeed(FEED_EXPLORE)
+            feedCacheDao.clearFeed(EXPLORE_FEED)
             articleDao.insertArticles(articles)
             feedCacheDao.insertFeedCache(feedCache)
             articleDao.deleteOrphaned()

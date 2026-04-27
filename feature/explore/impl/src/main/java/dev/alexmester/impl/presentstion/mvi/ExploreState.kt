@@ -2,6 +2,8 @@ package dev.alexmester.impl.presentstion.mvi
 
 import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.news.NewsArticle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 sealed interface ExploreState {
     data object Loading : ExploreState
@@ -30,3 +32,11 @@ val ExploreState.contentOrNull: ExploreState.Content?
 
 val ExploreState.isContent: Boolean
     get() = this is ExploreState.Content
+
+inline fun MutableStateFlow<ExploreState>.updateContent(
+    block: (ExploreState.Content) -> ExploreState.Content
+) {
+    update { state ->
+        if (state is ExploreState.Content) block(state) else state
+    }
+}
