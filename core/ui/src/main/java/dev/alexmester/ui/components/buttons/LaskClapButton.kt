@@ -32,9 +32,8 @@ fun LaskClapButton(
     count: Int,
     onClick: () -> Unit,
 ) {
-    val isAnimateClap by remember {
-        derivedStateOf { count > 0 }
-    }
+    val isAnimateClap = count > 0
+
     val scale by animateFloatAsState(
         targetValue = if (isAnimateClap) 1.25f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
