@@ -69,6 +69,7 @@
     <string name="interests_text_field_placeholder">Напишите интересы</string>
     <string name="interests_add">Добавить</string>
     <string name="interests_you_interests">Ваши интересы</string>
+    <string name="interests_you_not_added">Вы не добавили никаких интересов.</string>
 
     <!-- System -->
     <string name="system_theme">Тема</string>

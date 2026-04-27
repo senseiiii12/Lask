@@ -11,6 +11,8 @@ import dev.alexmester.impl.domain.usecase.RefreshExploreUseCase
 import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.result.onFailure
 import dev.alexmester.models.result.onSuccess
+import dev.alexmester.ui.R
+import dev.alexmester.ui.uitext.UiText
 import dev.alexmester.utils.constants.LaskConstants.PAGE_SIZE
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -89,10 +91,31 @@ class ExploreViewModel(
     }
 
     private fun refresh() {
-        _state.updateContent { it.copy(isRefreshing = true, isOffline = false) }
+        _state.update { current ->
+            when (current) {
+                is ExploreState.Content -> current.copy(isRefreshing = true, isOffline = false)
+                is ExploreState.Error -> current.copy(isRefreshing = true)
+                is ExploreState.EmptyInterests -> current.copy(isRefreshing = true)
+                else -> current
+            }
+        }
+
         viewModelScope.launch {
             refreshExplore()
                 .onSuccess { result ->
+                    val currentState = _state.value
+                    if (result == 0) {
+                        if (!currentState.isContent) {
+                            _state.value = ExploreState.EmptyInterests(isRefreshing = false)
+                            return@launch
+                        } else {
+                            emitSideEffect(
+                                ExploreSideEffect.ShowWarning(
+                                    UiText.StringResource(R.string.interests_you_not_added)
+                                )
+                            )
+                        }
+                    }
                     _state.update { current ->
                         ExploreState.Content(
                             articles = current.contentOrNull?.articles.orEmpty(),

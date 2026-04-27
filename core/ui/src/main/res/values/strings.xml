@@ -69,6 +69,7 @@
     <string name="interests_text_field_placeholder">Write you interests</string>
     <string name="interests_add">Add</string>
     <string name="interests_you_interests">You Interests</string>
+    <string name="interests_you_not_added">You not added any interests</string>
 
     <!-- System -->
     <string name="system_theme">Theme</string>

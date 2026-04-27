@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookmarkAdded
 import androidx.compose.material.icons.filled.BookmarkRemove
+import androidx.compose.material.icons.filled.Interests
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,6 +36,29 @@ fun SnackSwipeController.showBookmarkSnackbar(
                 imageVector = if (isBookmarked) Icons.Default.BookmarkAdded else Icons.Default.BookmarkRemove,
                 contentDescription = null,
                 tint = if (isBookmarked) MaterialTheme.LaskColors.success else MaterialTheme.LaskColors.error,
+            )
+        },
+    )
+}
+
+fun SnackSwipeController.showWarningSnackbar(
+    backgroundColor: Color,
+    text: String,
+) {
+    showSnackSwipe(
+        backgroundColor = backgroundColor,
+        messageText = {
+            Text(
+                text = text,
+                color = MaterialTheme.LaskColors.warning,
+                style = MaterialTheme.LaskTypography.body2,
+            )
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Default.Interests,
+                contentDescription = null,
+                tint = MaterialTheme.LaskColors.warning,
             )
         },
     )
