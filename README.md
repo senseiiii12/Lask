@@ -1,4 +1,6 @@
-**Lask** - is an Android app for reading and exploring news with a focus on personalization, a modern UI, and modular architecture.
+###LASK
+
+# Lask is an Android app for reading and exploring news with a focus on personalization, a modern UI, and modular architecture.
 
 ## 🚀 Tech Stack
 
